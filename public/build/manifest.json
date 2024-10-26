@@ -1,0 +1,675 @@
+{
+  "DefectivePropDialog.css": {
+    "file": "assets/DefectivePropDialog-1daeee57.css",
+    "src": "DefectivePropDialog.css"
+  },
+  "InfoDialong.css": {
+    "file": "assets/InfoDialong-68d8a306.css",
+    "src": "InfoDialong.css"
+  },
+  "_ClosePopup-9fac0edc.js": {
+    "file": "assets/ClosePopup-9fac0edc.js",
+    "imports": [
+      "resources/js/app.js"
+    ]
+  },
+  "_DefectivePropDialog-af9feb44.js": {
+    "css": [
+      "assets/DefectivePropDialog-1daeee57.css"
+    ],
+    "file": "assets/DefectivePropDialog-af9feb44.js",
+    "imports": [
+      "resources/js/app.js",
+      "_QSpace-767f85f1.js",
+      "_QForm-db958e76.js",
+      "_ClosePopup-9fac0edc.js",
+      "_use-dialog-plugin-component-00e1baf8.js",
+      "__plugin-vue_export-helper-c27b6911.js",
+      "_QSelect-fcdeceb1.js"
+    ]
+  },
+  "_ImageCarouselDialog-dda6426c.js": {
+    "file": "assets/ImageCarouselDialog-dda6426c.js",
+    "imports": [
+      "_QTooltip-3ff6951b.js",
+      "resources/js/app.js",
+      "_QImg-4607bda3.js",
+      "_use-render-cache-f6c711e0.js",
+      "_QTable-9f10ca35.js",
+      "_ClosePopup-9fac0edc.js",
+      "_use-dialog-plugin-component-00e1baf8.js"
+    ]
+  },
+  "_ImageDialog-5fc91dda.js": {
+    "file": "assets/ImageDialog-5fc91dda.js",
+    "imports": [
+      "_QTooltip-3ff6951b.js",
+      "resources/js/app.js",
+      "_QImg-4607bda3.js",
+      "_ClosePopup-9fac0edc.js",
+      "_use-dialog-plugin-component-00e1baf8.js"
+    ]
+  },
+  "_InfoDialong-683d1c5a.js": {
+    "css": [
+      "assets/InfoDialong-68d8a306.css"
+    ],
+    "file": "assets/InfoDialong-683d1c5a.js",
+    "imports": [
+      "resources/js/app.js",
+      "_use-dialog-plugin-component-00e1baf8.js",
+      "__plugin-vue_export-helper-c27b6911.js"
+    ]
+  },
+  "_QBtnDropdown-c8281bd3.js": {
+    "file": "assets/QBtnDropdown-c8281bd3.js",
+    "imports": [
+      "resources/js/app.js",
+      "_QSelect-fcdeceb1.js"
+    ]
+  },
+  "_QChip-18101fab.js": {
+    "file": "assets/QChip-18101fab.js",
+    "imports": [
+      "resources/js/app.js"
+    ]
+  },
+  "_QExpansionItem-3bf5a263.js": {
+    "file": "assets/QExpansionItem-3bf5a263.js",
+    "imports": [
+      "resources/js/app.js",
+      "_QSelect-fcdeceb1.js",
+      "_QSlideTransition-5ec42607.js"
+    ]
+  },
+  "_QFile-eeadd18b.js": {
+    "file": "assets/QFile-eeadd18b.js",
+    "imports": [
+      "_QChip-18101fab.js",
+      "resources/js/app.js"
+    ]
+  },
+  "_QForm-db958e76.js": {
+    "file": "assets/QForm-db958e76.js",
+    "imports": [
+      "resources/js/app.js"
+    ]
+  },
+  "_QImg-4607bda3.js": {
+    "file": "assets/QImg-4607bda3.js",
+    "imports": [
+      "resources/js/app.js"
+    ]
+  },
+  "_QPage-18703bb0.js": {
+    "file": "assets/QPage-18703bb0.js",
+    "imports": [
+      "resources/js/app.js"
+    ]
+  },
+  "_QPagination-9c29fd07.js": {
+    "file": "assets/QPagination-9c29fd07.js",
+    "imports": [
+      "resources/js/app.js"
+    ]
+  },
+  "_QSelect-fcdeceb1.js": {
+    "file": "assets/QSelect-fcdeceb1.js",
+    "imports": [
+      "resources/js/app.js",
+      "_QChip-18101fab.js",
+      "_position-engine-f936ecea.js"
+    ]
+  },
+  "_QSlideTransition-5ec42607.js": {
+    "file": "assets/QSlideTransition-5ec42607.js",
+    "imports": [
+      "resources/js/app.js"
+    ]
+  },
+  "_QSpace-767f85f1.js": {
+    "file": "assets/QSpace-767f85f1.js",
+    "imports": [
+      "resources/js/app.js"
+    ]
+  },
+  "_QTable-9f10ca35.js": {
+    "file": "assets/QTable-9f10ca35.js",
+    "imports": [
+      "resources/js/app.js",
+      "_QSelect-fcdeceb1.js"
+    ]
+  },
+  "_QTooltip-3ff6951b.js": {
+    "file": "assets/QTooltip-3ff6951b.js",
+    "imports": [
+      "resources/js/app.js",
+      "_position-engine-f936ecea.js"
+    ]
+  },
+  "__plugin-vue_export-helper-c27b6911.js": {
+    "file": "assets/_plugin-vue_export-helper-c27b6911.js"
+  },
+  "_html2canvas-dc69b728.js": {
+    "file": "assets/html2canvas-dc69b728.js",
+    "imports": [
+      "_html2pdf-792bb947.js"
+    ],
+    "isDynamicEntry": true
+  },
+  "_html2pdf-792bb947.js": {
+    "dynamicImports": [
+      "_html2canvas-dc69b728.js",
+      "node_modules/dompurify/dist/purify.es.js",
+      "node_modules/canvg/lib/index.es.js"
+    ],
+    "file": "assets/html2pdf-792bb947.js",
+    "imports": [
+      "resources/js/app.js"
+    ]
+  },
+  "_position-engine-f936ecea.js": {
+    "file": "assets/position-engine-f936ecea.js",
+    "imports": [
+      "resources/js/app.js"
+    ]
+  },
+  "_use-dialog-plugin-component-00e1baf8.js": {
+    "file": "assets/use-dialog-plugin-component-00e1baf8.js",
+    "imports": [
+      "resources/js/app.js"
+    ]
+  },
+  "_use-render-cache-f6c711e0.js": {
+    "file": "assets/use-render-cache-f6c711e0.js"
+  },
+  "node_modules/@quasar/extras/material-icons/web-font/flUhRq6tzZclQEJ-Vdg-IuiaDsNa.woff": {
+    "file": "assets/flUhRq6tzZclQEJ-Vdg-IuiaDsNa-fd84f88b.woff",
+    "src": "node_modules/@quasar/extras/material-icons/web-font/flUhRq6tzZclQEJ-Vdg-IuiaDsNa.woff"
+  },
+  "node_modules/@quasar/extras/material-icons/web-font/flUhRq6tzZclQEJ-Vdg-IuiaDsNcIhQ8tQ.woff2": {
+    "file": "assets/flUhRq6tzZclQEJ-Vdg-IuiaDsNcIhQ8tQ-4a4dbc62.woff2",
+    "src": "node_modules/@quasar/extras/material-icons/web-font/flUhRq6tzZclQEJ-Vdg-IuiaDsNcIhQ8tQ.woff2"
+  },
+  "node_modules/canvg/lib/index.es.js": {
+    "file": "assets/index.es-0adfee49.js",
+    "imports": [
+      "_html2pdf-792bb947.js",
+      "resources/js/app.js"
+    ],
+    "isDynamicEntry": true,
+    "src": "node_modules/canvg/lib/index.es.js"
+  },
+  "node_modules/dompurify/dist/purify.es.js": {
+    "file": "assets/purify.es-f1fd0f50.js",
+    "isDynamicEntry": true,
+    "src": "node_modules/dompurify/dist/purify.es.js"
+  },
+  "resources/js/app.css": {
+    "file": "assets/app-5b932a47.css",
+    "src": "resources/js/app.css"
+  },
+  "resources/js/app.js": {
+    "assets": [
+      "assets/flUhRq6tzZclQEJ-Vdg-IuiaDsNcIhQ8tQ-4a4dbc62.woff2",
+      "assets/flUhRq6tzZclQEJ-Vdg-IuiaDsNa-fd84f88b.woff"
+    ],
+    "css": [
+      "assets/app-5b932a47.css"
+    ],
+    "dynamicImports": [
+      "resources/js/pages/Props.vue",
+      "resources/js/pages/ShowProduct.vue",
+      "resources/js/pages/SalesByMarketplaces.vue",
+      "resources/js/pages/Defective.vue",
+      "resources/js/pages/Ozon/ShowOzonProduct.vue",
+      "resources/js/pages/Ozon/GroupOzonProductUpdate.vue",
+      "resources/js/pages/Ozon/OzonProps.vue",
+      "resources/js/pages/Ozon/CreateOzonProduct.vue",
+      "resources/js/pages/WB/CreateWBProduct.vue",
+      "resources/js/pages/Reserve/Index.vue",
+      "resources/js/pages/Reserve/Show.vue",
+      "resources/js/pages/Consignment/ConsignmentIndex.vue",
+      "resources/js/pages/Supply/SuppliesIndex.vue",
+      "resources/js/pages/Supply/CourierShow.vue",
+      "resources/js/pages/Consignment/CourierShow.vue",
+      "resources/js/pages/Order2/Index.vue",
+      "resources/js/pages/Order2/ShowWb.vue",
+      "resources/js/pages/Order2/ShowOzon.vue",
+      "resources/js/pages/Order2/PackedIndex.vue",
+      "resources/js/pages/Order2/Manage.vue",
+      "resources/js/pages/Order2/PackedShow.vue",
+      "resources/js/pages/Order2/Confirmed.vue",
+      "resources/js/pages/InvalidCards.vue",
+      "resources/js/pages/WorkerScore/Index.vue"
+    ],
+    "file": "assets/app-64dafc3a.js",
+    "isEntry": true,
+    "src": "resources/js/app.js"
+  },
+  "resources/js/pages/Consignment/ConsignmentIndex.css": {
+    "file": "assets/ConsignmentIndex-2ec2f83d.css",
+    "src": "resources/js/pages/Consignment/ConsignmentIndex.css"
+  },
+  "resources/js/pages/Consignment/ConsignmentIndex.vue": {
+    "css": [
+      "assets/ConsignmentIndex-2ec2f83d.css"
+    ],
+    "file": "assets/ConsignmentIndex-4017f1cf.js",
+    "imports": [
+      "_QSpace-767f85f1.js",
+      "resources/js/app.js",
+      "_QTable-9f10ca35.js",
+      "_QPagination-9c29fd07.js",
+      "_QForm-db958e76.js",
+      "_ClosePopup-9fac0edc.js",
+      "_use-dialog-plugin-component-00e1baf8.js",
+      "__plugin-vue_export-helper-c27b6911.js",
+      "_QSelect-fcdeceb1.js",
+      "_QChip-18101fab.js",
+      "_position-engine-f936ecea.js"
+    ],
+    "isDynamicEntry": true,
+    "src": "resources/js/pages/Consignment/ConsignmentIndex.vue"
+  },
+  "resources/js/pages/Consignment/CourierShow.vue": {
+    "file": "assets/CourierShow-d9cb1df4.js",
+    "imports": [
+      "resources/js/app.js",
+      "_QFile-eeadd18b.js",
+      "_ImageDialog-5fc91dda.js",
+      "_QChip-18101fab.js",
+      "_QTooltip-3ff6951b.js",
+      "_position-engine-f936ecea.js",
+      "_QImg-4607bda3.js",
+      "_ClosePopup-9fac0edc.js",
+      "_use-dialog-plugin-component-00e1baf8.js"
+    ],
+    "isDynamicEntry": true,
+    "src": "resources/js/pages/Consignment/CourierShow.vue"
+  },
+  "resources/js/pages/Defective.vue": {
+    "file": "assets/Defective-ad27e688.js",
+    "imports": [
+      "_QTable-9f10ca35.js",
+      "resources/js/app.js",
+      "_QPage-18703bb0.js",
+      "_QSelect-fcdeceb1.js",
+      "_QChip-18101fab.js",
+      "_position-engine-f936ecea.js"
+    ],
+    "isDynamicEntry": true,
+    "src": "resources/js/pages/Defective.vue"
+  },
+  "resources/js/pages/InvalidCards.vue": {
+    "file": "assets/InvalidCards-577f930c.js",
+    "imports": [
+      "resources/js/app.js",
+      "_QSpace-767f85f1.js",
+      "_QTable-9f10ca35.js",
+      "_QPagination-9c29fd07.js",
+      "_QSelect-fcdeceb1.js",
+      "_QChip-18101fab.js",
+      "_position-engine-f936ecea.js"
+    ],
+    "isDynamicEntry": true,
+    "src": "resources/js/pages/InvalidCards.vue"
+  },
+  "resources/js/pages/Order2/Confirmed.vue": {
+    "file": "assets/Confirmed-1d529b82.js",
+    "imports": [
+      "resources/js/app.js",
+      "_QTable-9f10ca35.js",
+      "_QSlideTransition-5ec42607.js",
+      "_QSelect-fcdeceb1.js",
+      "_html2pdf-792bb947.js",
+      "_QChip-18101fab.js",
+      "_position-engine-f936ecea.js"
+    ],
+    "isDynamicEntry": true,
+    "src": "resources/js/pages/Order2/Confirmed.vue"
+  },
+  "resources/js/pages/Order2/Index.vue": {
+    "file": "assets/Index-bafeac56.js",
+    "imports": [
+      "_QSelect-fcdeceb1.js",
+      "resources/js/app.js",
+      "_QSpace-767f85f1.js",
+      "_QTable-9f10ca35.js",
+      "_QPagination-9c29fd07.js",
+      "_QChip-18101fab.js",
+      "_position-engine-f936ecea.js"
+    ],
+    "isDynamicEntry": true,
+    "src": "resources/js/pages/Order2/Index.vue"
+  },
+  "resources/js/pages/Order2/Manage.vue": {
+    "file": "assets/Manage-f703101f.js",
+    "imports": [
+      "_QSelect-fcdeceb1.js",
+      "resources/js/app.js",
+      "_QPage-18703bb0.js",
+      "_QChip-18101fab.js",
+      "_position-engine-f936ecea.js"
+    ],
+    "isDynamicEntry": true,
+    "src": "resources/js/pages/Order2/Manage.vue"
+  },
+  "resources/js/pages/Order2/PackedIndex.vue": {
+    "file": "assets/PackedIndex-a441afd9.js",
+    "imports": [
+      "_QSelect-fcdeceb1.js",
+      "resources/js/app.js",
+      "_QSpace-767f85f1.js",
+      "_QTable-9f10ca35.js",
+      "_QPagination-9c29fd07.js",
+      "_InfoDialong-683d1c5a.js",
+      "_QChip-18101fab.js",
+      "_position-engine-f936ecea.js",
+      "_use-dialog-plugin-component-00e1baf8.js",
+      "__plugin-vue_export-helper-c27b6911.js"
+    ],
+    "isDynamicEntry": true,
+    "src": "resources/js/pages/Order2/PackedIndex.vue"
+  },
+  "resources/js/pages/Order2/PackedShow.vue": {
+    "file": "assets/PackedShow-06a321d5.js",
+    "imports": [
+      "resources/js/app.js",
+      "_QTable-9f10ca35.js",
+      "_QSlideTransition-5ec42607.js",
+      "_QFile-eeadd18b.js",
+      "_html2pdf-792bb947.js",
+      "_ImageCarouselDialog-dda6426c.js",
+      "_ImageDialog-5fc91dda.js",
+      "_QSelect-fcdeceb1.js",
+      "_QChip-18101fab.js",
+      "_position-engine-f936ecea.js",
+      "_QTooltip-3ff6951b.js",
+      "_QImg-4607bda3.js",
+      "_use-render-cache-f6c711e0.js",
+      "_ClosePopup-9fac0edc.js",
+      "_use-dialog-plugin-component-00e1baf8.js"
+    ],
+    "isDynamicEntry": true,
+    "src": "resources/js/pages/Order2/PackedShow.vue"
+  },
+  "resources/js/pages/Order2/ShowOzon.vue": {
+    "file": "assets/ShowOzon-fddd5d4b.js",
+    "imports": [
+      "resources/js/app.js",
+      "_QTable-9f10ca35.js",
+      "_QSlideTransition-5ec42607.js",
+      "_QFile-eeadd18b.js",
+      "_ImageDialog-5fc91dda.js",
+      "_ImageCarouselDialog-dda6426c.js",
+      "_QSelect-fcdeceb1.js",
+      "_QChip-18101fab.js",
+      "_position-engine-f936ecea.js",
+      "_QTooltip-3ff6951b.js",
+      "_QImg-4607bda3.js",
+      "_ClosePopup-9fac0edc.js",
+      "_use-dialog-plugin-component-00e1baf8.js",
+      "_use-render-cache-f6c711e0.js"
+    ],
+    "isDynamicEntry": true,
+    "src": "resources/js/pages/Order2/ShowOzon.vue"
+  },
+  "resources/js/pages/Order2/ShowWb.vue": {
+    "file": "assets/ShowWb-3f06faa0.js",
+    "imports": [
+      "resources/js/app.js",
+      "_QTable-9f10ca35.js",
+      "_QSlideTransition-5ec42607.js",
+      "_QFile-eeadd18b.js",
+      "_ImageDialog-5fc91dda.js",
+      "_ImageCarouselDialog-dda6426c.js",
+      "_QSelect-fcdeceb1.js",
+      "_QChip-18101fab.js",
+      "_position-engine-f936ecea.js",
+      "_QTooltip-3ff6951b.js",
+      "_QImg-4607bda3.js",
+      "_ClosePopup-9fac0edc.js",
+      "_use-dialog-plugin-component-00e1baf8.js",
+      "_use-render-cache-f6c711e0.js"
+    ],
+    "isDynamicEntry": true,
+    "src": "resources/js/pages/Order2/ShowWb.vue"
+  },
+  "resources/js/pages/Ozon/CreateOzonProduct.vue": {
+    "file": "assets/CreateOzonProduct-c8226c5e.js",
+    "imports": [
+      "resources/js/app.js",
+      "_QImg-4607bda3.js",
+      "_QSelect-fcdeceb1.js",
+      "_QTooltip-3ff6951b.js",
+      "_QChip-18101fab.js",
+      "_position-engine-f936ecea.js"
+    ],
+    "isDynamicEntry": true,
+    "src": "resources/js/pages/Ozon/CreateOzonProduct.vue"
+  },
+  "resources/js/pages/Ozon/GroupOzonProductUpdate.vue": {
+    "file": "assets/GroupOzonProductUpdate-cecfed1c.js",
+    "imports": [
+      "_QSelect-fcdeceb1.js",
+      "resources/js/app.js",
+      "_QTooltip-3ff6951b.js",
+      "_QChip-18101fab.js",
+      "_position-engine-f936ecea.js"
+    ],
+    "isDynamicEntry": true,
+    "src": "resources/js/pages/Ozon/GroupOzonProductUpdate.vue"
+  },
+  "resources/js/pages/Ozon/OzonProps.css": {
+    "file": "assets/OzonProps-3b144637.css",
+    "src": "resources/js/pages/Ozon/OzonProps.css"
+  },
+  "resources/js/pages/Ozon/OzonProps.vue": {
+    "css": [
+      "assets/OzonProps-3b144637.css"
+    ],
+    "file": "assets/OzonProps-d1809b30.js",
+    "imports": [
+      "_QTooltip-3ff6951b.js",
+      "resources/js/app.js",
+      "_QSpace-767f85f1.js",
+      "_QImg-4607bda3.js",
+      "_QSelect-fcdeceb1.js",
+      "_QBtnDropdown-c8281bd3.js",
+      "_QTable-9f10ca35.js",
+      "_QPagination-9c29fd07.js",
+      "_ClosePopup-9fac0edc.js",
+      "_ImageDialog-5fc91dda.js",
+      "_QForm-db958e76.js",
+      "_use-dialog-plugin-component-00e1baf8.js",
+      "__plugin-vue_export-helper-c27b6911.js",
+      "_position-engine-f936ecea.js",
+      "_QChip-18101fab.js"
+    ],
+    "isDynamicEntry": true,
+    "src": "resources/js/pages/Ozon/OzonProps.vue"
+  },
+  "resources/js/pages/Ozon/ShowOzonProduct.vue": {
+    "file": "assets/ShowOzonProduct-0516f3e2.js",
+    "imports": [
+      "resources/js/app.js",
+      "_QSelect-fcdeceb1.js",
+      "_QTooltip-3ff6951b.js",
+      "_QChip-18101fab.js",
+      "_position-engine-f936ecea.js"
+    ],
+    "isDynamicEntry": true,
+    "src": "resources/js/pages/Ozon/ShowOzonProduct.vue"
+  },
+  "resources/js/pages/Props.css": {
+    "file": "assets/Props-33d181cf.css",
+    "src": "resources/js/pages/Props.css"
+  },
+  "resources/js/pages/Props.vue": {
+    "css": [
+      "assets/Props-33d181cf.css"
+    ],
+    "file": "assets/Props-1b3267c4.js",
+    "imports": [
+      "resources/js/app.js",
+      "_QSelect-fcdeceb1.js",
+      "_QSpace-767f85f1.js",
+      "_QBtnDropdown-c8281bd3.js",
+      "_QImg-4607bda3.js",
+      "_QTooltip-3ff6951b.js",
+      "_QExpansionItem-3bf5a263.js",
+      "_QTable-9f10ca35.js",
+      "_QPagination-9c29fd07.js",
+      "_ClosePopup-9fac0edc.js",
+      "_DefectivePropDialog-af9feb44.js",
+      "_QForm-db958e76.js",
+      "_use-dialog-plugin-component-00e1baf8.js",
+      "__plugin-vue_export-helper-c27b6911.js",
+      "_ImageDialog-5fc91dda.js",
+      "_QChip-18101fab.js",
+      "_position-engine-f936ecea.js",
+      "_QSlideTransition-5ec42607.js"
+    ],
+    "isDynamicEntry": true,
+    "src": "resources/js/pages/Props.vue"
+  },
+  "resources/js/pages/Reserve/Index.vue": {
+    "file": "assets/Index-3b41899f.js",
+    "imports": [
+      "_QSelect-fcdeceb1.js",
+      "resources/js/app.js",
+      "_QSpace-767f85f1.js",
+      "_QTable-9f10ca35.js",
+      "_QPagination-9c29fd07.js",
+      "_QChip-18101fab.js",
+      "_position-engine-f936ecea.js"
+    ],
+    "isDynamicEntry": true,
+    "src": "resources/js/pages/Reserve/Index.vue"
+  },
+  "resources/js/pages/Reserve/Show.css": {
+    "file": "assets/Show-bc7667aa.css",
+    "src": "resources/js/pages/Reserve/Show.css"
+  },
+  "resources/js/pages/Reserve/Show.vue": {
+    "css": [
+      "assets/Show-bc7667aa.css"
+    ],
+    "file": "assets/Show-02faf52f.js",
+    "imports": [
+      "_QTable-9f10ca35.js",
+      "resources/js/app.js",
+      "_QSpace-767f85f1.js",
+      "_QForm-db958e76.js",
+      "_ClosePopup-9fac0edc.js",
+      "_use-dialog-plugin-component-00e1baf8.js",
+      "__plugin-vue_export-helper-c27b6911.js",
+      "_QSelect-fcdeceb1.js",
+      "_QChip-18101fab.js",
+      "_position-engine-f936ecea.js"
+    ],
+    "isDynamicEntry": true,
+    "src": "resources/js/pages/Reserve/Show.vue"
+  },
+  "resources/js/pages/SalesByMarketplaces.vue": {
+    "file": "assets/SalesByMarketplaces-6a8a8762.js",
+    "imports": [
+      "resources/js/app.js",
+      "_QPage-18703bb0.js"
+    ],
+    "isDynamicEntry": true,
+    "src": "resources/js/pages/SalesByMarketplaces.vue"
+  },
+  "resources/js/pages/ShowProduct.vue": {
+    "file": "assets/ShowProduct-dbb5d981.js",
+    "imports": [
+      "resources/js/app.js",
+      "_QTooltip-3ff6951b.js",
+      "_QTable-9f10ca35.js",
+      "_QExpansionItem-3bf5a263.js",
+      "_QFile-eeadd18b.js",
+      "_QImg-4607bda3.js",
+      "_DefectivePropDialog-af9feb44.js",
+      "_ClosePopup-9fac0edc.js",
+      "_use-dialog-plugin-component-00e1baf8.js",
+      "_position-engine-f936ecea.js",
+      "_QSelect-fcdeceb1.js",
+      "_QChip-18101fab.js",
+      "_QSlideTransition-5ec42607.js",
+      "_QSpace-767f85f1.js",
+      "_QForm-db958e76.js",
+      "__plugin-vue_export-helper-c27b6911.js"
+    ],
+    "isDynamicEntry": true,
+    "src": "resources/js/pages/ShowProduct.vue"
+  },
+  "resources/js/pages/Supply/CourierShow.vue": {
+    "file": "assets/CourierShow-363a2ca8.js",
+    "imports": [
+      "resources/js/app.js",
+      "_QFile-eeadd18b.js",
+      "_QChip-18101fab.js"
+    ],
+    "isDynamicEntry": true,
+    "src": "resources/js/pages/Supply/CourierShow.vue"
+  },
+  "resources/js/pages/Supply/SuppliesIndex.css": {
+    "file": "assets/SuppliesIndex-d4bf924c.css",
+    "src": "resources/js/pages/Supply/SuppliesIndex.css"
+  },
+  "resources/js/pages/Supply/SuppliesIndex.vue": {
+    "css": [
+      "assets/SuppliesIndex-d4bf924c.css"
+    ],
+    "file": "assets/SuppliesIndex-6f8964c1.js",
+    "imports": [
+      "resources/js/app.js",
+      "_QSpace-767f85f1.js",
+      "_QTooltip-3ff6951b.js",
+      "_QExpansionItem-3bf5a263.js",
+      "_QTable-9f10ca35.js",
+      "_QPagination-9c29fd07.js",
+      "_QForm-db958e76.js",
+      "_ClosePopup-9fac0edc.js",
+      "_use-dialog-plugin-component-00e1baf8.js",
+      "__plugin-vue_export-helper-c27b6911.js",
+      "_html2pdf-792bb947.js",
+      "_InfoDialong-683d1c5a.js",
+      "_position-engine-f936ecea.js",
+      "_QSelect-fcdeceb1.js",
+      "_QChip-18101fab.js",
+      "_QSlideTransition-5ec42607.js"
+    ],
+    "isDynamicEntry": true,
+    "src": "resources/js/pages/Supply/SuppliesIndex.vue"
+  },
+  "resources/js/pages/WB/CreateWBProduct.vue": {
+    "file": "assets/CreateWBProduct-096017ff.js",
+    "imports": [
+      "resources/js/app.js",
+      "_QImg-4607bda3.js",
+      "_QSelect-fcdeceb1.js",
+      "_QChip-18101fab.js",
+      "_position-engine-f936ecea.js"
+    ],
+    "isDynamicEntry": true,
+    "src": "resources/js/pages/WB/CreateWBProduct.vue"
+  },
+  "resources/js/pages/WorkerScore/Index.vue": {
+    "file": "assets/Index-b8591aee.js",
+    "imports": [
+      "_QSelect-fcdeceb1.js",
+      "resources/js/app.js",
+      "_use-render-cache-f6c711e0.js",
+      "_position-engine-f936ecea.js",
+      "_QSpace-767f85f1.js",
+      "_QTable-9f10ca35.js",
+      "_QPagination-9c29fd07.js",
+      "_ClosePopup-9fac0edc.js",
+      "_QChip-18101fab.js"
+    ],
+    "isDynamicEntry": true,
+    "src": "resources/js/pages/WorkerScore/Index.vue"
+  }
+}
