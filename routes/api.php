@@ -3,6 +3,6 @@
 
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return response()->json(['message' => 'Hello World!']);
+Route::group(['prefix' => 'operations'], function (){
+    Route::get('/', [\App\Http\Controllers\Api\OperationController::class, 'index']);
 });
