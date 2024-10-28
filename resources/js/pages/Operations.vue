@@ -6,6 +6,7 @@ const route = useRoute()
 const operations  = ref([])
 const categories = ref([])
 const types = ref([])
+const total = ref(0)
 
 const pagination = ref({
   page: 3,
@@ -28,6 +29,7 @@ const refresh = async (p) => {
     operations.value = response.data.operations
     categories.value = response.data.categories
     types.value = response.data.types
+    total.value = response.data.total
   }catch (e) {
     console.log(e)
   }
@@ -89,8 +91,10 @@ onMounted(() => {
       <div class="row justify-end q-mt-md">
         <q-btn class="text-right" type="submit" label="Apply Filters" color="primary" />
       </div>
+      <div class="text-red text-h6">
+        Total sum: {{total}}
+      </div>
     </q-form>
-
     <q-table
         v-if="operations.length"
         class="q-mt-md q-px-sm"
