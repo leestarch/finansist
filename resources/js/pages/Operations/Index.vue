@@ -1,6 +1,7 @@
 <script setup>
 import {onMounted, ref} from "vue";
 import {useRoute} from "vue-router";
+import {Notify} from "quasar";
 const route = useRoute()
 
 const operations  = ref([])
@@ -23,7 +24,6 @@ const filters = ref({
 
 
 const refresh = async (p) => {
-  console.log(p)
   try{
     const response = await axios.get('/api/operations/', {params: {...filters.value}})
     operations.value = response.data.operations
@@ -31,7 +31,11 @@ const refresh = async (p) => {
     types.value = response.data.types
     total.value = response.data.total
   }catch (e) {
-    console.log(e)
+    Notify.create({
+      message:'Ошибка получения данных',
+      color:'red',
+      timeout: 2000
+    })
   }
 }
 
@@ -55,7 +59,7 @@ const applyFilters = () => {
 };
 
 onMounted(() => {
-  if (route.name == 'Operations')
+  if (route.name == 'OperationIndex')
     refresh()
 })
 </script>
@@ -91,11 +95,23 @@ onMounted(() => {
             option-label="name"
         />
       </div>
-      <div class="row justify-end q-mt-md">
+      <div class="row q-mt-md">
         <q-btn class="text-right" dense size="sm" type="submit" label="Применить фильтры" color="primary" />
       </div>
-      <div class="text-red text-h6">
-        Общая сумма: {{total}}
+      <div class="row justify-between items-center q-mt-md">
+        <div class="text-red text-h6">
+          Общая сумма: {{total}}
+        </div>
+        <div>
+          <q-btn
+              to="/operations/create"
+              class="text-right"
+              dense
+              size="sm"
+              label="Создать операцию"
+              color="primary"
+          />
+        </div>
       </div>
     </q-form>
     <q-table

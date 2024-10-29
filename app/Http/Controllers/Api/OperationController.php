@@ -3,8 +3,11 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Operation\OperationCreateRequest;
 use App\Http\Resources\OperationResource;
+use App\Models\Category;
 use App\Models\Operation;
+use App\Models\Type;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -40,9 +43,35 @@ class OperationController extends Controller
         $operations = $operationsQuery->paginate($request->input('paginate', 50))->withQueryString();
         return response()->json([
             'operations' => OperationResource::collection($operations),
-            'types' => \App\Models\Type::query()->select(['id', 'name'])->get()->toArray(),
-            'categories' => \App\Models\Category::query()->select(['id', 'name'])->get()->toArray(),
+            'types' => Type::query()->select(['id', 'name'])->get()->toArray(),
+            'categories' => Category::query()->select(['id', 'name'])->get()->toArray(),
             'total' => $total,
+        ]);
+    }
+
+    public function create(): JsonResponse
+    {
+        $categories = Category::query()->select(['id', 'name'])->get();
+        $types = Type::query()->select(['id', 'name'])->get();
+        return response()->json([
+            'categories' => $categories,
+            'types' => $types,
+        ]);
+    }
+
+    public function store(OperationCreateRequest $request)
+    {
+        $data = $request->validated();
+        $operation = Operation::query()->create([
+            'amount' => $data['amount'],
+            'description' => $data['description'],
+            'is_completed' => $data['is_completed'],
+            'date' => $data['date'],
+        ]);
+        $operation->categories()->attach($data['category']['id']);
+        $operation->types()->attach($data['type']['id']);
+        return response()->json([
+            'success' => true,
         ]);
     }
 }
