@@ -36,11 +36,12 @@ const refresh = async (p) => {
 }
 
 const columns = [
-  { name: 'amount', label: 'Amount', field: 'amount', align:'left'},
-  { name: 'date', label: 'Date', field: 'date', align:'left'},
-  { name: 'description', label: 'Description', field: 'description', align:'left'},
-  { name: 'categories', label: 'Categories', field: 'categories', align:'left'},
-  { name: 'types', label: 'Types', field: 'types', align:'left'},
+  { name: 'amount', label: 'Сумма', field: 'amount', align:'left'},
+  { name: 'date', label: 'Дата', field: 'date', align:'left'},
+  { name: 'description', label: 'Описание', field: 'description', align:'left'},
+  { name: 'categories', label: 'Категория', field: 'categories', align:'left'},
+  { name: 'types', label: 'Тип', field: 'types', align:'left'},
+  { name: 'is_completed', label: 'Статус', field: 'is_completed', align:'left'},
 ];
 
 const updatePagination = (newPagination) => {
@@ -62,8 +63,8 @@ onMounted(() => {
   <q-page v-if="operations">
     <q-form @submit.prevent="applyFilters" class="items-center q-pa-md bg-grey-4">
       <div class="row justify-between">
-        <q-input class="col-2" dense outlined filled v-model="filters.dateFrom" label="Date From" type="date" />
-        <q-input class="col-2" dense outlined filled v-model="filters.dateTo" label="Date To" type="date" />
+        <q-input class="col-2" dense outlined filled v-model="filters.dateFrom" label="Дата начала" type="date" />
+        <q-input class="col-2" dense outlined filled v-model="filters.dateTo" label="Дата окончания" type="date" />
         <q-select
             class="col-3"
             dense
@@ -71,7 +72,7 @@ onMounted(() => {
             filled
             v-model="filters.type"
             :options="types"
-            label="Filter by Type"
+            label="Фильтр по типам"
             option-value="id"
             option-label="name"
 
@@ -83,16 +84,16 @@ onMounted(() => {
             filled
             v-model="filters.category"
             :options="categories"
-            label="Filter by Category"
+            label="Фильтр по категориям"
             option-value="id"
             option-label="name"
         />
       </div>
       <div class="row justify-end q-mt-md">
-        <q-btn class="text-right" type="submit" label="Apply Filters" color="primary" />
+        <q-btn class="text-right" dense size="sm" type="submit" label="Применить фильтры" color="primary" />
       </div>
       <div class="text-red text-h6">
-        Total sum: {{total}}
+        Общая сумма: {{total}}
       </div>
     </q-form>
     <q-table
