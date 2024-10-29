@@ -15,7 +15,7 @@ class OperationSeeder extends Seeder
     {
         for ($i = 1; $i <= 1500; $i++) {
             $operation = Operation::query()->create([
-                'amount' => fake()->numberBetween(100, 4000),
+                'amount' => fake()->numberBetween(-4000, 4000),
                 'description' => fake()->sentence(),
                 'is_completed' => fake()->boolean(),
                 'date' => fake()->dateTimeBetween(now()->subYears(), now()),

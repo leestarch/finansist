@@ -36,12 +36,12 @@ const refresh = async (p) => {
 }
 
 const columns = [
-  { name: 'amount', label: 'Сумма', field: 'amount', align:'left'},
-  { name: 'date', label: 'Дата', field: 'date', align:'left'},
-  { name: 'description', label: 'Описание', field: 'description', align:'left'},
   { name: 'categories', label: 'Категория', field: 'categories', align:'left'},
+  { name: 'description', label: 'Описание', field: 'description', align:'left'},
   { name: 'types', label: 'Тип', field: 'types', align:'left'},
   { name: 'is_completed', label: 'Статус', field: 'is_completed', align:'left'},
+  { name: 'date', label: 'Дата', field: 'date', align:'left'},
+  { name: 'amount', label: 'Сумма', field: 'amount', align:'left'},
 ];
 
 const updatePagination = (newPagination) => {
@@ -63,11 +63,12 @@ onMounted(() => {
   <q-page v-if="operations">
     <q-form @submit.prevent="applyFilters" class="items-center q-pa-md bg-grey-4">
       <div class="row justify-between">
-        <q-input class="col-2" dense outlined filled v-model="filters.dateFrom" label="Дата начала" type="date" />
-        <q-input class="col-2" dense outlined filled v-model="filters.dateTo" label="Дата окончания" type="date" />
+        <q-input class="col-2" clearable dense outlined filled v-model="filters.dateFrom" label="Дата начала" type="date" />
+        <q-input class="col-2" dense clearable outlined filled v-model="filters.dateTo" label="Дата окончания" type="date" />
         <q-select
             class="col-3"
             dense
+            clearable
             outlined
             filled
             v-model="filters.type"
@@ -80,6 +81,7 @@ onMounted(() => {
         <q-select
             class="col-3"
             dense
+            clearable
             outlined
             filled
             v-model="filters.category"
@@ -105,7 +107,30 @@ onMounted(() => {
         :rows-per-page-options="[5, 10, 25, 50, 100]"
         row-key="id"
         @update:pagination="updatePagination"
-    />
+    >
+      <template v-slot:body-cell="item">
+        <q-td
+            :class="item.row.is_wrong?'bg-red-2':(item.row.is_validated?'bg-green-2':'')"
+            :item="item"
+        >
+          <template v-if="item.col.name=='description'"> {{item.row.description}} </template>
+
+          <template v-if="item.col.name=='types'"> {{item.row.types}} </template>
+
+          <template v-if="item.col.name=='date'"> {{item.row.date}} </template>
+
+          <template v-if="item.col.name=='amount'"> {{item.row.amount}} </template>
+
+          <template v-if="item.col.name=='categories'">
+            {{item.row.categories}}
+          </template>
+          <template v-if="item.col.name=='is_completed'">
+            {{item.row.is_completed?'Выполнено':'Не выполнено'}}
+          </template>
+        </q-td>
+      </template>
+
+    </q-table>
   </q-page>
 </template>
 

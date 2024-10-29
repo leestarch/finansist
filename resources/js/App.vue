@@ -21,33 +21,30 @@ onMounted(async () => {
       <q-header elevated class="bg-primary text-white">
           <q-toolbar>
               <q-btn  flat @click="drawer = !drawer" round dense icon="menu" />
-              <q-toolbar-title>Finansist</q-toolbar-title>
+              <q-toolbar-title>
+                <q-btn flat text-color="white" color="grey-8" :to="{name: 'Operations'}">Finansist</q-btn>
+              </q-toolbar-title>
           </q-toolbar>
       </q-header>
-<!--      <q-drawer-->
-<!--          v-model="drawer"-->
-<!--          show-if-above-->
-<!--          :width="200"-->
-<!--          :breakpoint="500"-->
-<!--          bordered-->
-<!--          overlay-->
-<!--          class="bg-grey-2 "-->
-<!--      >-->
-<!--          <q-scroll-area class="fit">-->
-<!--              <q-list padding class="menu-list">-->
-<!--                  <q-item  v-ripple>-->
-<!--                      <q-item-section>-->
-<!--                          <q-btn flat color="grey-8" :to="{name: 'Welcome'}">Home </q-btn>-->
-<!--                      </q-item-section>-->
-<!--                  </q-item>-->
-<!--                  <q-item  v-ripple>-->
-<!--                      <q-item-section>-->
-<!--                          <q-btn flat color="grey-8" :to="{name: 'Welcome2'}">Home2</q-btn>-->
-<!--                      </q-item-section>-->
-<!--                  </q-item>-->
-<!--              </q-list>-->
-<!--          </q-scroll-area>-->
-<!--      </q-drawer>-->
+      <q-drawer
+          v-model="drawer"
+          show-if-above
+          :width="200"
+          :breakpoint="500"
+          bordered
+          overlay
+          class="bg-grey-2 "
+      >
+          <q-scroll-area class="fit">
+              <q-list padding class="menu-list">
+                  <q-item  v-ripple>
+                      <q-item-section>
+                          <q-btn flat color="grey-8" :to="{name: 'Categories'}">Категории</q-btn>
+                      </q-item-section>
+                  </q-item>
+              </q-list>
+          </q-scroll-area>
+      </q-drawer>
 
     <q-page-container>
       <router-view/>

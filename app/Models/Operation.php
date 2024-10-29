@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Carbon;
 
 class Operation extends Model
 {
@@ -22,5 +23,15 @@ class Operation extends Model
     public function types(): BelongsToMany
     {
         return $this->belongsToMany(Type::class, 'operations_types');
+    }
+
+    public function getAmountAttribute($value): string
+    {
+        return is_numeric($value) ? number_format($value, 2, '.', ' ') : $value;
+    }
+
+    public function getDateAttribute($value): string
+    {
+        return Carbon::parse($value)->format('d-m-Y');
     }
 }

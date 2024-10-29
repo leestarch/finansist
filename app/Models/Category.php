@@ -14,6 +14,10 @@ class Category extends Model
     use HasFactory;
     protected $guarded = ['id'];
 
+    protected $casts = [
+      'columns' => 'float',
+    ];
+
     public function parent(): BelongsTo
     {
         return $this->belongsTo(Category::class, 'parent_id');
@@ -25,20 +29,31 @@ class Category extends Model
     }
     public function operations(): BelongsToMany
     {
-        return $this->belongsToMany(Operation::class);
+        return $this->belongsToMany(Operation::class, 'categories_operations');
     }
-    public static function getCategoryTree(): array
+    public static function getCategoryTree(bool $withSum = false): array
     {
-        $categories = Category::with('children')->whereNull('parent_id')->get();
+        $query = Category::with('children')->whereNull('parent_id');
 
-        return self::buildTree($categories);
+        if ($withSum) {
+            $query->withSum('operations', 'amount');
+        }
+
+        $categories = $query->get();
+
+        return self::buildTree($categories, $withSum);
     }
 
-    private static function buildTree(Collection $categories): array
+    private static function buildTree(Collection $categories, bool $withSum = false): array
     {
         foreach ($categories as $category) {
+            if ($withSum) {
+                $category->total_amount = $category->operations_sum_amount ?? 0;
+                unset($category->operations_sum_amount);
+            }
+
             if ($category->children->isNotEmpty()) {
-                $category->children = self::buildTree($category->children);
+                $category->children = self::buildTree($category->children, $withSum);
             }
         }
 
