@@ -28,10 +28,10 @@ class Operation extends Model
         return $this->belongsToMany(Type::class, 'operations_types');
     }
 
-    public function getAmountAttribute($value): string
-    {
-        return is_numeric($value) ? number_format($value, 2, '.', ' ') : $value;
-    }
+//    public function getAmountAttribute($value): string
+//    {
+//        return is_numeric($value) ? number_format($value, 2, '.', ' ') : $value;
+//    }
 
     public function getDateAttribute($value): string
     {

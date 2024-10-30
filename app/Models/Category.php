@@ -31,30 +31,40 @@ class Category extends Model
     {
         return $this->belongsToMany(Operation::class, 'categories_operations');
     }
-    public static function getCategoryTree(bool $withSum = false): array
+    public static function getCategoryTree(bool $withSum = false, ?string $startDate = null, ?string $endDate = null): array
     {
-        $query = Category::with('children')->whereNull('parent_id');
-
+        $query = Category::with('children');
         if ($withSum) {
-            $query->withSum('operations', 'amount');
+            $query->with(['operations' => function ($q) use ($startDate, $endDate) {
+                if ($startDate) {
+                    $q->whereDate('date', '>=', $startDate);
+                }
+                if ($endDate) {
+                    $q->whereDate('date', '<=', $endDate);
+                }
+            }]);
         }
 
-        $categories = $query->get();
-
+        $categories = $query->whereNull('parent_id')->get();
         return self::buildTree($categories, $withSum);
     }
 
     private static function buildTree(Collection $categories, bool $withSum = false): array
     {
         foreach ($categories as $category) {
-            if ($withSum) {
-                $category->total_amount = $category->operations_sum_amount ?? 0;
-                unset($category->operations_sum_amount);
-            }
+            $categoryTotal = $withSum ? $category->operations->sum(function ($operation) {
+                return is_numeric($operation->amount) ? $operation->amount : 0;
+            }) : 0;
 
             if ($category->children->isNotEmpty()) {
-                $category->children = self::buildTree($category->children, $withSum);
+                $category->children = collect(self::buildTree($category->children, $withSum));
+
+                foreach ($category->children as $child) {
+                    $categoryTotal += $child['total_amount'] ?? 0;
+                }
             }
+
+            $category->total_amount = $withSum ? $categoryTotal : null;
         }
 
         return $categories->toArray();

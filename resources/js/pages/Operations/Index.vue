@@ -67,6 +67,7 @@ const formatNumber = (value) => {
     maximumFractionDigits: 2,
   }).format(value)
 }
+
 const formattedIncome = computed(() => formatNumber(totalIncome.value))
 const formattedExpense = computed(() => formatNumber(totalExpense.value))
 const formattedDifference = computed(() => formatNumber(totalIncome.value - Math.abs(totalExpense.value)))
@@ -157,7 +158,9 @@ onMounted(() => {
 
           <template v-if="item.col.name=='date'"> {{item.row.date}} </template>
 
-          <template v-if="item.col.name=='amount'"> {{item.row.amount}} </template>
+          <template v-if="item.col.name === 'amount'">
+            {{ formatNumber(item.row.amount) }}
+          </template>
 
           <template v-if="item.col.name=='categories'">
             {{item.row.categories}}

@@ -15,20 +15,31 @@ class LoadBudgetCategories extends Command
         $categories = json_decode(file_get_contents(base_path('categories.json')));
 
         foreach ($categories->items as $category) {
-            $parentModel = Category::firstOrCreate([
-                'name' => $category->title,
-            ],[
-                'category_type' => $category->operationCategoryType,
-            ]);
+            $model = Category::updateOrCreate(
+                [
+                    'name' => $category->title,
+                ],
+                [
+                    'category_type' => $category->operationCategoryType,
+                ]
+            );
 
-            foreach ($categories->items as $subCategory) {
-                if ($subCategory->parentOperationCategoryId === $category->operationCategoryId) {
-                    Category::firstOrCreate([
-                        'name' => $subCategory->title,
-                    ], [
-                        'category_type' => $subCategory->operationCategoryType, 'parent_id' => $parentModel->id,
-                    ]);
+            $category->model_id = $model->id;
+        }
+
+        foreach ($categories->items as $category) {
+            if ($category->parentOperationCategoryId) {
+                $parentModelId = null;
+
+                foreach ($categories->items as $item) {
+                    if ($item->operationCategoryId == $category->parentOperationCategoryId) {
+                        $parentModelId = $item->model_id;
+                        break;
+                    }
                 }
+
+                Category::where('id', $category->model_id)
+                    ->update(['parent_id' => $parentModelId]);
             }
         }
     }
