@@ -15,6 +15,9 @@ class Operation extends Model
     protected $guarded = ['id'];
     protected $with = ['categories', 'types'];
 
+    const INCOME = 'income';
+    const EXPENSE = 'expense';
+
     public function categories(): BelongsToMany
     {
         return $this->belongsToMany(Category::class, 'categories_operations');

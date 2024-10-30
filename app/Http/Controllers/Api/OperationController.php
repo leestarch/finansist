@@ -39,13 +39,20 @@ class OperationController extends Controller
             $operationsQuery->whereDate('date', '<=', $dateTo);
         }
 
-        $total = $operationsQuery->clone()->sum('amount');
+        $totalIncome = $operationsQuery->clone()
+            ->where('type', Operation::INCOME)
+            ->sum('amount');
+        $totalExpense = $operationsQuery->clone()
+            ->where('type', Operation::EXPENSE)
+            ->sum('amount');
+
         $operations = $operationsQuery->paginate($request->input('paginate', 50))->withQueryString();
         return response()->json([
             'operations' => OperationResource::collection($operations),
             'types' => Type::query()->select(['id', 'name'])->get()->toArray(),
             'categories' => Category::query()->select(['id', 'name'])->get()->toArray(),
-            'total' => $total,
+            'totalIncome' => $totalIncome,
+            'totalExpense' => $totalExpense,
         ]);
     }
 
@@ -59,7 +66,7 @@ class OperationController extends Controller
         ]);
     }
 
-    public function store(OperationCreateRequest $request)
+    public function store(OperationCreateRequest $request): JsonResponse
     {
         $data = $request->validated();
         $operation = Operation::query()->create([

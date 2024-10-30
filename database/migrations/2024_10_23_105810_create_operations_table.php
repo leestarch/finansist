@@ -13,8 +13,9 @@ return new class extends Migration
     {
         Schema::create('operations', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('amount')->nullable();
+            $table->bigInteger('amount')->nullable();
             $table->text('description')->nullable();
+            $table->string('type')->nullable();
             $table->boolean('is_completed')->default(false);
             $table->date('date')->default(false);
             $table->softDeletes();

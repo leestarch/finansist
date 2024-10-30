@@ -1,5 +1,5 @@
 <script setup>
-import {onMounted, ref} from "vue";
+import {computed, onMounted, ref} from "vue";
 import {useRoute} from "vue-router";
 import {Notify} from "quasar";
 const route = useRoute()
@@ -7,7 +7,8 @@ const route = useRoute()
 const operations  = ref([])
 const categories = ref([])
 const types = ref([])
-const total = ref(0)
+const totalIncome = ref(0)
+const totalExpense = ref(0)
 
 const pagination = ref({
   page: 3,
@@ -29,7 +30,8 @@ const refresh = async (p) => {
     operations.value = response.data.operations
     categories.value = response.data.categories
     types.value = response.data.types
-    total.value = response.data.total
+    totalIncome.value = response.data.totalIncome
+    totalExpense.value = response.data.totalExpense
   }catch (e) {
     Notify.create({
       message:'Ошибка получения данных',
@@ -57,6 +59,18 @@ const applyFilters = () => {
   const sanitizedFilters = JSON.parse(JSON.stringify(filters.value));
   refresh(sanitizedFilters)
 };
+
+const formatNumber = (value) => {
+  return new Intl.NumberFormat('ru-RU', {
+    style: 'decimal',
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(value)
+}
+const formattedIncome = computed(() => formatNumber(totalIncome.value))
+const formattedExpense = computed(() => formatNumber(totalExpense.value))
+const formattedDifference = computed(() => formatNumber(totalIncome.value - Math.abs(totalExpense.value)))
+
 
 onMounted(() => {
   if (route.name == 'OperationIndex')
@@ -99,8 +113,16 @@ onMounted(() => {
         <q-btn class="text-right" dense size="sm" type="submit" label="Применить фильтры" color="primary" />
       </div>
       <div class="row justify-between items-center q-mt-md">
-        <div class="text-red text-h6">
-          Общая сумма: {{total}}
+        <div class="row">
+          <div class="text-h6 text-green">
+            Прибыль: {{formattedIncome}}
+          </div>
+          <div class="text-h6 text-red q-ml-lg">
+            Расход: {{formattedExpense}}
+          </div>
+          <div class="text-h6 text-blue q-ml-lg">
+            Разница: {{formattedDifference}}
+          </div>
         </div>
         <div>
           <q-btn
