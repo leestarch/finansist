@@ -10,6 +10,7 @@ use App\Models\Operation;
 use App\Models\Type;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 
 class OperationController extends Controller
 {
@@ -53,6 +54,54 @@ class OperationController extends Controller
             'categories' => Category::query()->select(['id', 'name'])->get()->toArray(),
             'totalIncome' => $totalIncome,
             'totalExpense' => $totalExpense,
+        ]);
+    }
+
+    public function summary(Request $request)
+    {
+        $dateFrom = $request->input('dateFrom') ?: Carbon::now()->startOfMonth()->toDateString();
+        $dateTo = $request->input('dateTo') ?: Carbon::now()->endOfMonth()->toDateString();
+
+        $categoryFilter = $request->input('category');
+
+        $query = Operation::query()
+            ->with('categories')
+            ->selectRaw('categories.name as category, DATE(date) as date, SUM(amount) as daily_total')
+            ->join('categories_operations', 'operations.id', '=', 'categories_operations.operation_id')
+            ->join('categories', 'categories_operations.category_id', '=', 'categories.id')
+            ->whereDate('date', '>=', $dateFrom)
+            ->whereDate('date', '<=', $dateTo);
+
+        // Filter by category if provided
+        if ($categoryFilter) {
+            $query->where('categories.name', $categoryFilter['name']);
+        }
+
+        $query->groupBy('categories.name', 'date')
+            ->orderBy('categories.name')
+            ->orderBy('date');
+
+        $dailySummaries = $query->get();
+
+        $formattedData = [];
+        foreach ($dailySummaries as $record) {
+            $category = $record->category;
+            $date = $record->date;
+            $amount = $record->daily_total;
+
+            if (!isset($formattedData[$category])) {
+                $formattedData[$category] = ['category' => $category, 'total' => 0];
+            }
+            $formattedData[$category][$date] = $amount;
+            $formattedData[$category]['total'] += $amount;
+        }
+
+        $result = array_values($formattedData);
+
+        return response()->json([
+            'data' => $result,
+            'types' => Type::query()->select(['id', 'name'])->get(),
+            'categories' => Category::query()->select(['id', 'name'])->get(),
         ]);
     }
 

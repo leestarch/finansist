@@ -10,6 +10,11 @@ export default [
         name:'OperationCreate',
     },
     {
+        path:'/operations/summary',
+        component:() => import('@/pages/Operations/IndexSummary.vue'),
+        name:'IndexSummary',
+    },
+    {
         path:'/categories',
         component:() => import('@/pages/Categories.vue'),
         name:'Categories',

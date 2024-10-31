@@ -19,7 +19,7 @@ class OperationSeeder extends Seeder
                 'amount' => $amount,
                 'description' => fake()->sentence(),
                 'is_completed' => fake()->boolean(),
-                'date' => fake()->dateTimeBetween(now()->subYears(), now()),
+                'date' => fake()->dateTimeBetween(now()->startOfMonth(), now()),
                 'type' => $amount > 0 ? Operation::INCOME : Operation::EXPENSE,
             ]);
             $operation->types()->attach(\App\Models\Type::query()->inRandomOrder()->first());
