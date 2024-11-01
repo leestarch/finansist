@@ -64,7 +64,7 @@ const columns = computed(() => {
   const endDate = new Date(filters.value.dateTo);
 
   while (startDate <= endDate) {
-    const formattedDate = startDate.toISOString().split("T")[0];
+    const formattedDate = startDate.toLocaleDateString("en-GB").replace(/\//g, "-");
     dateColumns.push({ name: formattedDate, label: formattedDate, field: formattedDate });
     startDate.setDate(startDate.getDate() + 1);
   }
@@ -116,31 +116,42 @@ const columns = computed(() => {
         :rows="operations"
         :columns="columns"
         row-key="category"
+        :rows-per-page-options="[0]"
     >
       <template v-slot:body-cell="props">
         <q-td
-            :class="{
-        'bg-red-2': props.row.is_wrong,
-        'bg-green-2': props.row.is_validated
-      }"
             :props="props"
         >
-          <template v-if="props.col.field === 'category'">
-            {{ props.row.category }}
+          <template class='' v-if="props.col.field === 'category'">
+              {{ props.row.category }}
           </template>
 
           <template v-else-if="props.col.field === 'total'">
-            {{ formatNumber(props.row.total) }}
+            <span
+                :class="{
+                  'text-red': props.row[props.col.field]?.toString().startsWith('-'),
+                  'text-green': parseFloat(props.row[props.col.field]) > 0,
+                  '': parseFloat(props.row[props.col.field]) === 0
+                }"
+            >
+              {{ formatNumber(props.row.total) }}
+            </span>
           </template>
 
-          <!-- For dynamically generated date columns -->
           <template v-else-if="columns.some(col => col.name === props.col.field)">
-            {{ formatNumber(props.row[props.col.field] || 0) }}
+            <span
+                :class="{
+                  'text-red': props.row[props.col.field]?.toString().startsWith('-'),
+                  'text-green': parseFloat(props.row[props.col.field]) > 0,
+                  '': parseFloat(props.row[props.col.field]) === 0
+                }"
+            >
+              {{ formatNumber(props.row[props.col.field] || 0) }}
+            </span>
           </template>
 
-          <!-- Fallback in case the column doesn't match any specific field -->
           <template v-else>
-            {{ props.row[props.col.field] }}
+              {{ props.row[props.col.field] }}
           </template>
         </q-td>
       </template>

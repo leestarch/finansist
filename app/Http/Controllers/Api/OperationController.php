@@ -57,7 +57,7 @@ class OperationController extends Controller
         ]);
     }
 
-    public function summary(Request $request)
+    public function summary(Request $request): JsonResponse
     {
         $dateFrom = $request->input('dateFrom') ?: Carbon::now()->startOfMonth()->toDateString();
         $dateTo = $request->input('dateTo') ?: Carbon::now()->endOfMonth()->toDateString();

@@ -13,13 +13,13 @@ class OperationSeeder extends Seeder
      */
     public function run(): void
     {
-        for ($i = 1; $i <= 1500; $i++) {
-            $amount = fake()->numberBetween(-4000, 4000);
+        for ($i = 1; $i <= 10000; $i++) {
+            $amount = fake()->numberBetween(-10000, 20000);
             $operation = Operation::query()->create([
                 'amount' => $amount,
                 'description' => fake()->sentence(),
                 'is_completed' => fake()->boolean(),
-                'date' => fake()->dateTimeBetween(now()->startOfMonth(), now()),
+                'date' => fake()->dateTimeBetween(now()->startOfMonth(), now()->addMonth()->startOfMonth()),
                 'type' => $amount > 0 ? Operation::INCOME : Operation::EXPENSE,
             ]);
             $operation->types()->attach(\App\Models\Type::query()->inRandomOrder()->first());
