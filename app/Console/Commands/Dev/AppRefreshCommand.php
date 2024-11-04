@@ -16,3 +16,4 @@ class AppRefreshCommand extends Command
         }
     }
 }
+
