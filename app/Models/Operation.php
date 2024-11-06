@@ -15,8 +15,8 @@ class Operation extends Model
     protected $guarded = ['id'];
 //    protected $with = ['categories', 'types'];
 
-    const INCOME = 'income';
-    const EXPENSE = 'expense';
+    const INCOME = 'CREDIT';
+    const EXPENSE = 'DEBIT';
 
     public function categories(): BelongsToMany
     {
