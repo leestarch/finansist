@@ -14,13 +14,16 @@ class OperationSeeder extends Seeder
     public function run(): void
     {
         for ($i = 1; $i <= 100000; $i++) {
-            $amount = fake()->numberBetween(-10000, 20000);
+            $amount = fake()->numberBetween(1, 20000);
             $operation = Operation::query()->create([
-                'amount' => $amount,
-                'description' => fake()->sentence(),
+                'pizzeria_id' => fake()->numberBetween(1,8),
+                'account_number' => fake()->creditCardNumber(),
+                'contractor_id' => fake()->numberBetween(1,900),
+                'sber_amountRub' => $amount,
+                'sber_paymentPurpose' => fake()->sentence(),
                 'is_completed' => fake()->boolean(),
-                'date' => fake()->dateTimeBetween(now()->startOfMonth(), now()->addMonths(2)->startOfMonth()),
-                'type' => $amount > 0 ? Operation::INCOME : Operation::EXPENSE,
+                'date_at' => fake()->dateTimeBetween(now()->startOfMonth(), now()->addMonths(2)->startOfMonth()),
+                'sber_direction' => $amount > 0 ? Operation::INCOME : Operation::EXPENSE,
             ]);
             $operation->types()->attach(\App\Models\Type::query()->inRandomOrder()->first());
             $operation->categories()->attach(\App\Models\Category::query()->inRandomOrder()->first());
