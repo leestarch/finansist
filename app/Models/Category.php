@@ -64,6 +64,7 @@ class Category extends Model
 //                ->whereDate('date', '<=', $endDate)
 //                ->get();
             $query->with([
+                'operations',
                 'children.operations',
                 'children.children.operations',
                 'children.children.children.operations',
