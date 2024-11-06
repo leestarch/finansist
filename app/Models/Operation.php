@@ -13,7 +13,7 @@ class Operation extends Model
     use HasFactory, SoftDeletes;
 
     protected $guarded = ['id'];
-    protected $with = ['categories', 'types'];
+//    protected $with = ['categories', 'types'];
 
     const INCOME = 'income';
     const EXPENSE = 'expense';

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -36,7 +37,7 @@ class Category extends Model
 
     // TODO  для каждого чилдрена посчитать посчитать отношение к корневному родительскому элементу
 
-    public static function getCategoryTree(bool $withSum = false, ?string $startDate = null, ?string $endDate = null): array
+    public static function getCategoryTree(bool $withSum = false, ?string $startDate = null, ?string $endDate = null)//: array
     {
         if (!$startDate) {
             $startDate = now()->startOfMonth()->toDateString();
@@ -45,38 +46,66 @@ class Category extends Model
             $endDate = now()->endOfMonth()->toDateString();
         }
 
-        $query = Category::query()->with(['children']);
+        $query = Category::query()->with([
+            'children',
+            'children.children',
+            'children.children.children',
+            'children.children.children.children',
+            'children.children.children.children.children',
+            'children.children.children.children.children.children'
+        ]);
 
         if ($withSum) {
-            $query->with(['operations' => function ($q) use ($startDate, $endDate) {
-                $q->whereDate('date', '>=', $startDate)
-                    ->whereDate('date', '<=', $endDate)
-                    ->get();
-            }]);
+//            $operations = Operation::query()
+////                ->leftJoin('categories_operations', function ($join) {
+////                    $join->on('categories_operations.operation_id', '=', 'operations.id');
+////                })
+//                ->whereDate('date', '>=', $startDate)
+//                ->whereDate('date', '<=', $endDate)
+//                ->get();
+            $query->with([
+                'children.operations',
+                'children.children.operations',
+                'children.children.children.operations',
+                'children.children.children.children.operations',
+                'children.children.children.children.children.operations',
+                'children.children.children.children.children.children.operations',
+            ]);
         }
+
+
         $categories = $query->get();
 
-        foreach ($categories as $category) {
-            if ($withSum) {
-                $dailyTotals = [];
-                foreach ($category->operations as $operation) {
-                    $date = Carbon::parse($operation->date)->format('d-m-Y');
-                    if (!isset($dailyTotals[$date]))
-                        $dailyTotals[$date] = 0;
-                    $dailyTotals[$date] += $operation->amount;
-                }
-                $category->daily_totals = $dailyTotals;
-            }
+        $result = [];
+
+        foreach ($categories->whereNull('parent_id') as $category) {
+            $category->daily_totals = self::calculateDailyTotals($category->operations, $withSum);
+            $category->children = self::buildTree($category->children, $withSum);
+            $result[] = $category;
         }
 
-        return self::buildTree($categories);
+        return $result;
     }
 
-    private static function buildTree(Collection $categories): array
+    private static function calculateDailyTotals($operations, $withSum): array
+    {
+        $dailyTotals = [];
+        foreach ($operations as $operation) {
+            $date = Carbon::parse($operation->date)->format('d-m-Y');
+            if (!isset($dailyTotals[$date]))
+                $dailyTotals[$date] = 0;
+            $dailyTotals[$date] += $operation->amount;
+        }
+        $daily_totals = $dailyTotals;
+        return $daily_totals;
+    }
+
+    private static function buildTree(Collection $categories, $withSum): array
     {
         foreach ($categories as $category) {
+            $category->daily_totals = self::calculateDailyTotals($category->operations, $withSum);
             if ($category->children->isNotEmpty()) {
-                $childTree = self::buildTree($category->children);
+                $childTree = self::buildTree($category->children, $withSum);
                 $category->children = collect($childTree);
             }
         }
