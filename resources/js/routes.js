@@ -16,7 +16,12 @@ export default [
     },
     {
         path:'/categories',
-        component:() => import('@/pages/Categories.vue'),
-        name:'Categories',
+        component:() => import('@/pages/Categories/IndexDepr.vue'),
+        name:'IndexDepr',
+    },
+    {
+        path:'/categories-tree',
+        component:() => import('@/pages/Categories/IndexTree.vue'),
+        name:'CategoriesTree',
     },
 ]

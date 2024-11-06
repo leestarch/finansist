@@ -37,11 +37,16 @@ onMounted(async () => {
       >
           <q-scroll-area class="fit">
               <q-list padding class="menu-list">
-                  <q-item  v-ripple>
-                      <q-item-section>
-                          <q-btn flat color="grey-8" :to="{name: 'Categories'}">Категории</q-btn>
-                      </q-item-section>
-                  </q-item>
+<!--                  <q-item  v-ripple>-->
+<!--                      <q-item-section>-->
+<!--                          <q-btn flat color="grey-8" :to="{name: 'Categories'}">Категории</q-btn>-->
+<!--                      </q-item-section>-->
+<!--                  </q-item>-->
+                <q-item  v-ripple>
+                  <q-item-section>
+                    <q-btn flat color="grey-8" :to="{name: 'CategoriesTree'}">Дерево категорий</q-btn>
+                  </q-item-section>
+                </q-item>
                   <q-item  v-ripple>
                     <q-item-section>
                       <q-btn flat color="grey-8" :to="{name: 'IndexSummary'}">Summary</q-btn>

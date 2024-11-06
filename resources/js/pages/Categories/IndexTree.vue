@@ -1,70 +1,135 @@
 <template>
-  <q-page>
+  <q-page v-if="treeCategories.length">
+    <q-spinner v-if="isFetching" color="primary" size="150px" class="q-my-md" />
+    <q-form @submit.prevent="applyFilters" class="items-center q-pa-md bg-grey-4">
+      <div class="row">
+        <q-input class="col-2" clearable dense outlined filled v-model="filters.dateFrom" label="Дата начала" type="date" />
+        <q-input class="col-2 q-ml-lg" dense clearable outlined filled v-model="filters.dateTo" label="Дата окончания" type="date" />
+      </div>
+      <div class="row q-mt-md">
+        <q-btn class="text-right" dense size="sm" type="submit" label="Применить фильтры" color="primary" />
+      </div>
+    </q-form>
+
     <TreeTable
         class="custom-tree-table q-mt-md q-px-sm"
         :value="treeCategories"
-        tableStyle="min-width: 60rem; border-collapse: separate; border-spacing: 0 0.5rem"
+        tableStyle="min-width: 60rem; border-collapse: separate; border-spacing: 0 0.5rem "
     >
       <Column
           field="name"
           header="Категория"
           expander
-          style="width: 34%; font-weight: bold;"
+          style="width: 20%; font-weight: bold;"
       ></Column>
+
+      <!-- Render dynamic columns for each day -->
       <Column
-          field="totalAmount"
-          header="Сумма"
-          style="width: 33%; text-align: right; padding-right: 1rem;"
-      ></Column>
-      <Column
-          field="categoryType"
-          header="Тип"
-          style="width: 20%; text-align: center;"
-      ></Column>
+          v-for="(date, index) in dateColumns"
+          :key="index"
+          :field="`date-${date}`"
+          :header="date"
+          style="min-width: 100px; text-align: right; padding-right: 1rem;"
+      >
+        <template #body="{ node }">
+          <span class="text-red">
+            {{ node.data[`date-${date}`] }}
+          </span>
+        </template>
+      </Column>
     </TreeTable>
   </q-page>
 </template>
-
 
 <script setup>
 import TreeTable from 'primevue/treetable'
 import Column from 'primevue/column'
 import {onMounted, ref} from 'vue'
-import {Notify} from "quasar";
+import {Notify, Loading} from 'quasar'
+import axios from 'axios'
+import {eachDayOfInterval, format, parseISO} from 'date-fns'
 
 const treeCategories = ref([])
+const dateColumns = ref([])
+const isFetching = ref(false)
 
 function transformCategory(category) {
-  console.log(category)
   return {
     key: category.id,
     data: {
       name: category.name,
       categoryType: category.category_type,
-      totalAmount: category.total_amount,
-      createdAt: category.created_at,
+      ...Object.fromEntries(
+          dateColumns.value.map(date => [
+            `date-${date}`,
+            category.daily_totals?.[date] ?? 0
+          ])
+      )
     },
     children: category.children
-        ? category.children.map((child) => transformCategory(child))
-        : [],
+        ? category.children.map(child => transformCategory(child))
+        : []
   }
 }
 
+const getCurrentMonthFirstDay = () => {
+  const date = new Date();
+  date.setDate(1);
+  return date.toISOString().split("T")[0];
+};
+
+const getCurrentMonthLastDay = () => {
+  const date = new Date();
+  date.setMonth(date.getMonth() + 1);
+  date.setDate(0);
+  return date.toISOString().split("T")[0];
+};
+
+const filters = ref({
+  dateFrom: getCurrentMonthFirstDay(),
+  dateTo: getCurrentMonthLastDay(),
+  type: null,
+  category: null
+});
+
+const applyFilters = () => {
+  refresh()
+}
+
 onMounted(() => {
-    refresh()
+  refresh()
 })
-const refresh = async (p) => {
-  try{
-    const response = await axios.get('/api/categories')
-    treeCategories.value = response.data.categories.map((category) => transformCategory(category));
-  }catch (e) {
-    Notify.create({
-      message:'fetching failed',
-      color:'red'
+
+const refresh = async () => {
+  Loading.show({
+    message: 'Загрузка...'
+  })
+  try {
+
+    dateColumns.value = eachDayOfInterval({
+      start: parseISO(filters.value.dateFrom),
+      end: parseISO(filters.value.dateTo)
+    }).map(date => format(date, 'dd-MM-yyyy'))
+
+    const response = await axios.get('/api/categories', {
+      params: { startDate: filters.value.dateFrom, endDate: filters.value.dateTo }
     })
+    treeCategories.value = response.data.categories.map(category =>
+        transformCategory(category)
+    )
+    console.log(treeCategories.value)
+  } catch (e) {
+    Notify.create({
+      message: 'Fetching failed',
+      color: 'red'
+    })
+  }finally {
+    Loading.hide()
   }
 }
 </script>
+<style>
+</style>
 
 
 <!--JQUERY START-->
