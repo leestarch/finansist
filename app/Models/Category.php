@@ -79,6 +79,10 @@ class Category extends Model
 
         $result = [];
 
+
+        //todo посчитать отношения суммы за день в категории к сумме верхнего родителя
+        //todo сделать периоды группировки не только дни, но и недели, месяцы, кварталы
+
         foreach ($categories->whereNull('parent_id') as $category) {
             $category->daily_totals = self::calculateDailyTotals($category->operations, $withSum);
             $category->children = self::buildTree($category->children, $withSum);
