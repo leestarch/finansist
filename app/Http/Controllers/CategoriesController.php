@@ -9,7 +9,11 @@ class CategoriesController extends Controller
 {
     public function index()
     {
-        $categories = Category::getCategoryTree(true);
+        $startDate = \request()->get('startDate');
+        $endDate = \request()->get('endDate');
+        $groupBy = \request()->get('groupBy', 'daily');
+
+        $categories = Category::getCategoryTree(true, $startDate, $endDate, $groupBy);
         return response()->json([
            'categories' => $categories
         ]);

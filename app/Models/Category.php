@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Collection;
+use function PHPUnit\Framework\isInstanceOf;
 
 class Category extends Model
 {
@@ -37,7 +38,9 @@ class Category extends Model
 
     // TODO  для каждого чилдрена посчитать посчитать отношение к корневному родительскому элементу
 
-    public static function getCategoryTree(bool $withSum = false, ?string $startDate = null, ?string $endDate = null)//: array
+    public static function getCategoryTree(
+        bool $withSum = false, ?string $startDate = null, ?string $endDate = null, string $groupBy = 'daily'
+    ): array
     {
         if (!$startDate) {
             $startDate = now()->startOfMonth()->toDateString();
@@ -46,31 +49,31 @@ class Category extends Model
             $endDate = now()->endOfMonth()->toDateString();
         }
 
-        $query = Category::query()->with([
-            'children',
-            'children.children',
-            'children.children.children',
-            'children.children.children.children',
-            'children.children.children.children.children',
-            'children.children.children.children.children.children'
-        ]);
+        $query = Category::query();
 
         if ($withSum) {
-//            $operations = Operation::query()
-////                ->leftJoin('categories_operations', function ($join) {
-////                    $join->on('categories_operations.operation_id', '=', 'operations.id');
-////                })
-//                ->whereDate('date', '>=', $startDate)
-//                ->whereDate('date', '<=', $endDate)
-//                ->get();
             $query->with([
-                'operations',
-                'children.operations',
-                'children.children.operations',
-                'children.children.children.operations',
-                'children.children.children.children.operations',
-                'children.children.children.children.children.operations',
-                'children.children.children.children.children.children.operations',
+                'operations'  => function($q) use ($startDate, $endDate) {
+                    $q->whereBetween('date', [$startDate, $endDate]);
+                },
+                'children.operations'  => function($q) use ($startDate, $endDate) {
+                    $q->whereBetween('date', [$startDate, $endDate]);
+                },
+                'children.children.operations'  => function($q) use ($startDate, $endDate) {
+                    $q->whereBetween('date', [$startDate, $endDate]);
+                },
+                'children.children.children.operations' => function($q) use ($startDate, $endDate) {
+                    $q->whereBetween('date', [$startDate, $endDate]);
+                },
+                'children.children.children.children.operations' => function($q) use ($startDate, $endDate) {
+                    $q->whereBetween('date', [$startDate, $endDate]);
+                },
+                'children.children.children.children.children.operations' => function($q) use ($startDate, $endDate) {
+                    $q->whereBetween('date', [$startDate, $endDate]);
+                },
+                'children.children.children.children.children.children.operations' => function($q) use ($startDate, $endDate) {
+                    $q->whereBetween('date', [$startDate, $endDate]);
+                },
             ]);
         }
 
@@ -81,36 +84,61 @@ class Category extends Model
 
 
         //todo посчитать отношения суммы за день в категории к сумме верхнего родителя
-        //todo сделать периоды группировки не только дни, но и недели, месяцы, кварталы
 
         foreach ($categories->whereNull('parent_id') as $category) {
-            $category->daily_totals = self::calculateDailyTotals($category->operations, $withSum);
-            $category->children = self::buildTree($category->children, $withSum);
+            $category->daily_totals = self::calculateDailyTotals($category->operations,  $category->children, $groupBy);
+            $category->children = self::buildTree($category->children, $groupBy);
             $result[] = $category;
         }
 
         return $result;
     }
 
-    private static function calculateDailyTotals($operations, $withSum): array
+    private static function calculateDailyTotals($operations,  $children = null, string $groupBy = 'daily'): array
     {
         $dailyTotals = [];
+
+        $dateFormat = match ($groupBy) {
+            'daily' => 'd-m-Y',
+            'weekly' => 'W-o',
+            'monthly' => 'm-Y',
+            'quarterly' => 'Q-Y',
+        };
         foreach ($operations as $operation) {
-            $date = Carbon::parse($operation->date)->format('d-m-Y');
-            if (!isset($dailyTotals[$date]))
-                $dailyTotals[$date] = 0;
-            $dailyTotals[$date] += $operation->amount;
+            $date = Carbon::parse($operation->date);
+
+            if ($groupBy === 'quarterly') {
+                $dateKey = $date->quarter . '-' . $date->format('Y');
+            } else {
+                $dateKey = $date->format($dateFormat);
+            }
+
+            if (!isset($dailyTotals[$dateKey]))
+                $dailyTotals[$dateKey] = 0;
+            $dailyTotals[$dateKey] += $operation->amount;
         }
-        $daily_totals = $dailyTotals;
-        return $daily_totals;
+
+        if ($children instanceof Collection) {
+            foreach ($children as $child) {
+                $childTotals = self::calculateDailyTotals($child->operations, $child->children, $groupBy);
+                foreach ($childTotals as $date => $amount) {
+                    if (!isset($dailyTotals[$date])) {
+                        $dailyTotals[$date] = 0;
+                    }
+                    $dailyTotals[$date] += $amount;
+                }
+            }
+        }
+        return $dailyTotals;
     }
 
-    private static function buildTree(Collection $categories, $withSum): array
+    private static function buildTree(Collection $categories, string $groupBy): array
     {
         foreach ($categories as $category) {
-            $category->daily_totals = self::calculateDailyTotals($category->operations, $withSum);
+            $category->daily_totals = self::calculateDailyTotals($category->operations, $category->children, $groupBy);
+
             if ($category->children->isNotEmpty()) {
-                $childTree = self::buildTree($category->children, $withSum);
+                $childTree = self::buildTree($category->children, $groupBy);
                 $category->children = collect($childTree);
             }
         }

@@ -5,6 +5,19 @@
       <div class="row">
         <q-input class="col-2" clearable dense outlined filled v-model="filters.dateFrom" label="Дата начала" type="date" />
         <q-input class="col-2 q-ml-lg" dense clearable outlined filled v-model="filters.dateTo" label="Дата окончания" type="date" />
+        <q-select
+            class="col-3 q-ml-lg"
+            dense outlined filled
+            label="Группировать по"
+            v-model="filters.groupBy"
+            :options="[
+                {label:'Дням', value:'daily'},
+                {label:'Неделям', value:'weekly'},
+                {label:'Месяцам', value: 'monthly'},
+                {label:'Кварталам', value: 'quarterly'},
+            ]"
+        >
+        </q-select>
       </div>
       <div class="row q-mt-md">
         <q-btn class="text-right" dense size="sm" type="submit" label="Применить фильтры" color="primary" />
@@ -32,8 +45,14 @@
           style="min-width: 100px; text-align: right; padding-right: 1rem;"
       >
         <template #body="{ node }">
-          <span class="text-red">
-            {{ node.data[`date-${date}`] }}
+          <span
+              :class="{
+                  'text-red': node.data[`date-${date}`]?.toString().startsWith('-'),
+                  'text-green': node.data[`date-${date}`] > 0,
+                  '': node.data[`date-${date}`] === 0
+                }"
+          >
+            {{ formatNumber(node.data[`date-${date}`]) }}
           </span>
         </template>
       </Column>
@@ -44,14 +63,29 @@
 <script setup>
 import TreeTable from 'primevue/treetable'
 import Column from 'primevue/column'
-import {onMounted, ref} from 'vue'
+import {onMounted, ref, watch} from 'vue'
 import {Notify, Loading} from 'quasar'
 import axios from 'axios'
-import {eachDayOfInterval, format, parseISO} from 'date-fns'
+import {
+  eachDayOfInterval,
+  eachWeekOfInterval,
+  eachMonthOfInterval,
+  eachQuarterOfInterval,
+  format,
+  parseISO,
+  getYear, getISOWeek
+} from 'date-fns';
 
 const treeCategories = ref([])
 const dateColumns = ref([])
 const isFetching = ref(false)
+
+const dateFormats = {
+  daily: 'dd-MM-yyyy',
+  weekly: 'W-oooo',
+  monthly: 'MM-yyyy',
+  quarterly: 'Q-yyyy'
+};
 
 function transformCategory(category) {
   return {
@@ -85,7 +119,18 @@ const getCurrentMonthLastDay = () => {
   return date.toISOString().split("T")[0];
 };
 
+const formatNumber = (value) => {
+  return new Intl.NumberFormat('ru-RU', {
+    style: 'decimal',
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(value)
+}
+
+
+
 const filters = ref({
+  groupBy: null,
   dateFrom: getCurrentMonthFirstDay(),
   dateTo: getCurrentMonthLastDay(),
   type: null,
@@ -99,34 +144,62 @@ const applyFilters = () => {
 onMounted(() => {
   refresh()
 })
+watch(() => filters.value.groupBy, () => {
+  console.log("Group by changed to:", filters.value.groupBy);
+  refresh();
+});
+
+const generateDateColumns = (startDate, endDate, groupBy) => {
+  console.log("Generating date columns for:", groupBy);
+  switch (groupBy) {
+    case 'weekly':
+      return eachWeekOfInterval({ start: startDate, end: endDate }, { weekStartsOn: 1 })  // Assuming Monday as week start
+          .map(date => `${getISOWeek(date)}-${getYear(date)}`);
+    case 'monthly':
+      return eachMonthOfInterval({ start: startDate, end: endDate })
+          .map(date => format(date, dateFormats.monthly));
+    case 'quarterly':
+      return eachQuarterOfInterval({ start: startDate, end: endDate })
+          .map(date => format(date, dateFormats.quarterly));
+    case 'daily':
+    default:
+      return eachDayOfInterval({ start: startDate, end: endDate })
+          .map(date => format(date, dateFormats.daily));
+  }
+};
 
 const refresh = async () => {
   Loading.show({
     message: 'Загрузка...'
-  })
+  });
   try {
+    const startDate = parseISO(filters.value.dateFrom);
+    const endDate = parseISO(filters.value.dateTo);
+    const groupBy = filters.value.groupBy?.value || 'daily';
 
-    dateColumns.value = eachDayOfInterval({
-      start: parseISO(filters.value.dateFrom),
-      end: parseISO(filters.value.dateTo)
-    }).map(date => format(date, 'dd-MM-yyyy'))
+    dateColumns.value = generateDateColumns(startDate, endDate, groupBy);
 
     const response = await axios.get('/api/categories', {
-      params: { startDate: filters.value.dateFrom, endDate: filters.value.dateTo }
-    })
+      params: {
+        startDate: filters.value.dateFrom,
+        endDate: filters.value.dateTo,
+        groupBy: filters.value.groupBy?.value
+      }
+    });
+
     treeCategories.value = response.data.categories.map(category =>
         transformCategory(category)
-    )
-    console.log(treeCategories.value)
+    );
   } catch (e) {
+    console.log(e);
     Notify.create({
       message: 'Fetching failed',
       color: 'red'
-    })
-  }finally {
-    Loading.hide()
+    });
+  } finally {
+    Loading.hide();
   }
-}
+};
 </script>
 <style>
 </style>
