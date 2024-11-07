@@ -1,0 +1,111 @@
+{
+  "_QForm-be91830e.js": {
+    "file": "assets/QForm-be91830e.js",
+    "imports": [
+      "resources/js/app.js"
+    ]
+  },
+  "_QPage-a14373ce.js": {
+    "file": "assets/QPage-a14373ce.js",
+    "imports": [
+      "resources/js/app.js"
+    ]
+  },
+  "_QTable-f6d249ab.js": {
+    "file": "assets/QTable-f6d249ab.js",
+    "imports": [
+      "resources/js/app.js",
+      "_QForm-be91830e.js"
+    ]
+  },
+  "_index-b3f125bf.js": {
+    "file": "assets/index-b3f125bf.js",
+    "imports": [
+      "resources/js/app.js"
+    ]
+  },
+  "node_modules/@quasar/extras/material-icons/web-font/flUhRq6tzZclQEJ-Vdg-IuiaDsNa.woff": {
+    "file": "assets/flUhRq6tzZclQEJ-Vdg-IuiaDsNa-fd84f88b.woff",
+    "src": "node_modules/@quasar/extras/material-icons/web-font/flUhRq6tzZclQEJ-Vdg-IuiaDsNa.woff"
+  },
+  "node_modules/@quasar/extras/material-icons/web-font/flUhRq6tzZclQEJ-Vdg-IuiaDsNcIhQ8tQ.woff2": {
+    "file": "assets/flUhRq6tzZclQEJ-Vdg-IuiaDsNcIhQ8tQ-4a4dbc62.woff2",
+    "src": "node_modules/@quasar/extras/material-icons/web-font/flUhRq6tzZclQEJ-Vdg-IuiaDsNcIhQ8tQ.woff2"
+  },
+  "resources/js/app.css": {
+    "file": "assets/app-02f02584.css",
+    "src": "resources/js/app.css"
+  },
+  "resources/js/app.js": {
+    "assets": [
+      "assets/flUhRq6tzZclQEJ-Vdg-IuiaDsNcIhQ8tQ-4a4dbc62.woff2",
+      "assets/flUhRq6tzZclQEJ-Vdg-IuiaDsNa-fd84f88b.woff"
+    ],
+    "css": [
+      "assets/app-02f02584.css"
+    ],
+    "dynamicImports": [
+      "resources/js/pages/Operations/Index.vue",
+      "resources/js/pages/Operations/Create.vue",
+      "resources/js/pages/Operations/IndexSummary.vue",
+      "resources/js/pages/Categories/IndexDepr.vue",
+      "resources/js/pages/Categories/IndexTree.vue"
+    ],
+    "file": "assets/app-f80ab9e6.js",
+    "isEntry": true,
+    "src": "resources/js/app.js"
+  },
+  "resources/js/pages/Categories/IndexDepr.vue": {
+    "file": "assets/IndexDepr-c9e4fae3.js",
+    "imports": [
+      "_QPage-a14373ce.js",
+      "_index-b3f125bf.js",
+      "resources/js/app.js"
+    ],
+    "isDynamicEntry": true,
+    "src": "resources/js/pages/Categories/IndexDepr.vue"
+  },
+  "resources/js/pages/Categories/IndexTree.vue": {
+    "file": "assets/IndexTree-7b8931f0.js",
+    "imports": [
+      "resources/js/app.js",
+      "_QForm-be91830e.js",
+      "_QPage-a14373ce.js",
+      "_index-b3f125bf.js"
+    ],
+    "isDynamicEntry": true,
+    "src": "resources/js/pages/Categories/IndexTree.vue"
+  },
+  "resources/js/pages/Operations/Create.vue": {
+    "file": "assets/Create-7fe32d7c.js",
+    "imports": [
+      "resources/js/app.js",
+      "_QForm-be91830e.js",
+      "_QPage-a14373ce.js"
+    ],
+    "isDynamicEntry": true,
+    "src": "resources/js/pages/Operations/Create.vue"
+  },
+  "resources/js/pages/Operations/Index.vue": {
+    "file": "assets/Index-73756b5f.js",
+    "imports": [
+      "resources/js/app.js",
+      "_QForm-be91830e.js",
+      "_QTable-f6d249ab.js",
+      "_QPage-a14373ce.js"
+    ],
+    "isDynamicEntry": true,
+    "src": "resources/js/pages/Operations/Index.vue"
+  },
+  "resources/js/pages/Operations/IndexSummary.vue": {
+    "file": "assets/IndexSummary-c721bf1c.js",
+    "imports": [
+      "resources/js/app.js",
+      "_QForm-be91830e.js",
+      "_QTable-f6d249ab.js",
+      "_QPage-a14373ce.js"
+    ],
+    "isDynamicEntry": true,
+    "src": "resources/js/pages/Operations/IndexSummary.vue"
+  }
+}
