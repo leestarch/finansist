@@ -17,6 +17,23 @@ const form = ref({
   type: null
 })
 
+const processInput = (inputText) => {
+  const cleanedInput = inputText.replace(/,/g, '.');
+  const cleanedAndReplaced = cleanedInput.replace(/[^\d.-]/g, '');
+  const isValidNumber = /^-?\d*\.?\d*$/.test(cleanedAndReplaced);
+
+  if (isValidNumber) {
+    const result = parseFloat(cleanedAndReplaced);
+    form.value.amount = isNaN(result) ? '' : result;
+  } else {
+    form.value.amount = '';
+  }
+}
+
+const handleInput = () => {
+  processInput(form.value.amount);
+}
+
 const refresh = async () => {
   try {
     const response = await axios.get('/api/operations/create')
@@ -90,6 +107,7 @@ onMounted(() => {
               label="Сумма"
               type="number"
               required
+              @input="handleInput"
           />
           <q-input
               class="q-mt-md"
