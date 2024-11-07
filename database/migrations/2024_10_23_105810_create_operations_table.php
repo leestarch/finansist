@@ -14,13 +14,13 @@ return new class extends Migration
         Schema::create('operations', function (Blueprint $table) {
             $table->id();
             $table->foreignId('pizzeria_id')->nullable();
-            $table->text('account_number')->nullable();
-            $table->foreignId('contractor_id')->nullable();
-            $table->bigInteger('sber_amountRub')->nullable();
-            $table->text('sber_paymentPurpose')->nullable();
-            $table->string('sber_direction')->nullable();
-            $table->boolean('is_completed')->default(false);
             $table->date('date_at')->nullable()->default(null);
+            $table->bigInteger('sber_amountRub')->nullable();
+            $table->string('sber_direction')->nullable();
+            $table->text('sber_paymentPurpose')->nullable();
+            $table->foreignId('payer_contractor_id')->nullable();
+            $table->foreignId('payee_contractor_id')->nullable();
+            $table->boolean('is_completed')->default(false);
             $table->softDeletes();
             $table->timestamps();
         });
