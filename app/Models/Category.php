@@ -9,7 +9,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Collection;
-use function PHPUnit\Framework\isInstanceOf;
 
 class Category extends Model
 {
@@ -36,9 +35,7 @@ class Category extends Model
         return $this->belongsToMany(Operation::class, 'categories_operations');
     }
 
-    // TODO  для каждого чилдрена посчитать посчитать отношение к корневному родительскому элементу
 
-    //todo посчитать отношения суммы в категории к сумме верхнего родителя
     public static function getCategoryTree(
         bool $withSum = false, ?string $startDate = null, ?string $endDate = null, string $groupBy = 'daily'
     ): array
@@ -77,6 +74,7 @@ class Category extends Model
                 },
             ]);
         }
+
 
         $categories = $query->get();
 

@@ -33,19 +33,19 @@ class OperationController extends Controller
         }
 
         if ($dateFrom = $request->dateFrom) {
-            $operationsQuery->whereDate('date', '>=', $dateFrom);
+            $operationsQuery->whereDate('date_at', '>=', $dateFrom);
         }
 
         if ($dateTo = $request->dateTo) {
-            $operationsQuery->whereDate('date', '<=', $dateTo);
+            $operationsQuery->whereDate('date_at', '<=', $dateTo);
         }
 
         $totalIncome = $operationsQuery->clone()
-            ->where('type', Operation::INCOME)
-            ->sum('amount');
+            ->where('sber_direction', Operation::INCOME)
+            ->sum('sber_amountRub');
         $totalExpense = $operationsQuery->clone()
-            ->where('type', Operation::EXPENSE)
-            ->sum('amount');
+            ->where('sber_direction', Operation::EXPENSE)
+            ->sum('sber_amountRub');
 
         $operations = $operationsQuery->paginate($request->input('paginate', 50))->withQueryString();
         return response()->json([
@@ -66,11 +66,11 @@ class OperationController extends Controller
 
         $query = Operation::query()
             ->with('categories')
-            ->selectRaw('categories.name as category, DATE(date) as date, SUM(amount) as daily_total')
+            ->selectRaw('categories.name as category, DATE(date_at) as date, SUM(sber_amountRub) as daily_total')
             ->join('categories_operations', 'operations.id', '=', 'categories_operations.operation_id')
             ->join('categories', 'categories_operations.category_id', '=', 'categories.id')
-            ->whereDate('date', '>=', $dateFrom)
-            ->whereDate('date', '<=', $dateTo);
+            ->whereDate('date_at', '>=', $dateFrom)
+            ->whereDate('date_at', '<=', $dateTo);
 
         // Filter by category if provided
         if ($categoryFilter) {
@@ -79,21 +79,21 @@ class OperationController extends Controller
 
         $query->groupBy('categories.name', 'date')
             ->orderBy('categories.name')
-            ->orderBy('date');
+            ->orderBy('date_at');
 
         $dailySummaries = $query->get();
 
         $formattedData = [];
         foreach ($dailySummaries as $record) {
             $category = $record->category;
-            $date = $record->date;
-            $amount = $record->daily_total;
+            $date = $record->date_at;
+            $sber_amountRub = $record->daily_total;
 
             if (!isset($formattedData[$category])) {
                 $formattedData[$category] = ['category' => $category, 'total' => 0];
             }
-            $formattedData[$category][$date] = $amount;
-            $formattedData[$category]['total'] += $amount;
+            $formattedData[$category][$date] = $sber_amountRub;
+            $formattedData[$category]['total'] += $sber_amountRub;
         }
 
         $result = array_values($formattedData);
@@ -119,10 +119,10 @@ class OperationController extends Controller
     {
         $data = $request->validated();
         $operation = Operation::query()->create([
-            'amount' => $data['amount'],
+            'sber_amountRub' => $data['sber_amountRub'],
             'description' => $data['description'],
             'is_completed' => $data['is_completed'],
-            'date' => $data['date'],
+            'date_at' => $data['date_at'],
         ]);
         $operation->categories()->attach($data['category']['id']);
         $operation->types()->attach($data['type']['id']);
