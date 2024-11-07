@@ -17,8 +17,6 @@ class OperationSeeder extends Seeder
             $amount = fake()->numberBetween(1, 20000);
             $operation = Operation::query()->create([
                 'pizzeria_id' => fake()->numberBetween(1,8),
-                'account_number' => fake()->creditCardNumber(),
-                'contractor_id' => fake()->numberBetween(1,900),
                 'sber_amountRub' => $amount,
                 'sber_paymentPurpose' => fake()->sentence(),
                 'is_completed' => fake()->boolean(),
