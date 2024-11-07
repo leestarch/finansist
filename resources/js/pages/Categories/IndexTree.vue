@@ -41,11 +41,15 @@
           v-for="(date, index) in dateColumns"
           :key="index"
           :field="`date-${date}`"
-          :header="date"
-          style="min-width: 180px; text-align: right; padding-right: 1rem;"
+          style="min-width: 180px; padding-right: 1rem;"
       >
+        <template #header="{node}" class="text-right">
+          <span class="text-center full-width">
+            {{ date }}
+          </span>
+        </template>
         <template #body="{ node }">
-          <div class="row">
+          <div class="q-pa-xs flex justify-between items-center full-width">
             <span
                 :class="{
                     'text-red': node.data[`date-${date}`]?.sum?.toString().startsWith('-'),
