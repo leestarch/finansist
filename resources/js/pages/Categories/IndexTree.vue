@@ -42,18 +42,29 @@
           :key="index"
           :field="`date-${date}`"
           :header="date"
-          style="min-width: 100px; text-align: right; padding-right: 1rem;"
+          style="min-width: 180px; text-align: right; padding-right: 1rem;"
       >
         <template #body="{ node }">
-          <span
-              :class="{
-                  'text-red': node.data[`date-${date}`]?.toString().startsWith('-'),
-                  'text-green': node.data[`date-${date}`] > 0,
-                  '': node.data[`date-${date}`] === 0
-                }"
-          >
-            {{ formatNumber(node.data[`date-${date}`]) }}
-          </span>
+          <div class="row">
+            <span
+                :class="{
+                    'text-red': node.data[`date-${date}`]?.sum?.toString().startsWith('-'),
+                    'text-green': node.data[`date-${date}`]?.sum > 0,
+                    '': node.data[`date-${date}`]?.sum === 0
+                  }"
+            >
+                {{
+                     node.data[`date-${date}`]?.sum ? formatNumber(node.data[`date-${date}`]?.sum) : '0.00'
+                }}
+            </span>
+            <span class="q-ml-md">
+              {{
+                node.data[`date-${date}`]?.percentage_of_root
+                ? node.data[`date-${date}`]?.percentage_of_root + '%'
+                : ''
+              }}
+            </span>
+          </div>
         </template>
       </Column>
     </TreeTable>
@@ -96,7 +107,7 @@ function transformCategory(category) {
       ...Object.fromEntries(
           dateColumns.value.map(date => [
             `date-${date}`,
-            category.daily_totals?.[date] ?? 0
+            category.totals?.[date]
           ])
       )
     },
@@ -145,12 +156,10 @@ onMounted(() => {
   refresh()
 })
 watch(() => filters.value.groupBy, () => {
-  console.log("Group by changed to:", filters.value.groupBy);
   refresh();
 });
 
 const generateDateColumns = (startDate, endDate, groupBy) => {
-  console.log("Generating date columns for:", groupBy);
   switch (groupBy) {
     case 'weekly':
       return eachWeekOfInterval({ start: startDate, end: endDate }, { weekStartsOn: 1 })  // Assuming Monday as week start
@@ -187,6 +196,7 @@ const refresh = async () => {
       }
     });
 
+    console.log(response.data.categories);
     treeCategories.value = response.data.categories.map(category =>
         transformCategory(category)
     );

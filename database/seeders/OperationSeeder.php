@@ -13,7 +13,7 @@ class OperationSeeder extends Seeder
      */
     public function run(): void
     {
-        for ($i = 1; $i <= 100000; $i++) {
+        for ($i = 1; $i <= 3000; $i++) {
             $amount = fake()->numberBetween(1, 20000);
             $operation = Operation::query()->create([
                 'pizzeria_id' => fake()->numberBetween(1,8),

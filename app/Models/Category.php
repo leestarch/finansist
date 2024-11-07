@@ -38,6 +38,7 @@ class Category extends Model
 
     // TODO  для каждого чилдрена посчитать посчитать отношение к корневному родительскому элементу
 
+    //todo посчитать отношения суммы в категории к сумме верхнего родителя
     public static function getCategoryTree(
         bool $withSum = false, ?string $startDate = null, ?string $endDate = null, string $groupBy = 'daily'
     ): array
@@ -54,91 +55,99 @@ class Category extends Model
         if ($withSum) {
             $query->with([
                 'operations'  => function($q) use ($startDate, $endDate) {
-                    $q->whereBetween('date', [$startDate, $endDate]);
+                    $q->whereBetween('date_at', [$startDate, $endDate]);
                 },
                 'children.operations'  => function($q) use ($startDate, $endDate) {
-                    $q->whereBetween('date', [$startDate, $endDate]);
+                    $q->whereBetween('date_at', [$startDate, $endDate]);
                 },
                 'children.children.operations'  => function($q) use ($startDate, $endDate) {
-                    $q->whereBetween('date', [$startDate, $endDate]);
+                    $q->whereBetween('date_at', [$startDate, $endDate]);
                 },
                 'children.children.children.operations' => function($q) use ($startDate, $endDate) {
-                    $q->whereBetween('date', [$startDate, $endDate]);
+                    $q->whereBetween('date_at', [$startDate, $endDate]);
                 },
                 'children.children.children.children.operations' => function($q) use ($startDate, $endDate) {
-                    $q->whereBetween('date', [$startDate, $endDate]);
+                    $q->whereBetween('date_at', [$startDate, $endDate]);
                 },
                 'children.children.children.children.children.operations' => function($q) use ($startDate, $endDate) {
-                    $q->whereBetween('date', [$startDate, $endDate]);
+                    $q->whereBetween('date_at', [$startDate, $endDate]);
                 },
                 'children.children.children.children.children.children.operations' => function($q) use ($startDate, $endDate) {
-                    $q->whereBetween('date', [$startDate, $endDate]);
+                    $q->whereBetween('date_at', [$startDate, $endDate]);
                 },
             ]);
         }
-
 
         $categories = $query->get();
 
         $result = [];
 
-
-        //todo посчитать отношения суммы за день в категории к сумме верхнего родителя
-
-        foreach ($categories->whereNull('parent_id') as $category) {
-            $category->daily_totals = self::calculateDailyTotals($category->operations,  $category->children, $groupBy);
-            $category->children = self::buildTree($category->children, $groupBy);
-            $result[] = $category;
+        foreach ($categories->whereNull('parent_id') as $rootCategory) {
+            $rootCategory->totals = self::calculateDailyTotals(
+                $rootCategory->operations, $rootCategory->children, $groupBy, true
+            );
+            $rootCategory->children = self::buildTree($rootCategory->children, $groupBy, $rootCategory->totals);
+            $result[] = $rootCategory;
         }
 
         return $result;
     }
 
-    private static function calculateDailyTotals($operations,  $children = null, string $groupBy = 'daily'): array
+    private static function calculateDailyTotals(
+        $operations, $children = null, string $groupBy = 'daily', bool $isRoot = false, array $rootTotals = []
+    ): array
     {
         $dailyTotals = [];
-
         $dateFormat = match ($groupBy) {
             'daily' => 'd-m-Y',
             'weekly' => 'W-o',
             'monthly' => 'm-Y',
             'quarterly' => 'Q-Y',
         };
+
+        // Aggregate totals for this category's operations
         foreach ($operations as $operation) {
-            $date = Carbon::parse($operation->date);
+            $date = Carbon::parse($operation->date_at);
+            $dateKey = $groupBy === 'quarterly' ? $date->quarter . '-' . $date->format('Y') : $date->format($dateFormat);
 
-            if ($groupBy === 'quarterly') {
-                $dateKey = $date->quarter . '-' . $date->format('Y');
-            } else {
-                $dateKey = $date->format($dateFormat);
+            if (!isset($dailyTotals[$dateKey])) {
+                $dailyTotals[$dateKey] = ['sum' => 0, 'percentage_of_root' => 0];
             }
-
-            if (!isset($dailyTotals[$dateKey]))
-                $dailyTotals[$dateKey] = 0;
-            $dailyTotals[$dateKey] += $operation->amount;
+            $dailyTotals[$dateKey]['sum'] += $operation->sber_amountRub;
         }
 
+        // Include totals from child categories
         if ($children instanceof Collection) {
             foreach ($children as $child) {
-                $childTotals = self::calculateDailyTotals($child->operations, $child->children, $groupBy);
-                foreach ($childTotals as $date => $amount) {
+                $childTotals = self::calculateDailyTotals($child->operations, $child->children, $groupBy, false, $rootTotals);
+                foreach ($childTotals as $date => $data) {
                     if (!isset($dailyTotals[$date])) {
-                        $dailyTotals[$date] = 0;
+                        $dailyTotals[$date] = ['sum' => 0, 'percentage_of_root' => 0];
                     }
-                    $dailyTotals[$date] += $amount;
+                    $dailyTotals[$date]['sum'] += $data['sum'];
                 }
             }
         }
+
+        // Calculate the percentage of the root total for each date
+        if (!$isRoot && !empty($rootTotals)) {
+            foreach ($dailyTotals as $date => &$data) {
+                $rootSumForDate = $rootTotals[$date]['sum'] ?? 0;
+                $data['percentage_of_root'] = number_format($rootSumForDate > 0 ? ($data['sum'] / $rootSumForDate) * 100 : 0, 2);
+            }
+        }
+
         return $dailyTotals;
     }
 
-    private static function buildTree(Collection $categories, string $groupBy): array
+    private static function buildTree(Collection $categories, string $groupBy, array $rootTotals = []): array
     {
         foreach ($categories as $category) {
-            $category->daily_totals = self::calculateDailyTotals($category->operations, $category->children, $groupBy);
+            // Calculate totals for each child category with the root totals for percentage calculation
+            $category->totals = self::calculateDailyTotals($category->operations, $category->children, $groupBy, false, $rootTotals);
 
             if ($category->children->isNotEmpty()) {
-                $childTree = self::buildTree($category->children, $groupBy);
+                $childTree = self::buildTree($category->children, $groupBy, $rootTotals);
                 $category->children = collect($childTree);
             }
         }
