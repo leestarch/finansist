@@ -1,11 +1,12 @@
 <script setup>
-import {onMounted, ref} from 'vue'
+import {computed, onMounted, ref} from 'vue'
 import {Notify, useQuasar} from 'quasar'
 import axios from 'axios'
 import {useRoute} from "vue-router";
 
 const route = useRoute()
 const categories = ref([])
+const categoriesOptions = ref([])
 const types = ref([])
 const form = ref({
   amount: '',
@@ -20,6 +21,7 @@ const refresh = async () => {
   try {
     const response = await axios.get('/api/operations/create')
     categories.value = response.data.categories
+    categoriesOptions.value = response.data.categories
     types.value = response.data.types
   } catch (error) {
     Notify.create({
@@ -51,6 +53,20 @@ const submitForm = async () => {
     })
   }
 }
+
+const filterFn = (val, update) => {
+  if (val === '') {
+    update(() => {
+      categories.value = categoriesOptions.value;
+    });
+    return;
+  }
+
+  update(() => {
+    const needle = val.toLowerCase();
+    categories.value = categories.value.filter(v => v.name.toLowerCase().indexOf(needle) > -1);
+  });
+};
 
 onMounted(() => {
   if (route.name == 'OperationCreate')
@@ -124,6 +140,10 @@ onMounted(() => {
               label="Фильтр по категориям"
               option-value="id"
               option-label="name"
+              use-input
+              input-debounce="300"
+              @filter="filterFn"
+              hint="Start typing to search"
           />
           <q-btn
               class="q-mt-md"
