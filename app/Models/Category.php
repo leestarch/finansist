@@ -96,10 +96,10 @@ class Category extends Model
     {
         $dailyTotals = [];
         foreach ($operations as $operation) {
-            $date = Carbon::parse($operation->date)->format('d-m-Y');
+            $date = Carbon::parse($operation->date_at)->format('d-m-Y');
             if (!isset($dailyTotals[$date]))
                 $dailyTotals[$date] = 0;
-            $dailyTotals[$date] += $operation->amount;
+            $dailyTotals[$date] += $operation->sber_amountRub;
         }
         $daily_totals = $dailyTotals;
         return $daily_totals;
