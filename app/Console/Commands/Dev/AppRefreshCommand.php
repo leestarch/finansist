@@ -11,8 +11,9 @@ class AppRefreshCommand extends Command
     {
         if(app()->environment() === 'local') {
             $this->call('migrate:refresh');
-            $this->call('load.budget.categories');
+//            $this->call('load.budget.categories');
             $this->call('db:seed');
+//            TODO добавить недостающие категории
         }
     }
 }

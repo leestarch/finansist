@@ -2,8 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Category;
-use Illuminate\Http\Request;
+use App\Services\CategoryService;
 
 class CategoriesController extends Controller
 {
@@ -13,7 +12,7 @@ class CategoriesController extends Controller
         $endDate = \request()->get('endDate');
         $groupBy = \request()->get('groupBy', 'daily');
 
-        $categories = Category::getCategoryTree(true, $startDate, $endDate, $groupBy);
+        $categories = CategoryService::getCategoryTree(true, $startDate, $endDate, $groupBy);
         return response()->json([
            'categories' => $categories
         ]);

@@ -41,10 +41,10 @@ class OperationController extends Controller
         }
 
         $totalIncome = $operationsQuery->clone()
-            ->where('sber_direction', Operation::INCOME)
+            ->where('sber_direction', Operation::CREDIT)
             ->sum('sber_amountRub');
         $totalExpense = $operationsQuery->clone()
-            ->where('sber_direction', Operation::EXPENSE)
+            ->where('sber_direction', Operation::DEBIT)
             ->sum('sber_amountRub');
 
         $operations = $operationsQuery->paginate($request->input('paginate', 50))->withQueryString();

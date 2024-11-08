@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\Operation;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class OperationSeeder extends Seeder
 {
@@ -13,18 +14,16 @@ class OperationSeeder extends Seeder
      */
     public function run(): void
     {
-        for ($i = 1; $i <= 3000; $i++) {
-            $amount = fake()->numberBetween(1, 20000);
-            $operation = Operation::query()->create([
-                'pizzeria_id' => fake()->numberBetween(1,8),
-                'sber_amountRub' => $amount,
-                'sber_paymentPurpose' => fake()->sentence(),
-                'is_completed' => fake()->boolean(),
-                'date_at' => fake()->dateTimeBetween(now()->startOfMonth(), now()->addMonths(2)->startOfMonth()),
-                'sber_direction' => $amount > 0 ? Operation::INCOME : Operation::EXPENSE,
-            ]);
-            $operation->types()->attach(\App\Models\Type::query()->inRandomOrder()->first());
-            $operation->categories()->attach(\App\Models\Category::query()->inRandomOrder()->first());
-        }
+        $sqlFilePath = storage_path('app/private/categories.sql');
+        $sqlContent = file_get_contents($sqlFilePath);
+        DB::unprepared($sqlContent);
+
+        $sqlFilePath = storage_path('app/private/dodo_sber_transactions.sql');
+        $sqlContent = file_get_contents($sqlFilePath);
+        DB::unprepared($sqlContent);
+
+        $sqlFilePath = storage_path('app/private/dodo_sber_transaction_budget_category.sql');
+        $sqlContent = file_get_contents($sqlFilePath);
+        DB::unprepared($sqlContent);
     }
 }

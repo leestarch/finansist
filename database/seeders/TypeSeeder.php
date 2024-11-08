@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Category;
+use App\Models\Type;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -13,9 +14,8 @@ class TypeSeeder extends Seeder
      */
     public function run(): void
     {
-        $types = Category::query()->get()->pluck('category_type')->unique()->values();
-        foreach ($types as $type) {
-            \App\Models\Type::query()->create([
+        foreach (["Outcome", "Assets", "Capital", "Income", "Liabilities",] as $type) {
+            Type::query()->create([
                 'name' => $type,
             ]);
         }
