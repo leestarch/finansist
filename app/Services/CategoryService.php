@@ -48,16 +48,19 @@ final class CategoryService
             ]);
         }
 
-
         $categories = $query->get();
-
         $result = [];
 
         foreach ($categories->whereNull('parent_id') as $rootCategory) {
+
             $rootCategory->totals = self::calculateDailyTotals(
                 $rootCategory->operations, $rootCategory->children, $groupBy, true
             );
-            $rootCategory->children = self::buildTree($rootCategory->children, $groupBy, $rootCategory->totals);
+            $children = self::buildTree($rootCategory->children, $groupBy, $rootCategory->totals);
+            // unset relations иначе релейшен будет перекрывать массив выше
+            unset($rootCategory->children);
+            $rootCategory->children = array_values($children);
+
             $result[] = $rootCategory;
         }
 
@@ -76,7 +79,6 @@ final class CategoryService
             'quarterly' => 'Q-Y',
         };
 
-        // Aggregate totals for this category's operations
         foreach ($operations as $operation) {
             $date = Carbon::parse($operation->date_at);
             $dateKey = $groupBy === 'quarterly' ? $date->quarter . '-' . $date->format('Y') : $date->format($dateFormat);
@@ -106,23 +108,36 @@ final class CategoryService
         if (!$isRoot && !empty($rootTotals)) {
             foreach ($totals as $date => &$data) {
                 $rootSumForDate = $rootTotals[$date]['sum'] ?? 0;
-                $data['percentage_of_root'] = number_format($rootSumForDate > 0 ? ($data['sum'] / $rootSumForDate) * 100 : 0, 2);
+                $data['percentage_of_root'] =
+                    number_format(
+                        $rootSumForDate > 0 ? ($data['sum'] / $rootSumForDate) * 100 : 0,
+                        2
+                    );
             }
         }
-
         return $totals;
     }
 
     private static function buildTree(Collection $categories, string $groupBy, array $rootTotals = []): array
     {
-        foreach ($categories as $category) {
-            $category->totals = self::calculateDailyTotals($category->operations, $category->children, $groupBy, false, $rootTotals);
+        $newCategories = $categories->filter(function ($category) use ($groupBy, $rootTotals) {
+            $category->totals = self::calculateDailyTotals(
+                $category->operations, $category->children, $groupBy, false, $rootTotals
+            );
 
             if ($category->children->isNotEmpty()) {
                 $childTree = self::buildTree($category->children, $groupBy, $rootTotals);
-                $category->children = collect($childTree);
+                // unset relations иначе релейшен будет перекрывать массив выше
+                unset($category->children);
+                $category->children = collect(array_values($childTree));
             }
-        }
-        return $categories->toArray();
+
+            return !(
+                empty($category->totals) &&
+                $category->children->isEmpty()
+            );
+        });
+
+        return $newCategories->toArray();
     }
 }
