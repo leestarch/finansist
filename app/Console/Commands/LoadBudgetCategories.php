@@ -15,14 +15,9 @@ class LoadBudgetCategories extends Command
         $categories = json_decode(file_get_contents(base_path('categories.json')));
 
         foreach ($categories->items as $category) {
-            $model = Category::updateOrCreate(
-                [
-                    'name' => $category->title,
-                ],
-                [
-                    'category_type' => $category->operationCategoryType,
-                ]
-            );
+            $model = Category::query()->firstOrCreate([
+                'name' => $category->title,
+            ]);
 
             $category->model_id = $model->id;
         }
@@ -38,7 +33,7 @@ class LoadBudgetCategories extends Command
                     }
                 }
 
-                Category::where('id', $category->model_id)
+                Category::query()->where('id', $category->model_id)
                     ->update(['parent_id' => $parentModelId]);
             }
         }
