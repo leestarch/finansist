@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
@@ -26,6 +27,11 @@ class Operation extends Model
     public function types(): BelongsToMany
     {
         return $this->belongsToMany(Type::class, 'operations_types');
+    }
+
+    public function pizzeria(): BelongsTo
+    {
+        return $this->belongsTo(Pizzeria::class);
     }
 
 //    public function getAmountAttribute($value): string

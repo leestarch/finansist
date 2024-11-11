@@ -2,8 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\Product;
-use App\Models\Prop;
+
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -16,6 +15,8 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             TypeSeeder::class,
+            PizzeriaSeeder::class,
+            ContractorsSeeder::class,
             OperationSeeder::class,
         ]);
     }

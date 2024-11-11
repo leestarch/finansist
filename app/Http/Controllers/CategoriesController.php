@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Pizzeria;
 use App\Services\CategoryService;
 
 class CategoriesController extends Controller
@@ -13,8 +14,11 @@ class CategoriesController extends Controller
         $groupBy = \request()->get('groupBy', 'daily');
 
         $categories = CategoryService::getCategoryTree(true, $startDate, $endDate, $groupBy);
+        $pizzerias = Pizzeria::query()->select('id', 'name')->get();
+
         return response()->json([
-           'categories' => $categories
+           'categories' => $categories,
+           'pizzerias' => $pizzerias,
         ]);
     }
 }
