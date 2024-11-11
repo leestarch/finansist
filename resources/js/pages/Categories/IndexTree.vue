@@ -18,6 +18,16 @@
             ]"
         >
         </q-select>
+        <q-select
+            class="col-3 q-ml-lg"
+            dense outlined filled
+            label="Пиццерия"
+            v-model="filters.pizzeria"
+            :options="pizzerias"
+            clearable
+            option-label="name"
+        >
+        </q-select>
       </div>
       <div class="row q-mt-md">
         <q-btn class="text-right" dense size="sm" type="submit" label="Применить фильтры" color="primary" />
@@ -94,6 +104,7 @@ import {
 const treeCategories = ref([])
 const dateColumns = ref([])
 const isFetching = ref(false)
+const pizzerias = ref([])
 
 const dateFormats = {
   daily: 'dd-MM-yyyy',
@@ -143,13 +154,13 @@ const formatNumber = (value) => {
 }
 
 
-
 const filters = ref({
   groupBy: null,
   dateFrom: getCurrentMonthFirstDay(),
   dateTo: getCurrentMonthLastDay(),
   type: null,
-  category: null
+  category: null,
+  pizzeria: null,
 });
 
 const applyFilters = () => {
@@ -196,11 +207,12 @@ const refresh = async () => {
       params: {
         startDate: filters.value.dateFrom,
         endDate: filters.value.dateTo,
-        groupBy: filters.value.groupBy?.value
+        groupBy: filters.value.groupBy?.value,
+        pizzeriaId: filters.value.pizzeria?.id,
       }
     });
-
-    console.log(response.data.categories);
+    console.log(response.data);
+    pizzerias.value = response.data.pizzerias;
     treeCategories.value = response.data.categories.map(category =>
         transformCategory(category)
     );

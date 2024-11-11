@@ -5,47 +5,26 @@ namespace App\Services;
 use App\Models\Category;
 use App\Models\Operation;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 
 final class CategoryService
 {
     public static function getCategoryTree(
-        bool $withSum = false, ?string $startDate = null, ?string $endDate = null, string $groupBy = 'daily'
+        bool $withSum = false, ?string $startDate = null,
+        ?string $endDate = null, string $groupBy = 'daily', int $pizzeriaId = null,
     ): array
     {
-        if (!$startDate) {
+        if (!$startDate)
             $startDate = now()->startOfMonth()->toDateString();
-        }
-        if (!$endDate) {
+
+        if (!$endDate)
             $endDate = now()->endOfMonth()->toDateString();
-        }
 
         $query = Category::query();
-
         if ($withSum) {
-            $query->with([
-                'operations'  => function($q) use ($startDate, $endDate) {
-                    $q->whereBetween('date_at', [$startDate, $endDate]);
-                },
-                'children.operations'  => function($q) use ($startDate, $endDate) {
-                    $q->whereBetween('date_at', [$startDate, $endDate]);
-                },
-                'children.children.operations'  => function($q) use ($startDate, $endDate) {
-                    $q->whereBetween('date_at', [$startDate, $endDate]);
-                },
-                'children.children.children.operations' => function($q) use ($startDate, $endDate) {
-                    $q->whereBetween('date_at', [$startDate, $endDate]);
-                },
-                'children.children.children.children.operations' => function($q) use ($startDate, $endDate) {
-                    $q->whereBetween('date_at', [$startDate, $endDate]);
-                },
-                'children.children.children.children.children.operations' => function($q) use ($startDate, $endDate) {
-                    $q->whereBetween('date_at', [$startDate, $endDate]);
-                },
-                'children.children.children.children.children.children.operations' => function($q) use ($startDate, $endDate) {
-                    $q->whereBetween('date_at', [$startDate, $endDate]);
-                },
-            ]);
+            $withDependencies = self::getDependencies($startDate, $endDate, $pizzeriaId);
+            $query->with($withDependencies);
         }
 
         $categories = $query->get();
@@ -139,5 +118,61 @@ final class CategoryService
         });
 
         return $newCategories->toArray();
+    }
+
+
+    private static function getDependencies($startDate, $endDate, int $pizzeriaId):array
+    {
+        return [
+            'operations' =>
+                function($q) use ($startDate, $endDate, $pizzeriaId) {
+                    $q->whereBetween('date_at', [$startDate, $endDate]);
+                    if($pizzeriaId) {
+                        $q->where('pizzeria_id', $pizzeriaId);
+                    }
+                },
+            'children.operations' =>
+                function($q) use ($startDate, $endDate, $pizzeriaId) {
+                    $q->whereBetween('date_at', [$startDate, $endDate]);
+                    if($pizzeriaId) {
+                        $q->where('pizzeria_id', $pizzeriaId);
+                    }
+                },
+            'children.children.operations' =>
+                function($q) use ($startDate, $endDate, $pizzeriaId) {
+                    $q->whereBetween('date_at', [$startDate, $endDate]);
+                    if($pizzeriaId) {
+                        $q->where('pizzeria_id', $pizzeriaId);
+                    }
+                },
+            'children.children.children.operations' =>
+                function($q) use ($startDate, $endDate, $pizzeriaId) {
+                    $q->whereBetween('date_at', [$startDate, $endDate]);
+                    if($pizzeriaId) {
+                        $q->where('pizzeria_id', $pizzeriaId);
+                    }
+                },
+            'children.children.children.children.operations' =>
+                function($q) use ($startDate, $endDate, $pizzeriaId) {
+                    $q->whereBetween('date_at', [$startDate, $endDate]);
+                    if($pizzeriaId) {
+                        $q->where('pizzeria_id', $pizzeriaId);
+                    }
+                },
+            'children.children.children.children.children.operations' =>
+                function($q) use ($startDate, $endDate, $pizzeriaId) {
+                    $q->whereBetween('date_at', [$startDate, $endDate]);
+                    if($pizzeriaId) {
+                        $q->where('pizzeria_id', $pizzeriaId);
+                    }
+                },
+            'children.children.children.children.children.children.operations' =>
+                function($q) use ($startDate, $endDate, $pizzeriaId) {
+                    $q->whereBetween('date_at', [$startDate, $endDate]);
+                    if($pizzeriaId) {
+                        $q->where('pizzeria_id', $pizzeriaId);
+                    }
+                },
+        ];
     }
 }

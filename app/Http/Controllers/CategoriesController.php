@@ -12,8 +12,9 @@ class CategoriesController extends Controller
         $startDate = \request()->get('startDate');
         $endDate = \request()->get('endDate');
         $groupBy = \request()->get('groupBy', 'daily');
+        $pizzeriaId = \request()->get('pizzeriaId');
 
-        $categories = CategoryService::getCategoryTree(true, $startDate, $endDate, $groupBy);
+        $categories = CategoryService::getCategoryTree(true, $startDate, $endDate, $groupBy, $pizzeriaId);
         $pizzerias = Pizzeria::query()->select('id', 'name')->get();
 
         return response()->json([
