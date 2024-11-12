@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Pizzeria extends Model
 {
@@ -13,5 +14,8 @@ class Pizzeria extends Model
         'agentIds' => 'array',
     ];
 
-
+    public function contractors(): BelongsToMany
+    {
+        return $this->belongsToMany(Contractor::class);
+    }
 }
