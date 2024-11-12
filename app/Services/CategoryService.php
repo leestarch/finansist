@@ -12,7 +12,7 @@ final class CategoryService
 {
     public static function getCategoryTree(
         bool $withSum = false, ?string $startDate = null,
-        ?string $endDate = null, string $groupBy = 'daily', int $pizzeriaId = null,
+        ?string $endDate = null, string $groupBy = 'daily', ?int $pizzeriaId = null,
     ): array
     {
         if (!$startDate)
@@ -67,8 +67,8 @@ final class CategoryService
             }
 
             $operation->sber_direction === Operation::CREDIT
-                ? $totals[$dateKey]['sum'] += $operation->sber_amountRub
-                : $totals[$dateKey]['sum'] -= $operation->sber_amountRub;
+                ? $totals[$dateKey]['sum'] -= $operation->sber_amountRub
+                : $totals[$dateKey]['sum'] += $operation->sber_amountRub;
 
         }
 
@@ -121,7 +121,7 @@ final class CategoryService
     }
 
 
-    private static function getDependencies($startDate, $endDate, int $pizzeriaId):array
+    private static function getDependencies($startDate, $endDate, ?int $pizzeriaId):array
     {
         return [
             'operations' =>

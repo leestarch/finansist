@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
             TypeSeeder::class,
             PizzeriaSeeder::class,
             ContractorsSeeder::class,
+            ContractorPizzeriaSeeder::class,
             OperationSeeder::class,
         ]);
     }

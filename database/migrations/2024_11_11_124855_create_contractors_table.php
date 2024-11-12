@@ -38,6 +38,13 @@ return new class extends Migration
             $table->text('nalog_system')->nullable();
             $table->timestamps();
         });
+
+        Schema::create('contractor_pizzeria', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('contractor_id');
+            $table->unsignedBigInteger('pizzeria_id');
+            $table->timestamps();
+        });
     }
 
     /**
@@ -46,5 +53,6 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('contractors');
+        Schema::dropIfExists('contractor_pizzeria');
     }
 };
