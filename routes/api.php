@@ -13,3 +13,7 @@ Route::group(['prefix' => 'operations'], function (){
 Route::prefix('categories')->group(function () {
     Route::get('/', [\App\Http\Controllers\CategoriesController::class, 'index']);
 });
+
+Route::prefix('contractors')->group(function () {
+    Route::get('/', [\App\Http\Controllers\Api\ContractorController::class, 'index']);
+});

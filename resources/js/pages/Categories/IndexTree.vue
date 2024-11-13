@@ -28,6 +28,21 @@
             option-label="name"
         >
         </q-select>
+        <q-select
+            class="col-6 q-mt-md justify-center"
+            dense
+            outlined
+            filled
+            label="Контрагенты (получатели)"
+            v-model="contractorId"
+            :options="contractors"
+            use-input
+            clearable
+            option-label="name"
+            @filter="onContractorChange"
+            :loading="isContractorLoading"
+
+        />
       </div>
       <div class="row q-mt-md">
         <q-btn class="text-right" dense size="sm" type="submit" label="Применить фильтры" color="primary" />
@@ -105,6 +120,9 @@ const treeCategories = ref([])
 const dateColumns = ref([])
 const isFetching = ref(false)
 const pizzerias = ref([])
+const contractors = ref([])
+const isContractorLoading = ref(false)
+const contractorId = ref('')
 
 const dateFormats = {
   daily: 'dd-MM-yyyy',
@@ -174,6 +192,31 @@ watch(() => filters.value.groupBy, () => {
   refresh();
 });
 
+const onContractorChange  = async (val, update, abort) => {
+  if (val.length > 4) {
+    isContractorLoading.value = true;
+    try {
+      const response = await axios.get('/api/contractors', {
+        params: {
+          contractorQuery: val,
+        },
+      });
+      contractors.value = response.data.data;
+      console.log(contractors.value);
+
+      update(() => contractors.value);
+    } catch (error) {
+      console.log(error);
+      abort();
+    } finally {
+      isContractorLoading.value = false;
+    }
+  } else {
+    contractors.value = [];
+    update(() => contractors.value);
+  }
+};
+
 const generateDateColumns = (startDate, endDate, groupBy) => {
   switch (groupBy) {
     case 'weekly':
@@ -209,6 +252,7 @@ const refresh = async () => {
         endDate: filters.value.dateTo,
         groupBy: filters.value.groupBy?.value,
         pizzeriaId: filters.value.pizzeria?.id,
+        contractorIds: [contractorId.value?.id]
       }
     });
     console.log(response.data);

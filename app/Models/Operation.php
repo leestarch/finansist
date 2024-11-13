@@ -29,6 +29,16 @@ class Operation extends Model
         return $this->belongsToMany(Type::class, 'operations_types');
     }
 
+    public function payeeContractor(): BelongsTo
+    {
+        return $this->belongsTo(Contractor::class, 'payee_contractor_id');
+    }
+
+    public function payerContractor(): BelongsTo
+    {
+        return $this->belongsTo(Contractor::class, 'payer_contractor_id');
+    }
+
     public function pizzeria(): BelongsTo
     {
         return $this->belongsTo(Pizzeria::class);
