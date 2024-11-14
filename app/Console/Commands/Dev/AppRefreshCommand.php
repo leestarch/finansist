@@ -13,6 +13,7 @@ class AppRefreshCommand extends Command
             $this->call('migrate:refresh');
             $this->call('db:seed');
             $this->call('load.budget.categories');
+            $this->call('operation.rules.create.command');
         }
     }
 }
