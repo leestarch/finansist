@@ -67,8 +67,8 @@ final class CategoryService
             }
 
             $operation->sber_direction === Operation::CREDIT
-                ? $totals[$dateKey]['sum'] -= $operation->sber_amountRub
-                : $totals[$dateKey]['sum'] += $operation->sber_amountRub;
+                ? $totals[$dateKey]['sum'] += $operation->sber_amountRub
+                : $totals[$dateKey]['sum'] -= $operation->sber_amountRub;
 
         }
 

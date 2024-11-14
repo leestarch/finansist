@@ -18,6 +18,7 @@ class CategoriesController extends Controller
         $pizzeriaId = request()->get('pizzeriaId');
         $contractorIds = request()->get('contractorIds');
 
+
         $categories = CategoryService::getCategoryTree(
             true, $startDate, $endDate, $groupBy, $pizzeriaId, $contractorIds
         );
