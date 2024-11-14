@@ -34,9 +34,10 @@
             outlined
             filled
             label="Контрагенты (получатели)"
-            v-model="contractorId"
+            v-model="contractorIds"
             :options="contractors"
             use-input
+            multiple
             clearable
             option-label="name"
             @filter="onContractorChange"
@@ -122,7 +123,7 @@ const isFetching = ref(false)
 const pizzerias = ref([])
 const contractors = ref([])
 const isContractorLoading = ref(false)
-const contractorId = ref('')
+const contractorIds = ref([])
 
 const dateFormats = {
   daily: 'dd-MM-yyyy',
@@ -252,7 +253,7 @@ const refresh = async () => {
         endDate: filters.value.dateTo,
         groupBy: filters.value.groupBy?.value,
         pizzeriaId: filters.value.pizzeria?.id,
-        contractorIds: [contractorId.value?.id]
+        contractorIds: contractorIds.value.map(contractor => contractor.id)
       }
     });
     console.log(response.data);
