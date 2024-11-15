@@ -1,16 +1,20 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
-use App\Models\Contractor;
+use App\Http\Controllers\Controller;
+use App\Http\Resources\Category\MinifiedCategoryResource;
+use App\Models\Category;
 use App\Models\Pizzeria;
 use App\Services\CategoryService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use function request;
 
 class CategoriesController extends Controller
 {
-    public function index(): JsonResponse
+    public function indexTree(): JsonResponse
     {
         $startDate = request()->get('startDate');
         $endDate = request()->get('endDate');
@@ -28,5 +32,15 @@ class CategoriesController extends Controller
            'categories' => $categories,
            'pizzerias' => $pizzerias,
         ]);
+    }
+
+    public function index(Request $request): AnonymousResourceCollection
+    {
+        $q = $request->get('q');
+
+        $categories = Category::query();
+        if($q) $categories->where('name', 'like', "%$q%");
+
+        return MinifiedCategoryResource::collection($categories->get());
     }
 }

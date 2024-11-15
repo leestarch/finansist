@@ -11,7 +11,8 @@ Route::group(['prefix' => 'operations'], function (){
 });
 
 Route::prefix('categories')->group(function () {
-    Route::get('/', [\App\Http\Controllers\CategoriesController::class, 'index']);
+    Route::get('/tree', [\App\Http\Controllers\Api\CategoriesController::class, 'indexTree']);
+    Route::get('/', [\App\Http\Controllers\Api\CategoriesController::class, 'index']);
 });
 
 Route::prefix('contractors')->group(function () {

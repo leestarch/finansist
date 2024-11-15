@@ -20,6 +20,11 @@ export default [
         name:'IndexDepr',
     },
     {
+        path:'/categories/rule',
+        component:() => import('@/pages/Categories/CreateRule.vue'),
+        name:'CreateRule',
+    },
+    {
         path:'/categories-tree',
         component:() => import('@/pages/Categories/IndexTree.vue'),
         name:'CategoriesTree',

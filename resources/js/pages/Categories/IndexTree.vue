@@ -199,11 +199,10 @@ const onContractorChange  = async (val, update, abort) => {
     try {
       const response = await axios.get('/api/contractors', {
         params: {
-          contractorQuery: val,
+          q: val,
         },
       });
       contractors.value = response.data.data;
-      console.log(contractors.value);
 
       update(() => contractors.value);
     } catch (error) {
@@ -247,7 +246,7 @@ const refresh = async () => {
 
     dateColumns.value = generateDateColumns(startDate, endDate, groupBy);
 
-    const response = await axios.get('/api/categories', {
+    const response = await axios.get('/api/categories/tree', {
       params: {
         startDate: filters.value.dateFrom,
         endDate: filters.value.dateTo,
