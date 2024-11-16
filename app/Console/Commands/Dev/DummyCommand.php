@@ -3,6 +3,7 @@
 namespace App\Console\Commands\Dev;
 
 use App\Models\Category;
+use App\Models\Contractor;
 use App\Models\Operation;
 use Illuminate\Console\Command;
 use Illuminate\Support\Carbon;
@@ -15,11 +16,19 @@ class DummyCommand extends Command
 
     public function handle()
     {
-        $opeartions = Operation::query()->whereHas('categories', function ($query) {
-            $query->where('name', 'like', 'Расчетный Food Cost');
-        })
-            ->where('date_at', '>=', Carbon::now()->subDays(15))
-            ->get()->toArray();
-        dd($opeartions);
+//        $opeartions = Operation::query()->whereHas('categories', function ($query) {
+//            $query->where('name', 'like', 'Расчетный Food Cost');
+//        })
+//            ->whereHas('payeeContractor', function ($query) {
+//                $query->where('full_name', 'like', '%ЛОДЖИСТИКС%');
+//            })
+//            ->whereBetween('date_at', [now()->startOfMonth(), now()->endOfMonth()])
+//            ->take(10)->get()->toArray();
+//        dd($opeartions);
+
+        $opeartions = Operation::query()->pluck('payer_contractor_id')->toArray();
+        $contractors = Contractor::query()
+            ->whereNotIn('id', $opeartions)->get()->unique('id')->pluck('full_name');
+        dd($contractors);
     }
 }

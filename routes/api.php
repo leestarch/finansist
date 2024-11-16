@@ -8,6 +8,7 @@ Route::group(['prefix' => 'operations'], function (){
     Route::get('/summary', [\App\Http\Controllers\Api\OperationController::class, 'summary']);
     Route::get('/create', [\App\Http\Controllers\Api\OperationController::class, 'create']);
     Route::post('/', [\App\Http\Controllers\Api\OperationController::class, 'store']);
+    Route::post('/rules', [\App\Http\Controllers\Api\OperationController::class, 'storeRule']);
 });
 
 Route::prefix('categories')->group(function () {
@@ -17,4 +18,5 @@ Route::prefix('categories')->group(function () {
 
 Route::prefix('contractors')->group(function () {
     Route::get('/', [\App\Http\Controllers\Api\ContractorController::class, 'index']);
+    Route::get('/{id}/check', [\App\Http\Controllers\Api\ContractorController::class, 'operationCheck']);
 });

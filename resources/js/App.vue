@@ -57,6 +57,11 @@ onMounted(async () => {
                     <q-btn flat color="grey-8" :to="{name: 'CreateRule'}">Operation rule</q-btn>
                   </q-item-section>
                 </q-item>
+                <q-item  v-ripple>
+                  <q-item-section>
+                    <q-btn flat color="grey-8" :to="{name: 'ContractorIndex'}">Контрагенты</q-btn>
+                  </q-item-section>
+                </q-item>
               </q-list>
           </q-scroll-area>
       </q-drawer>

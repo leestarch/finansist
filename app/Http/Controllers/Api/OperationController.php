@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Operation\OperationRuleStore;
 use App\Http\Requests\Operation\OperationCreateRequest;
 use App\Http\Resources\OperationResource;
 use App\Models\Category;
 use App\Models\Operation;
+use App\Models\OperationRule;
 use App\Models\Type;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -126,6 +128,23 @@ class OperationController extends Controller
         ]);
         $operation->categories()->attach($data['category']['id']);
         $operation->types()->attach($data['type']['id']);
+        return response()->json([
+            'success' => true,
+        ]);
+    }
+
+    public function storeRule(OperationRuleStore $request): JsonResponse
+    {
+        $data = $request->validated();
+        foreach ($data['contractor_ids'] as $contractorId){
+            OperationRule::query()->firstOrCreate([
+                'category_id' => $data['category_id'],
+                'contractor_id' => $contractorId,
+                'purpose_expression' => $data['purpose_expression'] ?? null,
+                'name' => $data['name'] ?? null,
+            ]);
+        }
+
         return response()->json([
             'success' => true,
         ]);
