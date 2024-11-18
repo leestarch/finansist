@@ -28,6 +28,12 @@ class ContractorController extends Controller
         return ContractorResource::collection($contractors->paginate($paginate));
     }
 
+    public function show(int $id): ContractorResource
+    {
+        $contractor = Contractor::query()->findOrFail($id);
+        return ContractorResource::make($contractor);
+    }
+
     public function operationCheck(int $contractorId): JsonResponse
     {
         $operations = Operation::query()->where('payee_contractor_id', $contractorId)->get();

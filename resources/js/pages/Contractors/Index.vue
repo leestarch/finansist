@@ -108,7 +108,11 @@ onMounted(() => {
             :class="item.row.is_wrong?'bg-red-2':(item.row.is_validated?'bg-green-2':'')"
             :item="item"
         >
-          <template v-if="item.col.name=='full_name'"> {{item.row.full_name}} </template>
+          <template v-if="item.col.name=='full_name'">
+            <router-link :to="`/contractors/${item.row.id}`">
+              {{item.row.full_name}}
+            </router-link>
+          </template>
           <template v-if="item.col.name=='inn_kpp'"> {{item.row.inn_kpp}} </template>
           <template v-if="item.col.name=='actions'">
             <q-btn
@@ -116,7 +120,6 @@ onMounted(() => {
                 flat
                 color="primary"
                 label="Проверить"
-                @click="checkContractorsOperation(item.row.id)"
                 :loading="isChecking"
             />
           </template>

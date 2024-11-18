@@ -34,4 +34,9 @@ export default [
         component:() => import('@/pages/Contractors/Index.vue'),
         name:'ContractorIndex',
     },
+    {
+        path:'/contractors/:id',
+        component:() => import('@/pages/Contractors/Show.vue'),
+        name:'ContractorShow',
+    },
 ]

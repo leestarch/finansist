@@ -3,10 +3,10 @@
     <q-spinner v-if="isFetching" color="primary" size="150px" class="q-my-md" />
     <q-form @submit.prevent="applyFilters" class="items-center q-pa-md bg-grey-4">
       <div class="row">
-        <q-input class="col-2" clearable dense outlined filled v-model="filters.dateFrom" label="Дата начала" type="date" />
-        <q-input class="col-2 q-ml-lg" dense clearable outlined filled v-model="filters.dateTo" label="Дата окончания" type="date" />
+        <q-input class="col-2 q-px-sm" clearable dense outlined filled v-model="filters.dateFrom" label="Дата начала" type="date" />
+        <q-input class="col-2 q-px-sm" dense clearable outlined filled v-model="filters.dateTo" label="Дата окончания" type="date" />
         <q-select
-            class="col-3 q-ml-lg"
+            class="col-3 q-px-sm"
             dense outlined filled
             label="Группировать по"
             v-model="filters.groupBy"
@@ -19,7 +19,7 @@
         >
         </q-select>
         <q-select
-            class="col-3 q-ml-lg"
+            class="col-3 q-px-sm"
             dense outlined filled
             label="Пиццерия"
             v-model="filters.pizzeria"
@@ -29,7 +29,7 @@
         >
         </q-select>
         <q-select
-            class="col-6 q-mt-md justify-center"
+            class="col-6 q-mt-sm "
             dense
             outlined
             filled
@@ -43,6 +43,17 @@
             @filter="onContractorChange"
             :loading="isContractorLoading"
 
+        />
+
+        <q-input
+            class="col-6 q-mt-sm justify-center q-px-md"
+            dense
+            outlined
+            filled
+            clearable
+            label="Назначение платежа"
+            v-model="filters.purposeQuery"
+            option-label="name"
         />
       </div>
       <div class="row q-mt-md">
@@ -121,7 +132,9 @@ const treeCategories = ref([])
 const dateColumns = ref([])
 const isFetching = ref(false)
 const pizzerias = ref([])
+
 const contractors = ref([])
+
 const isContractorLoading = ref(false)
 const contractorIds = ref([])
 
@@ -178,6 +191,7 @@ const filters = ref({
   dateFrom: getCurrentMonthFirstDay(),
   dateTo: getCurrentMonthLastDay(),
   type: null,
+  purposeQuery: '',
   category: null,
   pizzeria: null,
 });
@@ -252,7 +266,8 @@ const refresh = async () => {
         endDate: filters.value.dateTo,
         groupBy: filters.value.groupBy?.value,
         pizzeriaId: filters.value.pizzeria?.id,
-        contractorIds: contractorIds.value.map(contractor => contractor.id)
+        contractorIds: contractorIds.value.map(contractor => contractor.id),
+        purposeQuery: filters.value.purposeQuery,
       }
     });
     console.log(response.data);

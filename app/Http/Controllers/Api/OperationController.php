@@ -12,11 +12,12 @@ use App\Models\OperationRule;
 use App\Models\Type;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Carbon;
 
 class OperationController extends Controller
 {
-    public function index(Request $request)
+    public function index(Request $request): AnonymousResourceCollection
     {
         $operationsQuery = Operation::query()
             ->with('categories', 'types');
@@ -27,8 +28,11 @@ class OperationController extends Controller
             });
         }
 
-        if ($category = $request->category) {
+        if($contractor = $request->payee_contractor_id){
+            $operationsQuery->where('payee_contractor_id', $contractor);
+        }
 
+        if ($category = $request->category) {
             $operationsQuery->whereHas('categories', function ($query) use ($category) {
                 $query->where('name', $category['name']);
             });
@@ -42,21 +46,10 @@ class OperationController extends Controller
             $operationsQuery->whereDate('date_at', '<=', $dateTo);
         }
 
-        $totalIncome = $operationsQuery->clone()
-            ->where('sber_direction', Operation::CREDIT)
-            ->sum('sber_amountRub');
-        $totalExpense = $operationsQuery->clone()
-            ->where('sber_direction', Operation::DEBIT)
-            ->sum('sber_amountRub');
+        $operations = $operationsQuery->paginate($request->input('paginate', 50))
+            ->withQueryString();
 
-        $operations = $operationsQuery->paginate($request->input('paginate', 50))->withQueryString();
-        return response()->json([
-            'operations' => OperationResource::collection($operations),
-            'types' => Type::query()->select(['id', 'name'])->get()->toArray(),
-            'categories' => Category::query()->select(['id', 'name'])->get()->toArray(),
-            'totalIncome' => $totalIncome,
-            'totalExpense' => $totalExpense,
-        ]);
+        return OperationResource::collection($operations);
     }
 
     public function summary(Request $request): JsonResponse
@@ -128,23 +121,6 @@ class OperationController extends Controller
         ]);
         $operation->categories()->attach($data['category']['id']);
         $operation->types()->attach($data['type']['id']);
-        return response()->json([
-            'success' => true,
-        ]);
-    }
-
-    public function storeRule(OperationRuleStore $request): JsonResponse
-    {
-        $data = $request->validated();
-        foreach ($data['contractor_ids'] as $contractorId){
-            OperationRule::query()->firstOrCreate([
-                'category_id' => $data['category_id'],
-                'contractor_id' => $contractorId,
-                'purpose_expression' => $data['purpose_expression'] ?? null,
-                'name' => $data['name'] ?? null,
-            ]);
-        }
-
         return response()->json([
             'success' => true,
         ]);

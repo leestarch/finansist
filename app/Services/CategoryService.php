@@ -5,14 +5,14 @@ namespace App\Services;
 use App\Models\Category;
 use App\Models\Operation;
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 
 final class CategoryService
 {
     public static function getCategoryTree(
         bool $withSum = false, ?string $startDate = null,
-        ?string $endDate = null, string $groupBy = 'daily', ?int $pizzeriaId = null, ?array $contractorIds = null
+        ?string $endDate = null, string $groupBy = 'daily', ?int $pizzeriaId = null,
+        ?array $contractorIds = null, ?string $purposeQuery = null
     ): array
     {
         if (!$startDate)
@@ -23,7 +23,7 @@ final class CategoryService
 
         $query = Category::query();
         if ($withSum) {
-            $withDependencies = self::getDependencies($startDate, $endDate, $pizzeriaId, $contractorIds);
+            $withDependencies = self::getDependencies($startDate, $endDate, $pizzeriaId, $contractorIds, $purposeQuery);
             $query->with($withDependencies);
         }
 
@@ -121,93 +121,56 @@ final class CategoryService
     }
 
 
-    private static function getDependencies($startDate, $endDate, ?int $pizzeriaId, ?array $contractorIds):array
+    private static function getDependencies(
+        $startDate, $endDate, ?int $pizzeriaId, ?array $contractorIds, ?string $purposeQuery
+    ):array
     {
         return [
-            'operations' =>
-                function($q) use ($startDate, $endDate, $pizzeriaId, $contractorIds) {
-                    $q->whereBetween('date_at', [$startDate, $endDate]);
-                    if($pizzeriaId) {
-                        $q->where('pizzeria_id', $pizzeriaId);
-                    }
-                    if($contractorIds) {
-                        $q->whereHas('payeeContractor', function($q) use ($contractorIds) {
-                            $q->whereIn('id', $contractorIds);
-                        });
-                    }
-                },
-            'children.operations' =>
-                function($q) use ($startDate, $endDate, $pizzeriaId, $contractorIds) {
-                    $q->whereBetween('date_at', [$startDate, $endDate]);
-                    if($pizzeriaId) {
-                        $q->where('pizzeria_id', $pizzeriaId);
-                    }
-                    if($contractorIds) {
-                        $q->whereHas('payeeContractor', function($q) use ($contractorIds) {
-                            $q->whereIn('id', $contractorIds);
-                        });
-                    }
-                },
-            'children.children.operations' =>
-                function($q) use ($startDate, $endDate, $pizzeriaId, $contractorIds) {
-                    $q->whereBetween('date_at', [$startDate, $endDate]);
-                    if($pizzeriaId) {
-                        $q->where('pizzeria_id', $pizzeriaId);
-                    }
-                    if($contractorIds) {
-                        $q->whereHas('payeeContractor', function($q) use ($contractorIds) {
-                            $q->whereIn('id', $contractorIds);
-                        });
-                    }
-                },
-            'children.children.children.operations' =>
-                function($q) use ($startDate, $endDate, $pizzeriaId, $contractorIds) {
-                    $q->whereBetween('date_at', [$startDate, $endDate]);
-                    if($pizzeriaId) {
-                        $q->where('pizzeria_id', $pizzeriaId);
-                    }
-                    if($contractorIds) {
-                        $q->whereHas('payeeContractor', function($q) use ($contractorIds) {
-                            $q->whereIn('id', $contractorIds);
-                        });
-                    }
-                },
-            'children.children.children.children.operations' =>
-                function($q) use ($startDate, $endDate, $pizzeriaId, $contractorIds) {
-                    $q->whereBetween('date_at', [$startDate, $endDate]);
-                    if($pizzeriaId) {
-                        $q->where('pizzeria_id', $pizzeriaId);
-                    }
-                    if($contractorIds) {
-                        $q->whereHas('payeeContractor', function($q) use ($contractorIds) {
-                            $q->whereIn('id', $contractorIds);
-                        });
-                    }
-                },
-            'children.children.children.children.children.operations' =>
-                function($q) use ($startDate, $endDate, $pizzeriaId, $contractorIds) {
-                    $q->whereBetween('date_at', [$startDate, $endDate]);
-                    if($pizzeriaId) {
-                        $q->where('pizzeria_id', $pizzeriaId);
-                    }
-                    if($contractorIds) {
-                        $q->whereHas('payeeContractor', function($q) use ($contractorIds) {
-                            $q->whereIn('id', $contractorIds);
-                        });
-                    }
-                },
-            'children.children.children.children.children.children.operations' =>
-                function($q) use ($startDate, $endDate, $pizzeriaId, $contractorIds) {
-                    $q->whereBetween('date_at', [$startDate, $endDate]);
-                    if($pizzeriaId) {
-                        $q->where('pizzeria_id', $pizzeriaId);
-                    }
-                    if($contractorIds) {
-                        $q->whereHas('payeeContractor', function($q) use ($contractorIds) {
-                            $q->whereIn('id', $contractorIds);
-                        });
-                    }
-                },
+            'operations' => self::operationQueryClosure(
+                $startDate, $endDate, $pizzeriaId, $contractorIds, $purposeQuery
+            ),
+            'children.operations' => self::operationQueryClosure(
+                $startDate, $endDate, $pizzeriaId, $contractorIds, $purposeQuery
+            ),
+            'children.children.operations' => self::operationQueryClosure(
+                $startDate, $endDate, $pizzeriaId, $contractorIds, $purposeQuery
+            ),
+            'children.children.children.operations' => self::operationQueryClosure(
+                $startDate, $endDate, $pizzeriaId, $contractorIds, $purposeQuery
+            ),
+            'children.children.children.children.operations' => self::operationQueryClosure(
+                $startDate, $endDate, $pizzeriaId, $contractorIds, $purposeQuery
+            ),
+            'children.children.children.children.children.operations' => self::operationQueryClosure(
+                $startDate, $endDate, $pizzeriaId, $contractorIds, $purposeQuery
+            ),
+            'children.children.children.children.children.children.operations' => self::operationQueryClosure(
+                $startDate, $endDate, $pizzeriaId, $contractorIds, $purposeQuery
+            ),
         ];
+    }
+
+
+    private static function operationQueryClosure(
+        $startDate, $endDate, $pizzeriaId, $contractorIds, $purposeQuery
+    ): callable
+    {
+        return function($q) use ($startDate, $endDate, $pizzeriaId, $contractorIds, $purposeQuery) {
+            $q->whereBetween('date_at', [$startDate, $endDate]);
+
+            if($pizzeriaId) {
+                $q->where('pizzeria_id', $pizzeriaId);
+            }
+
+            if($contractorIds) {
+                $q->whereHas('payeeContractor', function($q) use ($contractorIds) {
+                    $q->whereIn('id', $contractorIds);
+                });
+            }
+
+            if($purposeQuery) {
+                $q->where('sber_paymentPurpose', 'like', "%$purposeQuery%");
+            }
+        };
     }
 }

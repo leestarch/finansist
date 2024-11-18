@@ -9,4 +9,5 @@ Route::any('/operations/summary', [\App\Http\Controllers\Controller::class, 'vue
 Route::any('/categories-tree', [\App\Http\Controllers\Controller::class, 'vue']);
 Route::any('/categories', [\App\Http\Controllers\Controller::class, 'vue']);
 Route::any('/operations/rule', [\App\Http\Controllers\Controller::class, 'vue']);
+Route::any('/contractors/{id}', [\App\Http\Controllers\Controller::class, 'vue']);
 Route::any('/contractors', [\App\Http\Controllers\Controller::class, 'vue']);

@@ -16,10 +16,10 @@ class OperationResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'amount' => $this->amount,
-            'description' => $this->description,
+            'sber_amountRub' => $this->sber_amountRub,
+            'sber_paymentPurpose' => $this->sber_paymentPurpose,
             'is_completed' => $this->is_completed,
-            'date' => $this->date,
+            'date_at' => $this->date,
             'categories' => implode(', ',$this->categories->pluck('name')->toArray()),
             'types' => implode(', ', $this->types->pluck('name')->toArray()),
         ];
