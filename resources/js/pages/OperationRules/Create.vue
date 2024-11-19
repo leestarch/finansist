@@ -1,6 +1,5 @@
 <script setup>
-import {onMounted, ref} from 'vue'
-import {useRoute} from "vue-router";
+import {ref} from 'vue'
 import {Notify} from "quasar";
 
 const categories = ref([])

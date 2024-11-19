@@ -18,7 +18,7 @@ class OperationSeeder extends Seeder
         $sqlContent = file_get_contents($sqlFilePath);
         DB::unprepared($sqlContent);
 
-        $sqlFilePath = storage_path('app/private/sber_transactions.sql');
+        $sqlFilePath = storage_path('app/private/operations.sql');
         $sqlContent = file_get_contents($sqlFilePath);
         DB::unprepared($sqlContent);
 

@@ -27,3 +27,7 @@ Route::prefix('contractors')->group(function () {
     Route::get('/{id}', [\App\Http\Controllers\Api\ContractorController::class, 'show']);
     Route::get('/{id}/check', [\App\Http\Controllers\Api\ContractorController::class, 'operationCheck']);
 });
+
+Route::prefix('pizzerias')->group(function () {
+    Route::get('/', [\App\Http\Controllers\Api\PizzeriaController::class, 'index']);
+});

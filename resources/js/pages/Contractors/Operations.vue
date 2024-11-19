@@ -105,6 +105,17 @@ onMounted(() => {
                   color="primary"
               />
             </span>
+            <span class="text-body2 q-mt-md">
+              Создать новую операцию:
+              <q-btn
+                  class="q-ml-sm"
+                  dense
+                  size="sm"
+                  :to="{name: 'OperationCreate', params: {contractorId: contractorId}}"
+                  label="создать"
+                  color="primary"
+              />
+            </span>
           </div>
         </div>
         <div class="col-9 bg-grey-3 q-px-sm ">

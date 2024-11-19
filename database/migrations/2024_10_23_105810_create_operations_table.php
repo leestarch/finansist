@@ -18,8 +18,11 @@ return new class extends Migration
             $table->bigInteger('sber_amountRub')->nullable();
             $table->string('sber_direction')->nullable();
             $table->text('sber_paymentPurpose')->nullable();
+            $table->string('sber_uuid')->nullable();
+            $table->string('sber_transactionId')->nullable();
             $table->foreignId('payer_contractor_id')->nullable();
-            $table->foreignId('payee_contractor_id')->nullable();
+            $table->foreignId('payee_conktractor_id')->nullable();
+
             $table->boolean('is_completed')->default(false);
             $table->softDeletes();
             $table->timestamps();

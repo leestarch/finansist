@@ -1,14 +1,17 @@
 <script setup>
-import {computed, onMounted, ref} from 'vue'
-import {Notify, useQuasar} from 'quasar'
+import {onMounted, ref} from 'vue'
+import {Notify} from 'quasar'
 import axios from 'axios'
 import {useRoute} from "vue-router";
 
 const route = useRoute()
 const categories = ref([])
+const pizzerias = ref([])
 const categoriesOptions = ref([])
 const types = ref([])
+
 const form = ref({
+  pizzeria: null,
   amount: '',
   description: '',
   is_completed: false,
@@ -35,6 +38,7 @@ const handleInput = () => {
 }
 
 const refresh = async () => {
+  await fetchPizzerias()
   try {
     const response = await axios.get('/api/operations/create')
     categories.value = response.data.categories
@@ -47,6 +51,21 @@ const refresh = async () => {
     })
   }
 }
+
+const fetchPizzerias = async () => {
+  try{
+    const response = await axios.get('/api/pizzerias')
+    pizzerias.value = response.data.data
+  }catch (e) {
+    Notify.create({
+      message:'Ошибка получения данных',
+      color:'red',
+      timeout: 2000
+    })
+  }
+}
+
+
 
 const submitForm = async () => {
   try {
@@ -86,15 +105,14 @@ const filterFn = (val, update) => {
 };
 
 onMounted(() => {
-  if (route.name == 'OperationCreate')
     refresh()
 })
 </script>
 
 <template>
   <q-page class="row shadow-3 bg-grey-2">
-    <div class="row q-mx-auto bg-white">
-      <q-card class="bg-white q-px-xl blue">
+    <div class="row q-mx-auto bg-white col-10 col-sm-8">
+      <q-card class="bg-white q-px-xl blue col-12">
         <div class="text-h4 q-mt-md">
           Создание новой операции
         </div>
@@ -115,7 +133,7 @@ onMounted(() => {
               dense
               outlined
               v-model="form.description"
-              label="Описание"
+              label="Назначение"
               required
           />
           <q-checkbox
@@ -143,6 +161,19 @@ onMounted(() => {
               v-model="form.type"
               :options="types"
               label="Фильтр по типам"
+              option-value="id"
+              option-label="name"
+
+          />
+          <q-select
+              class="col-3 q-mt-md"
+              dense
+              clearable
+              outlined
+              filled
+              v-model="form.pizzeria"
+              :options="pizzerias"
+              label="Пиццерия"
               option-value="id"
               option-label="name"
 
