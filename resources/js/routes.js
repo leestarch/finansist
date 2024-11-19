@@ -10,9 +10,14 @@ export default [
         name:'OperationCreate',
     },
     {
-        path:'/operations/rule',
-        component:() => import('@/pages/Operations/CreateRule.vue'),
+        path:'/operations/rules',
+        component:() => import('@/pages/OperationRules/Create.vue'),
         name:'CreateRule',
+    },
+    {
+        path:'/operations/rules/edit/:id',
+        component:() => import('@/pages/OperationRules/Edit.vue'),
+        name:'EditRule',
     },
     {
         path:'/operations/summary',
@@ -33,6 +38,16 @@ export default [
         path:'/contractors',
         component:() => import('@/pages/Contractors/Index.vue'),
         name:'ContractorIndex',
+    },
+    {
+        path:'/contractors/:id/rules',
+        component:() => import('@/pages/Contractors/Rules.vue'),
+        name:'ContractorRules',
+    },
+    {
+        path:'/contractors/:id/operations',
+        component:() => import('@/pages/Contractors/Operations.vue'),
+        name:'ContractorOperations',
     },
     {
         path:'/contractors/:id',

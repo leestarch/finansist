@@ -3,12 +3,12 @@ import {onMounted, ref} from 'vue'
 import {useRoute} from "vue-router";
 import {Notify} from "quasar";
 
-const categories = ref([])
-const contractors = ref([])
-const isCategoryLoading = ref(false)
-const isContractorLoading = ref(false)
+const route = useRoute()
+const ruleId = route.params.id
 
-const selectedContractors = ref([])
+const categories = ref([])
+const isCategoryLoading = ref(false)
+
 const selectedCategory = ref(null)
 
 const rule = ref({
@@ -16,28 +16,50 @@ const rule = ref({
   purpose_expression: ''
 })
 
-const submitForm = async () => {
-  rule.value.contractor_ids = selectedContractors.value.map((contractor) => contractor.id);
-  rule.value.category_id = selectedCategory?.value?.id;
-
-  try {
-    const response = await axios.post('/api/operations/rules', rule.value);
-    if(response.data.success) {
-      Notify.create({
-        message: "Rule created",
-        color: "green",
-      });
-    } else {
-      Notify.create({
-        message: "Rule creation failed",
-        color: "red",
-      });
-    }
-  } catch (e) {
+const refresh = async () => {
+  try{
+   const response = await axios.get(`/api/operations/rules/${ruleId}`, {
+     params:{
+        include: 'contractor,category'
+     }
+   })
+   rule.value = response.data.data
+  selectedCategory.value = rule.value.category
+  }catch (e) {
     Notify.create({
-      message: "Rule creation failed",
-      color: "red",
-    });
+      message:'Ошибка получения данных',
+      color:'red',
+      timeout: 2000
+    })
+  }
+}
+
+onMounted(async () => {
+  await refresh()
+})
+
+const submitForm = async () => {
+  try {
+    const response = await axios.put(`/api/operations/rules/${ruleId}`, rule.value)
+    if(response?.data?.success) {
+      Notify.create({
+        message:'Данные успешно сохранены',
+        color:'green',
+        timeout: 2000
+      })
+    }else{
+      Notify.create({
+        message:'Ошибка сохранения данных',
+        color:'red',
+        timeout: 2000
+      })
+    }
+  }catch (e) {
+    Notify.create({
+      message:'Ошибка сохранения данных',
+      color:'red',
+      timeout: 2000
+    })
   }
 }
 
@@ -63,27 +85,6 @@ const onCategorySelectChange = async (val, update, abort) => {
   }
 }
 
-const onContractorSelectChange = async (val, update, abort) => {
-  if (val.length > 4) {
-    isContractorLoading.value = true;
-    try {
-      const response = await axios.get('/api/contractors', {
-        params: {
-          q: val
-        }
-      });
-      contractors.value = response.data.data;
-      update(() => categories.value);
-    } catch (e) {
-      Notify.create({
-        message: "Fetching contragents failed",
-        color: "red",
-      });
-    }
-  }
-  isContractorLoading.value = false;
-}
-
 </script>
 
 <template>
@@ -94,7 +95,6 @@ const onContractorSelectChange = async (val, update, abort) => {
           Создание правила
         </div>
         <q-form class="q-mt-xl" @submit.prevent="submitForm">
-
           <q-select
               class="col-3 q-mt-md"
               dense
@@ -133,29 +133,9 @@ const onContractorSelectChange = async (val, update, abort) => {
               filled
           />
 
-          <q-select
-              class="col-3 q-mt-md"
-              dense
-              clearable
-              outlined
-              filled
-              v-model="selectedContractors"
-              :options="contractors"
-              label="Выберете контрагентов"
-              option-value="id"
-              option-label="name"
-              use-input
-              multiple
-
-              input-debounce="300"
-              hint="Start typing to search"
-              @filter="onContractorSelectChange"
-              :loading="isContractorLoading"
-          />
-
           <q-btn
               class="q-mt-md"
-              label="Submit"
+              label="Сохранить"
               type="submit"
               color="primary"
           />

@@ -15,9 +15,10 @@ class OperationRuleStore extends FormRequest
     {
         return [
             'name' => 'nullable|string',
-            'purpose_expression' => 'nullable|string',
+            'operation_type' => 'required|string|in:DEBIT,CREDIT',
             'contractor_ids' => 'required|array',
             'category_id' => 'required|integer',
+            'purpose_expression' => 'nullable|string',
         ];
     }
 }

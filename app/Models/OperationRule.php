@@ -4,12 +4,25 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Collection;
 
 class OperationRule extends Model
 {
     use HasFactory;
+
+    const DEBIT = 'DEBIT';
     protected $guarded = ['id'];
+
+    public function category(): BelongsTo
+    {
+        return $this->belongsTo(Category::class);
+    }
+
+    public function contractor(): BelongsTo
+    {
+        return $this->belongsTo(Contractor::class);
+    }
 
     public static function validateOperations(Collection $operations): int
     {
@@ -25,14 +38,14 @@ class OperationRule extends Model
                 if($expression = $rule->purpose_expression){
                     $isValid = self::validateExpression($operation, $expression);
                     if($isValid && $rule->contractor_id === $payeeContractorId){
-                        $operation->categories()->sync($rule->category_id);
-                        $updatedOperations++;
+                        $res = $operation->categories()->sync($rule->category_id);
+                        $updatedOperations = $updatedOperations + sizeof($res['updated']);
                         break;
                     }
                 }else{
                     if($rule->contractor_id === $payeeContractorId){
-                        $operation->categories()->sync($rule->category_id);
-                        $updatedOperations++;
+                        $res = $operation->categories()->sync($rule->category_id);
+                        $updatedOperations = $updatedOperations + sizeof($res['updated']);
                         break;
                     }
                 }

@@ -1,114 +1,115 @@
 <template>
-  <q-page v-if="treeCategories.length">
-    <q-spinner v-if="isFetching" color="primary" size="150px" class="q-my-md" />
-    <q-form @submit.prevent="applyFilters" class="items-center q-pa-md bg-grey-4">
-      <div class="row">
-        <q-input class="col-2 q-px-sm" clearable dense outlined filled v-model="filters.dateFrom" label="Дата начала" type="date" />
-        <q-input class="col-2 q-px-sm" dense clearable outlined filled v-model="filters.dateTo" label="Дата окончания" type="date" />
-        <q-select
-            class="col-3 q-px-sm"
-            dense outlined filled
-            label="Группировать по"
-            v-model="filters.groupBy"
-            :options="[
-                {label:'Дням', value:'daily'},
-                {label:'Неделям', value:'weekly'},
-                {label:'Месяцам', value: 'monthly'},
-                {label:'Кварталам', value: 'quarterly'},
-            ]"
-        >
-        </q-select>
-        <q-select
-            class="col-3 q-px-sm"
-            dense outlined filled
-            label="Пиццерия"
-            v-model="filters.pizzeria"
-            :options="pizzerias"
-            clearable
-            option-label="name"
-        >
-        </q-select>
-        <q-select
-            class="col-6 q-mt-sm "
-            dense
-            outlined
-            filled
-            label="Контрагенты (получатели)"
-            v-model="contractorIds"
-            :options="contractors"
-            use-input
-            multiple
-            clearable
-            option-label="name"
-            @filter="onContractorChange"
-            :loading="isContractorLoading"
+  <q-page v-if="treeCategories.length" class="bg-grey-2">
+    <div class="bg-white q-ma-sm q-pa-sm rounded-borders ">
+      <q-form @submit.prevent="applyFilters" class="items-center q-pa-md bg-grey-2 rounded-borders">
+        <div class="row">
+          <q-input class="col-2 q-px-sm" clearable dense outlined filled v-model="filters.dateFrom" label="Дата начала" type="date" />
+          <q-input class="col-2 q-px-sm" dense clearable outlined filled v-model="filters.dateTo" label="Дата окончания" type="date" />
+          <q-select
+              class="col-3 q-px-sm"
+              dense outlined filled
+              label="Группировать по"
+              v-model="filters.groupBy"
+              :options="[
+                  {label:'Дням', value:'daily'},
+                  {label:'Неделям', value:'weekly'},
+                  {label:'Месяцам', value: 'monthly'},
+                  {label:'Кварталам', value: 'quarterly'},
+              ]"
+          >
+          </q-select>
+          <q-select
+              class="col-3 q-px-sm"
+              dense outlined filled
+              label="Пиццерия"
+              v-model="filters.pizzeria"
+              :options="pizzerias"
+              clearable
+              option-label="name"
+          >
+          </q-select>
+          <q-select
+              class="col-6 q-mt-sm "
+              dense
+              outlined
+              filled
+              label="Контрагенты (получатели)"
+              v-model="contractorIds"
+              :options="contractors"
+              use-input
+              multiple
+              clearable
+              option-label="name"
+              @filter="onContractorChange"
+              :loading="isContractorLoading"
 
-        />
+          />
 
-        <q-input
-            class="col-6 q-mt-sm justify-center q-px-md"
-            dense
-            outlined
-            filled
-            clearable
-            label="Назначение платежа"
-            v-model="filters.purposeQuery"
-            option-label="name"
-        />
-      </div>
-      <div class="row q-mt-md">
-        <q-btn class="text-right" dense size="sm" type="submit" label="Применить фильтры" color="primary" />
-      </div>
-    </q-form>
-
-    <TreeTable
-        class="custom-tree-table q-mt-md q-px-sm"
-        :value="treeCategories"
-        tableStyle="min-width: 60rem; border-collapse: separate; border-spacing: 0 0.5rem "
-    >
-      <Column
-          field="name"
-          header="Категория"
-          expander
-          style="width: 20%; font-weight: bold;"
-      ></Column>
-
-      <!-- Render dynamic columns for each day -->
-      <Column
-          v-for="(date, index) in dateColumns"
-          :key="index"
-          :field="`date-${date}`"
-          style="min-width: 180px; padding-right: 1rem;"
+          <q-input
+              class="col-6 q-mt-sm justify-center q-px-md"
+              dense
+              outlined
+              filled
+              clearable
+              label="Назначение платежа"
+              v-model="filters.purposeQuery"
+              option-label="name"
+          />
+        </div>
+        <div class="row q-mt-md">
+          <q-btn class="text-right" dense size="sm" type="submit" label="Применить фильтры" color="primary" />
+        </div>
+      </q-form>
+      <TreeTable
+          class="custom-tree-table q-mt-md q-px-sm"
+          :value="treeCategories"
+          tableStyle="min-width: 60rem; border-collapse: separate; border-spacing: 0 0.5rem "
       >
-        <template #header="{node}" class="text-right">
-          <span class="text-center full-width">
-            {{ date }}
-          </span>
-        </template>
-        <template #body="{ node }">
-          <div class="q-pa-xs flex justify-between items-center full-width">
-            <span
-                :class="{
-                    'text-red': node.data[`date-${date}`]?.sum?.toString().startsWith('-'),
-                    'text-green': node.data[`date-${date}`]?.sum > 0,
-                    '': node.data[`date-${date}`]?.sum === 0
-                  }"
-            >
+        <Column
+            field="name"
+            header="Категория"
+            expander
+            style="width: 20%; font-weight: bold;"
+        ></Column>
+
+        <!-- Render dynamic columns for each day -->
+        <Column
+            v-for="(date, index) in dateColumns"
+            :key="index"
+            :field="`date-${date}`"
+            style="min-width: 180px; padding-right: 1rem;"
+        >
+          <template #header="{node}" class="text-right">
+            <span class="text-center full-width">
+              {{ date }}
+            </span>
+          </template>
+          <template #body="{ node }">
+            <div class="q-pa-xs flex justify-between items-center full-width">
+              <span
+                  :class="{
+                      'text-red': node.data[`date-${date}`]?.sum?.toString().startsWith('-'),
+                      'text-green': node.data[`date-${date}`]?.sum > 0,
+                      '': node.data[`date-${date}`]?.sum === 0
+                    }"
+              >
+                  {{
+                       node.data[`date-${date}`]?.sum ? formatNumber(node.data[`date-${date}`]?.sum) : '0.00'
+                  }}
+              </span>
+              <span class="q-ml-md">
                 {{
-                     node.data[`date-${date}`]?.sum ? formatNumber(node.data[`date-${date}`]?.sum) : '0.00'
+                  node.data[`date-${date}`]?.percentage_of_root
+                  ? node.data[`date-${date}`]?.percentage_of_root + '%'
+                  : ''
                 }}
-            </span>
-            <span class="q-ml-md">
-              {{
-                node.data[`date-${date}`]?.percentage_of_root
-                ? node.data[`date-${date}`]?.percentage_of_root + '%'
-                : ''
-              }}
-            </span>
-          </div>
-        </template>
-      </Column>
-    </TreeTable>
+              </span>
+            </div>
+          </template>
+        </Column>
+      </TreeTable>
+    </div>
+    <q-spinner v-if="isFetching" color="primary" size="150px" class="q-my-md" />
   </q-page>
 </template>
 

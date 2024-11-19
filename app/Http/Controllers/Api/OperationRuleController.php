@@ -27,6 +27,16 @@ class OperationRuleController extends Controller
         return OperationRuleResource::collection($rules->paginate($paginate));
     }
 
+    public function show(int $id, Request $request): OperationRuleResource
+    {
+        $ruleQuery = OperationRule::query();
+        if($include = $request->get('include')) {
+            $include = explode(',', $include);
+            $ruleQuery->with($include);
+        }
+        return OperationRuleResource::make($ruleQuery->findOrFail($id));
+    }
+
     public function store(OperationRuleStore $request): JsonResponse
     {
         $data = $request->validated();
@@ -39,6 +49,15 @@ class OperationRuleController extends Controller
             ]);
         }
 
+        return response()->json([
+            'success' => true,
+        ]);
+    }
+
+    public function update(int $id, Request $request): JsonResponse
+    {
+        $rule = OperationRule::query()->findOrFail($id);
+        $rule->update($request->only(['name', 'purpose_expression', 'category_id', 'contractor_id']));
         return response()->json([
             'success' => true,
         ]);

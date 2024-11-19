@@ -3,12 +3,10 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Operation\OperationRuleStore;
 use App\Http\Requests\Operation\OperationCreateRequest;
 use App\Http\Resources\OperationResource;
 use App\Models\Category;
 use App\Models\Operation;
-use App\Models\OperationRule;
 use App\Models\Type;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -38,12 +36,26 @@ class OperationController extends Controller
             });
         }
 
+        if ($category = $request->categoryQuery) {
+            $operationsQuery->whereHas('categories', function ($query) use ($category) {
+                $query->where('name', 'like', "%$category%");
+            });
+        }
+
         if ($dateFrom = $request->dateFrom) {
             $operationsQuery->whereDate('date_at', '>=', $dateFrom);
         }
 
+        if($purposeQuery = $request->purposeQuery){
+            $operationsQuery->where('sber_paymentPurpose', 'like', "%$purposeQuery%");
+        }
+
         if ($dateTo = $request->dateTo) {
             $operationsQuery->whereDate('date_at', '<=', $dateTo);
+        }
+
+        if ($dateAt = $request->dateAt) {
+            $operationsQuery->whereDate('date_at', $dateAt);
         }
 
         $operations = $operationsQuery->paginate($request->input('paginate', 50))

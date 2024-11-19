@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\OperationRule;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -18,9 +19,7 @@ return new class extends Migration
             $table->unsignedBigInteger('contractor_id')->nullable();
             $table->string('name', 100)->nullable();
             $table->string('purpose_expression')->nullable();
-
-            //TODO нужно ли это поле?
-//            $table->string('operation_type')->nullable();
+            $table->string('operation_type')->default(OperationRule::DEBIT)->nullable();
 
             $table->timestamps();
         });

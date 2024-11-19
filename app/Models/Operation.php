@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -52,5 +53,10 @@ class Operation extends Model
     public function getDateAttribute($value): string
     {
         return Carbon::parse($value)->format('d-m-Y');
+    }
+
+    public function scopeFilter(Builder $query, array $data)
+    {
+
     }
 }
