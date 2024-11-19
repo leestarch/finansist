@@ -57,7 +57,17 @@ class OperationRuleController extends Controller
     public function update(int $id, Request $request): JsonResponse
     {
         $rule = OperationRule::query()->findOrFail($id);
-        $rule->update($request->only(['name', 'purpose_expression', 'category_id', 'contractor_id']));
+        $operationType = $request->get('operation_type');
+        if(is_array($operationType)){
+            $operationType = $operationType['value'];
+        }
+        $rule->update([
+            'name' => $request->name,
+            'purpose_expression' => $request->purpose_expression,
+            'category_id' => $request->category_id,
+            'contractor_id' => $request->contractor_id,
+            'operation_type' => $operationType,
+        ]);
         return response()->json([
             'success' => true,
         ]);

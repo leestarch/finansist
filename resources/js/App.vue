@@ -22,7 +22,7 @@ onMounted(async () => {
           <q-toolbar>
               <q-btn  flat @click="drawer = !drawer" round dense icon="menu" />
               <q-toolbar-title>
-                <q-btn flat text-color="white" color="grey-8" :to="{name: 'Operations'}">Finansist</q-btn>
+                <q-btn flat text-color="white" color="grey-8" :to="{name: 'OperationIndex'}">Finansist</q-btn>
               </q-toolbar-title>
           </q-toolbar>
       </q-header>

@@ -16,15 +16,20 @@ const rule = ref({
   purpose_expression: ''
 })
 
+const operationTypes = [
+  {label: 'DEBIT', value: 'DEBIT'},
+  {label: 'CREDIT', value: 'CREDIT'},
+]
+
 const refresh = async () => {
   try{
-   const response = await axios.get(`/api/operations/rules/${ruleId}`, {
-     params:{
-        include: 'contractor,category'
-     }
-   })
-   rule.value = response.data.data
-  selectedCategory.value = rule.value.category
+     const response = await axios.get(`/api/operations/rules/${ruleId}`, {
+       params:{
+          include: 'contractor,category'
+       }
+     })
+     rule.value = response.data.data
+     selectedCategory.value = rule.value.category
   }catch (e) {
     Notify.create({
       message:'Ошибка получения данных',
@@ -89,7 +94,7 @@ const onCategorySelectChange = async (val, update, abort) => {
 
 <template>
   <q-page class="row shadow-3 bg-grey-2">
-    <div class="row q-mx-auto bg-white col-7">
+    <div class="row q-mx-auto bg-white col-10 col-sm-8">
       <q-card class="bg-white q-px-xl blue col-12">
         <div class="text-h4 q-mt-md">
           Создание правила
@@ -121,6 +126,17 @@ const onCategorySelectChange = async (val, update, abort) => {
               dense
               v-model="rule.name"
               filled
+          />
+
+          <q-select
+              class="col-3 q-mt-md"
+              dense
+              clearable
+              outlined
+              filled
+              v-model="rule.operation_type"
+              :options="operationTypes"
+              label="Тип операции"
           />
 
           <q-input
