@@ -91,9 +91,7 @@ const onContractorSelectChange = async (val, update, abort) => {
   }
   isContractorLoading.value = false;
 }
-
 </script>
-
 <template>
   <q-page class="row shadow-3 bg-grey-2">
     <div class="row q-mx-auto bg-white col-10 col-sm-8">
