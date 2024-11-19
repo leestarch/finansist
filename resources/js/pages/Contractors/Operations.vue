@@ -1,9 +1,8 @@
 <script setup>
 import {useRoute} from "vue-router";
 import {Notify} from "quasar";
-import {onMounted, ref} from "vue";
+import {onMounted, ref, watch} from "vue";
 import OperationTable from "../../components/Operations/OperationTable.vue";
-import PaginationComponent from "../../components/PaginationComponent.vue";
 
 const route = useRoute()
 const contractorId = route.params.id
@@ -23,6 +22,10 @@ const filters = ref({
   dateFrom: null,
   dateTo: null,
 })
+
+watch(filters, () => {
+  pagination.value.page = 1
+}, {deep: true})
 
 const refresh = async () => {
   try {

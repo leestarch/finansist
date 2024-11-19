@@ -1,5 +1,5 @@
 <script setup>
-import {onMounted, ref} from "vue";
+import {onMounted, ref, watch} from "vue";
 import {Notify} from "quasar";
 
 const contractors  = ref([])
@@ -14,6 +14,10 @@ const filters = ref({
   name: '',
   inn: '',
 });
+
+watch(filters, () => {
+  pagination.value.page = 1
+}, {deep: true})
 
 const refresh = async () => {
   try{

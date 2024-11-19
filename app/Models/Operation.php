@@ -55,8 +55,46 @@ class Operation extends Model
         return Carbon::parse($value)->format('d-m-Y');
     }
 
-    public function scopeFilter(Builder $query, array $data)
+    public function scopeFilter(Builder $query, array $filters): Builder
     {
+        if ($type = $filters['type'] ?? null) {
+            $query->whereHas('types', function ($subQuery) use ($type) {
+                $subQuery->where('name', $type['name']);
+            });
+        }
 
+        if($contractor = $filters['payee_contractor_id'] ?? null){
+            $query->where('payee_contractor_id', $contractor);
+        }
+
+        if ($category = $filters['category'] ?? null) {
+            $query->whereHas('categories', function ($subQuery) use ($category) {
+                $subQuery->where('name', $category['name']);
+            });
+        }
+
+        if ($category = $filters['categoryQuery'] ?? null) {
+            $query->whereHas('categories', function ($subQuery) use ($category) {
+                $subQuery->where('name', 'like', "%$category%");
+            });
+        }
+
+        if ($dateFrom = $filters['dateFrom'] ?? null) {
+            $query->whereDate('date_at', '>=', $dateFrom);
+        }
+
+        if($purposeQuery = $filters['purposeQuery'] ?? null){
+            $query->where('sber_paymentPurpose', 'like', "%$purposeQuery%");
+        }
+
+        if ($dateTo = $filters['dateTo'] ?? null) {
+            $query->whereDate('date_at', '<=', $dateTo);
+        }
+
+        if ($dateAt = $filters['dateAt'] ?? null) {
+            $query->whereDate('date_at', '=', Carbon::parse($dateAt));
+        }
+
+        return $query;
     }
 }

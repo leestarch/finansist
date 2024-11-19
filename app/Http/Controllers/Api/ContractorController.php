@@ -15,15 +15,8 @@ class ContractorController extends Controller
 {
     public function index(Request $request): AnonymousResourceCollection
     {
-        $name = $request->get('name');
-        $innKpp = $request->get('inn');
         $paginate = $request->get('paginate', 20);
-        $contractors = Contractor::query();
-        if($innKpp)
-            $contractors->where('inn_kpp', 'like', "%$innKpp%");
-
-        if($name)
-            $contractors->where('full_name', 'like', "%$name%");
+        $contractors = Contractor::query()->filter($request->all());
 
         return ContractorResource::collection($contractors->paginate($paginate));
     }

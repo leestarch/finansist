@@ -18,45 +18,8 @@ class OperationController extends Controller
     public function index(Request $request): AnonymousResourceCollection
     {
         $operationsQuery = Operation::query()
+            ->filter($request->all())
             ->with('categories', 'types');
-
-        if ($type = $request->type) {
-            $operationsQuery->whereHas('types', function ($query) use ($type) {
-                $query->where('name', $type['name']);
-            });
-        }
-
-        if($contractor = $request->payee_contractor_id){
-            $operationsQuery->where('payee_contractor_id', $contractor);
-        }
-
-        if ($category = $request->category) {
-            $operationsQuery->whereHas('categories', function ($query) use ($category) {
-                $query->where('name', $category['name']);
-            });
-        }
-
-        if ($category = $request->categoryQuery) {
-            $operationsQuery->whereHas('categories', function ($query) use ($category) {
-                $query->where('name', 'like', "%$category%");
-            });
-        }
-
-        if ($dateFrom = $request->dateFrom) {
-            $operationsQuery->whereDate('date_at', '>=', $dateFrom);
-        }
-
-        if($purposeQuery = $request->purposeQuery){
-            $operationsQuery->where('sber_paymentPurpose', 'like', "%$purposeQuery%");
-        }
-
-        if ($dateTo = $request->dateTo) {
-            $operationsQuery->whereDate('date_at', '<=', $dateTo);
-        }
-
-        if ($dateAt = $request->dateAt) {
-            $operationsQuery->whereDate('date_at', $dateAt);
-        }
 
         $operations = $operationsQuery->paginate($request->input('paginate', 50))
             ->withQueryString();

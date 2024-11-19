@@ -19,7 +19,7 @@ class OperationResource extends JsonResource
             'sber_amountRub' => $this->sber_amountRub,
             'sber_paymentPurpose' => $this->sber_paymentPurpose,
             'is_completed' => $this->is_completed,
-            'date_at' => $this->date,
+            'date_at' => $this->date_at,
             'categories' => implode(', ',$this->categories->pluck('name')->toArray()),
             'types' => implode(', ', $this->types->pluck('name')->toArray()),
         ];
