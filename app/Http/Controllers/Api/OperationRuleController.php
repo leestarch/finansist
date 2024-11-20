@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Operation\OperationRuleStore;
 use App\Http\Resources\OperationRuleResource;
+use App\Models\Contractor;
 use App\Models\OperationRule;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -38,6 +39,9 @@ class OperationRuleController extends Controller
     public function store(OperationRuleStore $request): JsonResponse
     {
         $data = $request->validated();
+        if(empty($data['contractor_ids'])){
+            $data['contractor_ids'] = Contractor::query()->pluck('id')->toArray();
+        }
         foreach ($data['contractor_ids'] as $contractorId){
             OperationRule::query()->firstOrCreate([
                 'category_id' => $data['category_id'],

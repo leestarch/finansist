@@ -14,9 +14,9 @@ class OperationRuleStore extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'nullable|string',
+            'name' => 'required|string',
             'operation_type' => 'required|string|in:DEBIT,CREDIT',
-            'contractor_ids' => 'required|array',
+            'contractor_ids' => 'nullable|array',
             'category_id' => 'required|integer',
             'purpose_expression' => 'nullable|string',
         ];
