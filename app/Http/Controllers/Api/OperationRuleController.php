@@ -14,15 +14,13 @@ class OperationRuleController extends Controller
 {
     public function index(Request $request): AnonymousResourceCollection
     {
-        $rules = OperationRule::query();
         $paginate = $request->get('paginate', 50);
-        if($request->category_id){
-            $rules->where('category_id', $request->category_id);
+        $rules = OperationRule::query();
+        if($load = $request->get('load')){
+            $rules->with($load);
         }
 
-        if ($request->contractor_id){
-            $rules->where('contractor_id', $request->contractor_id);
-        }
+        $rules->filter($request->all());
 
         return OperationRuleResource::collection($rules->paginate($paginate));
     }
@@ -68,6 +66,15 @@ class OperationRuleController extends Controller
             'contractor_id' => $request->contractor_id,
             'operation_type' => $operationType,
         ]);
+        return response()->json([
+            'success' => true,
+        ]);
+    }
+
+    public function destroy(int $id): JsonResponse
+    {
+        $rule = OperationRule::query()->findOrFail($id);
+        $rule->delete();
         return response()->json([
             'success' => true,
         ]);

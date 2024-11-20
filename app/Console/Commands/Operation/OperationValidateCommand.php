@@ -9,10 +9,12 @@ use Illuminate\Console\Command;
 class OperationValidateCommand extends Command
 {
     protected $signature = 'operation.validate';
-    public function handle()
+    public function handle(): void
     {
-        $operations = Operation::query()->where('sber_direction', Operation::DEBIT)->get();
-        $updatedOperationsCount = OperationRule::validateOperations($operations);
-        dd('Операции проверены, изменено категорий у операций: ' . $updatedOperationsCount);
+        $operationsQuery = Operation::query()->where('sber_direction', Operation::DEBIT);
+        foreach ($operationsQuery->cursor() as $operation) {
+            $updatedOperationsCount = OperationRule::validateOperation($operation);
+            dump('Операция проверена, изменено категорий у операций: ' . $updatedOperationsCount);
+        }
     }
 }

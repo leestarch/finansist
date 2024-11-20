@@ -97,7 +97,7 @@ const onCategorySelectChange = async (val, update, abort) => {
     <div class="row q-mx-auto bg-white col-10 col-sm-8">
       <q-card class="bg-white q-px-xl blue col-12">
         <div class="text-h4 q-mt-md">
-          Создание правила
+          Редактирование правила
         </div>
         <q-form class="q-mt-xl" @submit.prevent="submitForm">
           <q-select

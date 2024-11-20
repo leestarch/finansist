@@ -17,7 +17,10 @@ const pagination = ref({
 const fetchRules = async () => {
   try {
     const response = await axios.get(`/api/operations/rules`, {
-      params: {contractor_id: contractorId}
+      params: {
+        contractor_id: contractorId,
+        load: ['category'],
+      }
     })
     rules.value = response.data.data
   } catch (e) {

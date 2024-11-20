@@ -1,17 +1,41 @@
 <script setup>
 import { ref } from 'vue';
+import {Notify} from "quasar";
 
 defineProps({
   rules: Array,
   pagination: Object,
 });
 
+const emit = defineEmits(['update:pagination', 'refresh']);
+
 const columns = ref([
+  { name: 'category', label: 'Категория', field: row=>row?.category?.name, align: 'left' },
   { name: 'name', label: 'Имя', field: 'name', align: 'left' },
   { name: 'purpose_expression', label: 'Регулярное выражение', field: 'purpose_expression', align: 'left' },
+  { name: 'actions', label: 'Действия', align: 'left' },
 ]);
 
-const emit = defineEmits(['update:pagination', 'refresh']);
+const deleteRule = async (id) => {
+  try {
+    const response = await axios.delete(`/api/operations/rules/${id}`)
+    if(response?.data?.success) {
+      Notify.create({
+        message:'Правило успешно удалено',
+        color:'green',
+        timeout: 2000
+      })
+      emit('refresh')
+    }
+  }catch (e) {
+    Notify.create({
+      message:'Ошибка удаления',
+      color:'red',
+      timeout: 2000
+    })
+  }
+}
+
 const handlePaginationUpdate = (page) => {
   emit('update:pagination', { ...props.pagination, page });
 };
@@ -37,6 +61,20 @@ const handlePaginationUpdate = (page) => {
             </template>
             <template v-if="item.col.name === 'purpose_expression'">
               {{ item.row.purpose_expression }}
+            </template>
+            <template v-if="item.col.name === 'category'">
+              {{ item.row.category?.name }}
+            </template>
+            <template v-if="item.col.name === 'actions'">
+              <div class="row justify-center">
+                <q-icon
+                    @click="deleteRule(item.row.id)"
+                    name="delete"
+                    size="sm"
+                    class="cursor-pointer"
+                    color="negative"
+                />
+              </div>
             </template>
           </q-td>
         </template>

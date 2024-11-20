@@ -14,6 +14,7 @@ Route::group(['prefix' => 'operations'], function (){
         Route::get('/{id}', [\App\Http\Controllers\Api\OperationRuleController::class, 'show']);
         Route::post('/', [\App\Http\Controllers\Api\OperationRuleController::class, 'store']);
         Route::put('/{id}', [\App\Http\Controllers\Api\OperationRuleController::class, 'update']);
+        Route::delete('/{id}', [\App\Http\Controllers\Api\OperationRuleController::class, 'destroy']);
     });
 });
 
