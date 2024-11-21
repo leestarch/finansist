@@ -74,9 +74,13 @@ class OperationRule extends Model
 
     private static function validateExpression(Operation $operation, string $expression): bool
     {
-        $expression = Str::start($expression, '/');
-        $expression = Str::finish($expression, '/');
+        try {
+            return preg_match($expression, $operation->sber_paymentPurpose) === 1;
+        }catch (\Exception $e){
+            $expression = Str::start($expression, '/');
+            $expression = Str::finish($expression, '/');
+            return preg_match($expression, $operation->sber_paymentPurpose) === 1;
+        }
 
-        return preg_match($expression, $operation->sber_paymentPurpose) === 1;
     }
 }
