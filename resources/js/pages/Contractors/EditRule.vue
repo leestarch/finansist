@@ -25,9 +25,10 @@ const refresh = async () => {
   try{
      const response = await axios.get(`/api/operations/rules/${ruleId}`, {
        params:{
-          include: 'category'
+          include: 'contractor,category'
        }
      })
+    console.log(response.data.data)
      rule.value = response.data.data
      selectedCategory.value = rule.value.category
   }catch (e) {

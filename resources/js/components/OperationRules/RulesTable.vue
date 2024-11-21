@@ -2,7 +2,7 @@
 import { ref } from 'vue';
 import {Notify} from "quasar";
 
-defineProps({
+const props = defineProps({
   rules: Array,
   pagination: Object,
 });
@@ -11,7 +11,7 @@ const emit = defineEmits(['update:pagination', 'refresh']);
 
 const columns = ref([
   { name: 'category', label: 'Категория', field: row=>row?.category?.name, align: 'left' },
-  { name: 'name', label: 'Имя', field: 'name', align: 'left' },
+  { name: 'name', label: 'Название', field: 'name', align: 'left' },
   { name: 'purpose_expression', label: 'Регулярное выражение', field: 'purpose_expression', align: 'left' },
   { name: 'actions', label: 'Действия', align: 'left' },
 ]);
@@ -47,6 +47,7 @@ const handlePaginationUpdate = (page) => {
       <q-table
           class="q-mt-md q-px-sm"
           :rows="rules"
+          :pagination="{ rowsPerPage: pagination?.rowsPerPage }"
           :columns="columns"
           row-key="id"
           hide-bottom
@@ -56,14 +57,14 @@ const handlePaginationUpdate = (page) => {
           <q-td :item="item">
             <template v-if="item.col.name === 'name'">
               <router-link :to="`/operations/rules/edit/${item.row.id}`">
-                {{ item.row.name }}
+                {{ item.row?.name }}
               </router-link>
             </template>
             <template v-if="item.col.name === 'purpose_expression'">
-              {{ item.row.purpose_expression }}
+              {{ item.row?.purpose_expression }}
             </template>
             <template v-if="item.col.name === 'category'">
-              {{ item.row.category?.name }}
+              {{ item.row?.category?.name }}
             </template>
             <template v-if="item.col.name === 'actions'">
               <div class="row justify-center">

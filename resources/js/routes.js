@@ -10,9 +10,14 @@ export default [
         name:'OperationCreate',
     },
     {
-        path:'/operations/rules',
+        path:'/operations/rules/create',
         component:() => import('@/pages/OperationRules/Create.vue'),
         name:'CreateRule',
+    },
+    {
+        path:'/operations/rules',
+        component:() => import('@/pages/OperationRules/Index.vue'),
+        name:'IndexRule',
     },
     {
         path:'/operations/rules/edit/:id',

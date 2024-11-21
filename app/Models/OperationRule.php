@@ -35,6 +35,17 @@ class OperationRule extends Model
         if ($contractorId = $filter['contractor_id'] ?? null){
             $query->where('contractor_id', $contractorId);
         }
+
+        if($name = $filter['name'] ?? null){
+            $query->where('name', 'LIKE', "%$name%");
+        }
+        if($purpose_expression = $filter['purpose_expression'] ?? null){
+            $query->where('purpose_expression', 'LIKE', "%$purpose_expression%");
+        }
+        if($operation_type = $filter['operation_type'] ?? null){
+            $query->where('operation_type', $operation_type);
+        }
+
         return $query;
     }
 

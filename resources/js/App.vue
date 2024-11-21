@@ -54,7 +54,7 @@ onMounted(async () => {
 <!--                </q-item>-->
                 <q-item  v-ripple>
                   <q-item-section>
-                    <q-btn flat color="grey-8" :to="{name: 'CreateRule'}">Operation rule</q-btn>
+                    <q-btn flat color="grey-8" :to="{name: 'IndexRule'}">Правила операций</q-btn>
                   </q-item-section>
                 </q-item>
                 <q-item  v-ripple>

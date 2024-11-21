@@ -23,6 +23,16 @@ class OperationRuleController extends Controller
 
         $rules->filter($request->all());
 
+        if($request->uniqueOperations)
+            $rules->groupBy('name')
+                ->selectRaw('
+                name,
+                ANY_VALUE(id) as id, 
+                ANY_VALUE(purpose_expression) as purpose_expression, 
+                ANY_VALUE(category_id) as category_id, 
+                ANY_VALUE(operation_type) as operation_type
+            ');
+
         return OperationRuleResource::collection($rules->paginate($paginate));
     }
 
@@ -58,20 +68,26 @@ class OperationRuleController extends Controller
 
     public function update(int $id, Request $request): JsonResponse
     {
-        $rule = OperationRule::query()->findOrFail($id);
+        // TODO КАК ОБНОВЛЯТЬ КАТЕГОРИИ?
         $operationType = $request->get('operation_type');
         if(is_array($operationType)){
             $operationType = $operationType['value'];
         }
-        $rule->update([
-            'name' => $request->name,
-            'purpose_expression' => $request->purpose_expression,
-            'category_id' => $request->category_id,
-            'contractor_id' => $request->contractor_id,
-            'operation_type' => $operationType,
-        ]);
+
+        $rules = OperationRule::query()->where('name', $request->name)->get();
+        $updated = 0;
+        foreach ($rules as $rule){
+            $updated += $rule->update([
+                'name' => $request->name,
+                'purpose_expression' => $request->purpose_expression,
+                'category_id' => $request->category_id,
+                'operation_type' => $operationType,
+            ]);
+        }
+
         return response()->json([
             'success' => true,
+            'rules_updated' => $updated,
         ]);
     }
 
