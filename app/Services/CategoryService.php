@@ -22,6 +22,7 @@ final class CategoryService
             $endDate = now()->endOfMonth()->toDateString();
 
         $query = Category::query();
+
         if ($withSum) {
             $withDependencies = self::getDependencies($startDate, $endDate, $pizzeriaId, $contractorIds, $purposeQuery);
             $query->with($withDependencies);
@@ -157,6 +158,8 @@ final class CategoryService
     {
         return function($q) use ($startDate, $endDate, $pizzeriaId, $contractorIds, $purposeQuery) {
             $q->whereBetween('date_at', [$startDate, $endDate]);
+
+            $q->where('sber_direction', Operation::DEBIT);
 
             if($pizzeriaId) {
                 $q->where('pizzeria_id', $pizzeriaId);
