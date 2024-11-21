@@ -59,12 +59,16 @@ class OperationRule extends Model
             if($expression = $rule->purpose_expression){
                 $isValid = self::validateExpression($operation, $expression);
                 if($isValid && $rule->contractor_id === $payeeContractorId){
-                    $res = $operation->categories()->sync($rule->category_id);
+                    $res = $operation->categories()->sync([
+                        $rule->category_id => ['rule_id' => $rule->id]
+                    ]);
                     return sizeof($res['updated']);
                 }
             }else{
                 if($rule->contractor_id === $payeeContractorId){
-                    $res = $operation->categories()->sync($rule->category_id);
+                    $res = $operation->categories()->sync([
+                        $rule->category_id => ['rule_id' => $rule->id]
+                    ]);
                     return sizeof($res['updated']);
                 }
             }
