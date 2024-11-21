@@ -17,6 +17,13 @@ class OperationController extends Controller
 {
     public function index(Request $request): AnonymousResourceCollection
     {
+        if($categoryId = $request->input('parentCategoryId')) {
+            $category = Category::query()->find($categoryId);
+            $categoryIds = $category->geyNestedChildren();
+            $categoryIds[] = $categoryId;
+            $request->merge(['categoryIds' => $categoryIds]);
+        }
+
         $operationsQuery = Operation::query()
             ->filter($request->all())
             ->with('categories', 'types');

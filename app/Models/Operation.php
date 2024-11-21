@@ -22,7 +22,8 @@ class Operation extends Model
 
     public function categories(): BelongsToMany
     {
-        return $this->belongsToMany(Category::class, 'categories_operations');
+        return $this->belongsToMany(Category::class, 'categories_operations')
+        ->as('pivot');
     }
 
     public function types(): BelongsToMany
@@ -63,13 +64,36 @@ class Operation extends Model
             });
         }
 
-        if($contractor = $filters['payee_contractor_id'] ?? null){
-            $query->where('payee_contractor_id', $contractor);
+        if ($pizzeriaId = $filters['pizzeriaId'] ?? null) {
+            $query->where('pizzeria_id', $pizzeriaId);
+        }
+
+        if ($sberDirection = $filters['sberDirection'] ?? null) {
+            if(is_array($sberDirection))
+                $sberDirection = $sberDirection['value'];
+
+            $query->where('sber_direction', $sberDirection);
+        }
+
+        if($contractorIds = $filters['payee_contractor_id'] ?? null){
+            $query->whereIn('payee_contractor_id', $contractorIds);
         }
 
         if ($category = $filters['category'] ?? null) {
             $query->whereHas('categories', function ($subQuery) use ($category) {
                 $subQuery->where('name', $category['name']);
+            });
+        }
+
+        if ($categoryId = $filters['categoryId'] ?? null) {
+            $query->whereHas('categories', function (Builder $subQuery) use ($categoryId) {
+                $subQuery->where('categories.id', $categoryId);
+            });
+        }
+
+        if ($categoryIds = $filters['categoryIds'] ?? null) {
+            $query->whereHas('categories', function (Builder $subQuery) use ($categoryIds) {
+                $subQuery->whereIn('categories.id', (array) $categoryIds);
             });
         }
 

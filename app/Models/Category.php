@@ -33,4 +33,19 @@ class Category extends Model
         return $this->belongsToMany(Operation::class, 'categories_operations');
     }
 
+    public function geyNestedChildren(): array
+    {
+        $ids = [];
+        $this->load('children');
+
+        $getChildrenIds = function ($category) use (&$ids, &$getChildrenIds) {
+            foreach ($category->children as $child) {
+                $ids[] = $child->id;
+                $getChildrenIds($child);
+            }
+        };
+        $getChildrenIds($this);
+        return $ids;
+    }
+
 }

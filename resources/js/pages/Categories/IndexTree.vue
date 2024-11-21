@@ -88,20 +88,35 @@
             <div class="q-pa-xs flex justify-between items-center full-width">
               <span
                   :class="{
-                      'text-red': node.data[`date-${date}`]?.sum?.toString().startsWith('-'),
-                      'text-green': node.data[`date-${date}`]?.sum > 0,
-                      '': node.data[`date-${date}`]?.sum === 0
-                    }"
+                  'text-red': node.data[`date-${date}`]?.sum?.toString().startsWith('-'),
+                  'text-green': node.data[`date-${date}`]?.sum > 0,
+                  '': node.data[`date-${date}`]?.sum === 0
+                }"
               >
-                  {{
-                       node.data[`date-${date}`]?.sum ? formatNumber(node.data[`date-${date}`]?.sum) : '0.00'
-                  }}
+                <router-link
+                    v-if="node.data[`date-${date}`]?.sum"
+                    :to="{
+                      name: 'OperationIndex',
+                      query: {
+                        parentCategoryId: node?.key,
+                        dateFrom: filters.dateFrom,
+                        dateTo: filters.dateTo,
+                        purposeQuery: filters.purposeQuery,
+                        pizzeriaId: filters.pizzeria?.id,
+                        contractorIds: contractorIds?.map(contractor => contractor.id),
+                      }
+                    }"
+                    class="text-decoration-none"
+                >
+                  {{ formatNumber(node.data[`date-${date}`]?.sum) }}
+                </router-link>
+                <span v-else>0.00</span>
               </span>
               <span class="q-ml-md">
                 {{
                   node.data[`date-${date}`]?.percentage_of_root
-                  ? node.data[`date-${date}`]?.percentage_of_root + '%'
-                  : ''
+                      ? node.data[`date-${date}`]?.percentage_of_root + '%'
+                      : ''
                 }}
               </span>
             </div>
