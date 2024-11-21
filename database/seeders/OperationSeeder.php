@@ -22,8 +22,8 @@ class OperationSeeder extends Seeder
         $sqlContent = file_get_contents($sqlFilePath);
         DB::unprepared($sqlContent);
 
-        $sqlFilePath = storage_path('app/private/dodo_sber_transaction_budget_category.sql');
-        $sqlContent = file_get_contents($sqlFilePath);
-        DB::unprepared($sqlContent);
+//        $sqlFilePath = storage_path('app/private/dodo_sber_transaction_budget_category.sql');
+//        $sqlContent = file_get_contents($sqlFilePath);
+//        DB::unprepared($sqlContent);
     }
 }
