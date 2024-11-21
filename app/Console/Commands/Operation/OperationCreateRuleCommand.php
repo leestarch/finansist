@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands\Operation;
 
+use App\Models\Contractor;
 use App\Models\OperationRule;
 use Illuminate\Console\Command;
 
@@ -10,23 +11,170 @@ class OperationCreateRuleCommand extends Command
     protected $signature = 'operation.rules.create.command';
     public function handle()
     {
-
         OperationRule::query()->firstOrCreate([
-            'name' => 'НЕ принимаемые доходы',
-            'category_id' => 156,
-            'purpose_expression' => '/Возврат ошибочно перечисленных средств/'
+            'name' => 'Взносы в маркетинговый фонд',
+            'category_id' => 8,
+            'contractor_id' => 220,
         ]);
 
         OperationRule::query()->firstOrCreate([
-            'name' => 'НЕ принимаемые доходы',
-            'category_id' => 156,
-            'purpose_expression' => '/Возврат ошибочно перечисленных денежных средств/'
+            'name' => 'Выплата Дивидендов',
+            'category_id' => 123,
+            'contractor_id' => 177,
         ]);
 
         OperationRule::query()->firstOrCreate([
-            'name' => 'НЕ принимаемые доходы',
-            'category_id' => 156,
-            'purpose_expression' => '/\bВОЗВРАТ ДЕНЕЖНЫХ СРЕДСТВ ЗА ЗАКАЗ\b/i'
+            'name' => 'Вывоз отходов',
+            'category_id' => 12,
+            'contractor_id' => 895,
+        ]);
+
+        OperationRule::query()->firstOrCreate([
+            'name' => 'Охрана и безопасность',
+            'category_id' => 47,
+            'contractor_id' => 970,
+        ]);
+
+        OperationRule::query()->firstOrCreate([
+            'name' => 'Охрана и безопасность',
+            'category_id' => 47,
+            'contractor_id' => 986,
+        ]);
+
+        OperationRule::query()->firstOrCreate([
+            'name' => 'Программирование',
+            'category_id' => 57,
+            'contractor_id' => 128,
+            'purpose_expression' => '/сервиса Lookin. Team/',
+        ]);
+
+        OperationRule::query()->firstOrCreate([
+            'name' => 'Аренда',
+            'category_id' => 4,
+            'contractor_id' => 905,
+            'purpose_expression' => '/Оплата по Долгосрочному договору аренды/',
+        ]);
+
+        OperationRule::query()->firstOrCreate([
+            'name' => 'Аренда',
+            'category_id' => 4,
+            'contractor_id' => 904,
+            'purpose_expression' => '/Оплата по Долгосрочному договору аренды/',
+        ]);
+
+        OperationRule::query()->firstOrCreate([
+            'name' => 'HR-менеджер',
+            'category_id' => 2,
+            'contractor_id' => 1057,
+        ]);
+
+        OperationRule::query()->firstOrCreate([
+            'name' => 'Ревизор-контролер',
+            'category_id' => 81,
+            'contractor_id' => 319,
+        ]);
+
+        OperationRule::query()->firstOrCreate([
+            'name' => 'Закупщик сырья',
+            'category_id' => 20,
+            'contractor_id' => 295,
+        ]);
+
+        OperationRule::query()->firstOrCreate([
+            'name' => 'Рекрутинг',
+            'category_id' => 84,
+            'contractor_id' => 231,
+        ]);
+
+        OperationRule::query()->firstOrCreate([
+            'name' => 'Охрана и безопасность',
+            'category_id' => 47,
+            'contractor_id' => 672,
+        ]);
+
+        OperationRule::query()->firstOrCreate([
+            'name' => 'Расчетный Food Cost',
+            'category_id' => 79,
+            'contractor_id' => 265,
+        ]);
+
+        OperationRule::query()->firstOrCreate([
+            'name' => 'Рекрутинг',
+            'category_id' => 84,
+            'contractor_id' => 1041,
+        ]);
+
+        OperationRule::query()->firstOrCreate([
+            'name' => 'Охрана и безопасность',
+            'category_id' => 47,
+            'contractor_id' => 258,
+        ]);
+
+        OperationRule::query()->firstOrCreate([
+            'name' => 'Оплата труда кухни',
+            'category_id' => 44,
+            'contractor_id' => 282,
+        ]);
+
+        OperationRule::query()->firstOrCreate([
+            'name' => 'Расчетный Food Cost',
+            'category_id' => 79,
+            'contractor_id' => 757,
+        ]);
+
+        OperationRule::query()->firstOrCreate([
+            'name' => 'Страхование',
+            'category_id' => 90,
+            'contractor_id' => 17,
+        ]);
+
+        OperationRule::query()->firstOrCreate([
+            'name' => 'Дезинсекция и дезинфекция',
+            'category_id' => 16,
+            'contractor_id' => 276,
+        ]);
+
+        OperationRule::query()->firstOrCreate([
+            'name' => 'Дезинсекция и дезинфекция',
+            'category_id' => 16,
+            'contractor_id' => 276,
+        ]);
+
+        OperationRule::query()->firstOrCreate([
+            'name' => 'Дезинсекция и дезинфекция',
+            'category_id' => 16,
+            'contractor_id' => 898,
+        ]);
+
+        OperationRule::query()->firstOrCreate([
+            'name' => 'Оплата труда доставки',
+            'category_id' => 43,
+            'contractor_id' => 913,
+        ]);
+
+        OperationRule::query()->firstOrCreate([
+            'name' => 'Рекрутинг',
+            'category_id' => 84,
+            'contractor_id' => 275,
+        ]);
+
+        OperationRule::query()->firstOrCreate([
+            'name' => 'Оплата труда кухни',
+            'category_id' => 44,
+            'contractor_id' => 255,
+        ]);
+
+        OperationRule::query()->firstOrCreate([
+            'name' => 'Подрядчики',
+            'category_id' => 52,
+            'contractor_id' => 1037,
+        ]);
+
+        OperationRule::query()->firstOrCreate([
+            'name' => 'бухгалтерские услуги',
+            'category_id' => 6,
+            'contractor_id' => 255,
+            'purpose_expression' => '/бухгалтерские услуги/'
         ]);
 
         OperationRule::query()->firstOrCreate([
@@ -122,30 +270,6 @@ class OperationCreateRuleCommand extends Command
             'category_id' => 44,
             'contractor_id' => 234,
             'purpose_expression' => '/Отпускные по реестру/'
-        ]);
-
-        OperationRule::query()->firstOrCreate([
-            'name' => 'эквайринг',
-            'category_id' => 107,
-            'purpose_expression' => '/Зачисление средств по операциям эквайринга/'
-        ]);
-
-        OperationRule::query()->firstOrCreate([
-            'name' => 'эквайринг',
-            'category_id' => 107,
-            'purpose_expression' => '/Зачисление по операциям эквайринга/'
-        ]);
-
-        OperationRule::query()->firstOrCreate([
-            'name' => 'эквайринг',
-            'category_id' => 38,
-            'purpose_expression' => '/НДФЛ за/'
-        ]);
-
-        OperationRule::query()->firstOrCreate([
-            'name' => 'инкассация',
-            'category_id' => 24,
-            'purpose_expression' => '/^.*(?:При[её]м|при[её]м) (?:ден\.|день) (?:нал\.|нал) через УС.*$/u'
         ]);
 
         OperationRule::query()->firstOrCreate([
@@ -450,12 +574,6 @@ class OperationCreateRuleCommand extends Command
         }
 
         OperationRule::query()->firstOrCreate([
-            'name' => 'налог',
-            'category_id' => 36,
-            'purpose_expression' => '/Единый налоговый платеж/'
-        ]);
-
-        OperationRule::query()->firstOrCreate([
             'name' => 'расходные материлаы - ООО "ГУДВИН-М"',
             'category_id' => 73,
             'contractor_id' => 214,
@@ -565,60 +683,6 @@ class OperationCreateRuleCommand extends Command
         ]);
 
         OperationRule::query()->firstOrCreate([
-            'name' => 'Банковские услуги',
-            'category_id' => 6,
-            'purpose_expression' => '/Комиссия за обслуживание/'
-        ]);
-
-        OperationRule::query()->firstOrCreate([
-            'name' => 'Банковские услуги',
-            'category_id' => 6,
-            'purpose_expression' => '/Комиссия в другие банки/'
-        ]);
-
-        OperationRule::query()->firstOrCreate([
-            'name' => 'Банковские услуги',
-            'category_id' => 6,
-            'purpose_expression' => '/Комиссия за прием наличных денежных средств через банкомат/'
-        ]);
-
-        OperationRule::query()->firstOrCreate([
-            'name' => 'Оплата труда кухни',
-            'category_id' => 44,
-            'purpose_expression' => '/Расчет при увольнении по реестру/'
-        ]);
-
-        OperationRule::query()->firstOrCreate([
-            'name' => 'Банковские услуги',
-            'category_id' => 6,
-            'purpose_expression' => '/Комиссия внутри Сбербанка/'
-        ]);
-
-        OperationRule::query()->firstOrCreate([
-            'name' => 'Оплата труда кухни',
-            'category_id' => 44,
-            'purpose_expression' => '/Заработная плата/'
-        ]);
-
-        OperationRule::query()->firstOrCreate([
-            'name' => 'Оплата труда кухни',
-            'category_id' => 44,
-            'purpose_expression' => '/Аванс по заработной плате по реестру/'
-        ]);
-
-        OperationRule::query()->firstOrCreate([
-            'name' => 'Банковские услуги',
-            'category_id' => 6,
-            'purpose_expression' => '/Комиссия за услугу/'
-        ]);
-
-        OperationRule::query()->firstOrCreate([
-            'name' => 'Банковские услуги',
-            'category_id' => 6,
-            'purpose_expression' => '/Комиссия за перечисление средств/'
-        ]);
-
-        OperationRule::query()->firstOrCreate([
             'name' => 'Рекрутинг',
             'category_id' => 84,
             'contractor_id' => 275
@@ -649,51 +713,9 @@ class OperationCreateRuleCommand extends Command
         ]);
 
         OperationRule::query()->firstOrCreate([
-            'name' => 'Закупщик сырья',
-            'category_id' => 20,
-            'purpose_expression' => '/услуги по сопровождению закупочных процедур/'
-        ]);
-
-        OperationRule::query()->firstOrCreate([
-            'name' => 'Бухгалтерские услуги',
-            'category_id' => 7,
-            'purpose_expression' => '/выездные проверки и видеонаблюдение/'
-        ]);
-
-        OperationRule::query()->firstOrCreate([
-            'name' => 'Банковские услуги',
-            'category_id' => 6,
-            'purpose_expression' => '/Плата за пакет услуг Только для ИП/'
-        ]);
-
-        OperationRule::query()->firstOrCreate([
-            'name' => 'Охрана и безопасность',
-            'category_id' => 47,
-            'purpose_expression' => '/обслуживание систем пожарной безопасности/'
-        ]);
-
-        OperationRule::query()->firstOrCreate([
             'name' => 'Страхование',
             'category_id' => 90,
             'contractor_id' => 17
-        ]);
-
-        OperationRule::query()->firstOrCreate([
-            'name' => 'Банковские услуги',
-            'category_id' => 6,
-            'purpose_expression' => '/Компенсация по реестру/'
-        ]);
-
-        OperationRule::query()->firstOrCreate([
-            'name' => 'Электроэнергия',
-            'category_id' => 109,
-            'purpose_expression' => '/Электроэнергии/'
-        ]);
-
-        OperationRule::query()->firstOrCreate([
-            'name' => 'электроэнергия - АО "ЭР-ТЕЛЕКОМ ХОЛДИНГ',
-            'category_id' => 109,
-            'contractor_id' => 816
         ]);
 
         OperationRule::query()->firstOrCreate([
@@ -709,9 +731,9 @@ class OperationCreateRuleCommand extends Command
         ]);
 
         OperationRule::query()->firstOrCreate([
-            'name' => 'Оплата труда кухни',
-            'category_id' => 44,
-            'purpose_expression' => '/Взносы на обязательное страхование/'
+            'name' => 'электроэнергия - АО "ЭР-ТЕЛЕКОМ ХОЛДИНГ',
+            'category_id' => 109,
+            'contractor_id' => 816
         ]);
 
         OperationRule::query()->firstOrCreate([
@@ -730,12 +752,6 @@ class OperationCreateRuleCommand extends Command
             'name' => 'Бухгалтерские услуги',
             'category_id' => 7,
             'contractor_id' => 255
-        ]);
-
-        OperationRule::query()->firstOrCreate([
-            'name' => 'Распространение, размещение',
-            'category_id' => 72,
-            'purpose_expression' => '/организацию праздничного мероприятия/'
         ]);
 
         OperationRule::query()->firstOrCreate([
@@ -762,5 +778,349 @@ class OperationCreateRuleCommand extends Command
             'contractor_id' => 715
         ]);
 
+
+        foreach (Contractor::query()->cursor() as $contractor) {
+            $contractorId = $contractor->id;
+            OperationRule::query()->firstOrCreate([
+               'name' => 'Отпускные по реестру',
+               'category_id' => 44,
+               'contractor_id' => $contractorId,
+               'purpose_expression'=> '/Отпускные по реестру/',
+            ]);
+
+            OperationRule::query()->firstOrCreate([
+                'name' => 'Комиссия за обслуживание',
+                'category_id' => 6,
+                'contractor_id' => $contractorId,
+                'purpose_expression'=> '/Комиссия за обслуживание/',
+            ]);
+
+            OperationRule::query()->firstOrCreate([
+                'name' => 'Комиссия в другие банки',
+                'category_id' => 6,
+                'contractor_id' => $contractorId,
+                'purpose_expression'=> '/Комиссия в другие банки/',
+            ]);
+
+            OperationRule::query()->firstOrCreate([
+                'name' => 'Комиссия за прием наличных денежных сред',
+                'category_id' => 6,
+                'contractor_id' => $contractorId,
+                'purpose_expression'=> '/Комиссия за прием наличных денежных сред/',
+            ]);
+
+            OperationRule::query()->firstOrCreate([
+                'name' => 'Расчет при увольнении по реестру',
+                'category_id' => 44,
+                'contractor_id' => $contractorId,
+                'purpose_expression'=> '/Расчет при увольнении по реестру/',
+            ]);
+
+            OperationRule::query()->firstOrCreate([
+                'name' => 'Комиссия внутри Сбербанка',
+                'category_id' => 6,
+                'contractor_id' => $contractorId,
+                'purpose_expression'=> '/Комиссия внутри Сбербанка/',
+            ]);
+
+            OperationRule::query()->firstOrCreate([
+                'name' => 'Заработная плата',
+                'category_id' => 44,
+                'contractor_id' => $contractorId,
+                'purpose_expression'=> '/Заработная плата/',
+            ]);
+
+            OperationRule::query()->firstOrCreate([
+                'name' => 'Аванс по заработной плате по реестру',
+                'category_id' => 44,
+                'contractor_id' => $contractorId,
+                'purpose_expression'=> '/Аванс по заработной плате по реестру/',
+            ]);
+
+            OperationRule::query()->firstOrCreate([
+                'name' => 'Комиссия за услугу',
+                'category_id' => 6,
+                'contractor_id' => $contractorId,
+                'purpose_expression'=> '/Комиссия за услугу/',
+            ]);
+
+            OperationRule::query()->firstOrCreate([
+                'name' => 'Комиссия за перечисление средств',
+                'category_id' => 44,
+                'contractor_id' => $contractorId,
+                'purpose_expression'=> '/Комиссия за перечисление средств/',
+            ]);
+
+            OperationRule::query()->firstOrCreate([
+                'name' => 'услуги по сопровождению закупочных проце',
+                'category_id' => 20,
+                'contractor_id' => $contractorId,
+                'purpose_expression'=> '/услуги по сопровождению закупочных проце/',
+            ]);
+
+            OperationRule::query()->firstOrCreate([
+                'name' => 'выездные проверки и видеонаблюдение',
+                'category_id' => 81,
+                'contractor_id' => $contractorId,
+                'purpose_expression'=> '/выездные проверки и видеонаблюдение/',
+            ]);
+
+            OperationRule::query()->firstOrCreate([
+                'name' => 'Плата за пакет услуг Только для ИП',
+                'category_id' => 6,
+                'contractor_id' => $contractorId,
+                'purpose_expression'=> '/Плата за пакет услуг Только для ИП/',
+            ]);
+
+            OperationRule::query()->firstOrCreate([
+                'name' => 'обслуживание систем пожарной безопасности',
+                'category_id' => 47,
+                'contractor_id' => $contractorId,
+                'purpose_expression'=> '/обслуживание систем пожарной безопасности/',
+            ]);
+
+            OperationRule::query()->firstOrCreate([
+                'name' => 'Компенсации по реестру',
+                'category_id' => 47,
+                'contractor_id' => $contractorId,
+                'purpose_expression'=> '/Компенсации по реестру/',
+            ]);
+
+            OperationRule::query()->firstOrCreate([
+                'name' => 'Электроэнергия',
+                'category_id' => 109,
+                'contractor_id' => $contractorId,
+                'purpose_expression'=> '/Электроэнергии/',
+            ]);
+
+            OperationRule::query()->firstOrCreate([
+                'name' => 'Взносы на обязательное страхование',
+                'category_id' => 44,
+                'contractor_id' => $contractorId,
+                'purpose_expression'=> '/Взносы на обязательное страхование/',
+            ]);
+
+            OperationRule::query()->firstOrCreate([
+                'name' => 'организация праздничного мероприятия',
+                'category_id' => 72,
+                'contractor_id' => $contractorId,
+                'purpose_expression'=> '/организацию праздничного мероприятия/',
+            ]);
+
+            OperationRule::query()->firstOrCreate([
+                'name' => 'Комиссия за предоставл. информации об опе',
+                'category_id' => 6,
+                'contractor_id' => $contractorId,
+                'purpose_expression'=> '/Комиссия за предоставл. информации об опе/',
+            ]);
+
+            OperationRule::query()->firstOrCreate([
+                'name' => '2636218750-23-1.',
+                'category_id' => 169,
+                'contractor_id' => $contractorId,
+                'purpose_expression'=> '/2636218750-23-1/',
+            ]);
+
+            OperationRule::query()->firstOrCreate([
+                'name' => 'НЕ принимаемые доходы',
+                'category_id' => 156,
+                'contractor_id' => $contractorId,
+                'purpose_expression' => '/Возврат ошибочно перечисленных средств/'
+            ]);
+
+            OperationRule::query()->firstOrCreate([
+                'name' => 'НЕ принимаемые доходы',
+                'category_id' => 156,
+                'contractor_id' => $contractorId,
+                'purpose_expression' => '/Возврат ошибочно перечисленных денежных средств/'
+            ]);
+
+            OperationRule::query()->firstOrCreate([
+                'name' => 'НЕ принимаемые доходы',
+                'category_id' => 156,
+                'contractor_id' => $contractorId,
+                'purpose_expression' => '/\bВОЗВРАТ ДЕНЕЖНЫХ СРЕДСТВ ЗА ЗАКАЗ\b/i'
+            ]);
+
+            OperationRule::query()->firstOrCreate([
+                'name' => 'эквайринг',
+                'category_id' => 107,
+                'contractor_id' => $contractorId,
+                'purpose_expression' => '/Зачисление средств по операциям эквайринга/'
+            ]);
+
+            OperationRule::query()->firstOrCreate([
+                'name' => 'эквайринг',
+                'category_id' => 107,
+                'contractor_id' => $contractorId,
+                'purpose_expression' => '/Зачисление по операциям эквайринга/'
+            ]);
+
+            OperationRule::query()->firstOrCreate([
+                'name' => 'эквайринг',
+                'category_id' => 38,
+                'contractor_id' => $contractorId,
+                'purpose_expression' => '/НДФЛ за/'
+            ]);
+
+            OperationRule::query()->firstOrCreate([
+                'name' => 'инкассация',
+                'category_id' => 24,
+                'contractor_id' => $contractorId,
+                'purpose_expression' => '/^.*(?:При[её]м|при[её]м) (?:ден\.|день) (?:нал\.|нал) через УС.*$/u'
+            ]);
+
+            OperationRule::query()->firstOrCreate([
+                'name' => 'налог',
+                'category_id' => 36,
+                'contractor_id' => $contractorId,
+                'purpose_expression' => '/Единый налоговый платеж/'
+            ]);
+
+            OperationRule::query()->firstOrCreate([
+                'name' => 'Банковские услуги',
+                'category_id' => 6,
+                'contractor_id' => $contractorId,
+                'purpose_expression' => '/Комиссия за обслуживание/'
+            ]);
+
+            OperationRule::query()->firstOrCreate([
+                'name' => 'Банковские услуги',
+                'category_id' => 6,
+                'contractor_id' => $contractorId,
+                'purpose_expression' => '/Комиссия в другие банки/'
+            ]);
+
+            OperationRule::query()->firstOrCreate([
+                'name' => 'Банковские услуги',
+                'category_id' => 6,
+                'contractor_id' => $contractorId,
+                'purpose_expression' => '/Комиссия за прием наличных денежных средств через банкомат/'
+            ]);
+
+            OperationRule::query()->firstOrCreate([
+                'name' => 'Оплата труда кухни',
+                'category_id' => 44,
+                'contractor_id' => $contractorId,
+                'purpose_expression' => '/Расчет при увольнении по реестру/'
+            ]);
+
+            OperationRule::query()->firstOrCreate([
+                'name' => 'Банковские услуги',
+                'category_id' => 6,
+                'contractor_id' => $contractorId,
+                'purpose_expression' => '/Комиссия внутри Сбербанка/'
+            ]);
+
+            OperationRule::query()->firstOrCreate([
+                'name' => 'Оплата труда кухни',
+                'category_id' => 44,
+                'contractor_id' => $contractorId,
+                'purpose_expression' => '/Заработная плата/'
+            ]);
+
+            OperationRule::query()->firstOrCreate([
+                'name' => 'Оплата труда кухни',
+                'category_id' => 44,
+                'contractor_id' => $contractorId,
+                'purpose_expression' => '/Аванс по заработной плате по реестру/'
+            ]);
+
+            OperationRule::query()->firstOrCreate([
+                'name' => 'Банковские услуги',
+                'category_id' => 6,
+                'contractor_id' => $contractorId,
+                'purpose_expression' => '/Комиссия за услугу/'
+            ]);
+
+            OperationRule::query()->firstOrCreate([
+                'name' => 'Банковские услуги',
+                'category_id' => 6,
+                'contractor_id' => $contractorId,
+                'purpose_expression' => '/Комиссия за перечисление средств/'
+            ]);
+
+            OperationRule::query()->firstOrCreate([
+                'name' => 'Закупщик сырья',
+                'category_id' => 20,
+                'contractor_id' => $contractorId,
+                'purpose_expression' => '/услуги по сопровождению закупочных процедур/'
+            ]);
+
+            OperationRule::query()->firstOrCreate([
+                'name' => 'Бухгалтерские услуги',
+                'category_id' => 7,
+                'contractor_id' => $contractorId,
+                'purpose_expression' => '/выездные проверки и видеонаблюдение/'
+            ]);
+
+            OperationRule::query()->firstOrCreate([
+                'name' => 'Банковские услуги',
+                'category_id' => 6,
+                'contractor_id' => $contractorId,
+                'purpose_expression' => '/Плата за пакет услуг Только для ИП/'
+            ]);
+
+            OperationRule::query()->firstOrCreate([
+                'name' => 'Охрана и безопасность',
+                'category_id' => 47,
+                'contractor_id' => $contractorId,
+                'purpose_expression' => '/обслуживание систем пожарной безопасности/'
+            ]);
+
+            OperationRule::query()->firstOrCreate([
+                'name' => 'Банковские услуги',
+                'category_id' => 6,
+                'contractor_id' => $contractorId,
+                'purpose_expression' => '/Компенсация по реестру/'
+            ]);
+
+            OperationRule::query()->firstOrCreate([
+                'name' => 'Электроэнергия',
+                'category_id' => 109,
+                'contractor_id' => $contractorId,
+                'purpose_expression' => '/Электроэнергии/'
+            ]);
+
+
+            OperationRule::query()->firstOrCreate([
+                'name' => 'Оплата труда кухни',
+                'category_id' => 44,
+                'contractor_id' => $contractorId,
+                'purpose_expression' => '/Взносы на обязательное страхование/'
+            ]);
+
+            OperationRule::query()->firstOrCreate([
+                'name' => 'Распространение, размещение',
+                'category_id' => 72,
+                'contractor_id' => $contractorId,
+                'purpose_expression' => '/организацию праздничного мероприятия/'
+            ]);
+        }
+
     }
+    // Массив категорий из списка тг для создания правил
+//$data = [
+//  2 => "HR-менеджер"
+//  4 => "Аренда"
+//  6 => "Банковские услуги"
+//  7 => "Бухгалтерские услуги"
+//  8 => "Взносы в маркетинговый фонд"
+//  12 => "Вывоз отходов"
+//  16 => "Дезинсекция и дезинфекция"
+//  20 => "Закупщик сырья"
+//  43 => "Оплата труда доставки"
+//  44 => "Оплата труда кухни"
+//  47 => "Охрана и безопасность"
+//  52 => "Подрядчики"
+//  57 => "Программирование"
+//  72 => "Распространение, размещение"
+//  79 => "Расчетный Food Cost"
+//  81 => "Ревизор-контролер"
+//  84 => "Рекрутинг"
+//  90 => "Страхование"
+//  109 => "Электроэнергия"
+//  123 => "Выплата Дивидендов"
+//  169 => "Полученные займы"
+//];
 }
