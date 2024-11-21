@@ -90,7 +90,7 @@ final class CategoryService
                 $rootSumForDate = $rootTotals[$date]['sum'] ?? 0;
                 $data['percentage_of_root'] =
                     number_format(
-                        $rootSumForDate > 0 ? ($data['sum'] / $rootSumForDate) * 100 : 0,
+                        ($data['sum'] / $rootSumForDate) * 100,
                         2
                     );
             }
