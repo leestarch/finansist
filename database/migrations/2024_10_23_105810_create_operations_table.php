@@ -24,6 +24,7 @@ return new class extends Migration
             $table->foreignId('payee_contractor_id')->nullable();
 
             $table->boolean('is_completed')->default(false);
+            $table->boolean('is_manual')->default(false);
             $table->softDeletes();
             $table->timestamps();
         });

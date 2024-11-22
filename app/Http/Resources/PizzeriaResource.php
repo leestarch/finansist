@@ -15,6 +15,7 @@ class PizzeriaResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
+            'id' => $this->id,
             'name' => $this->name,
             'inn' => $this->inn,
             'planfact_cash_account' => $this->planfact_cash_account,

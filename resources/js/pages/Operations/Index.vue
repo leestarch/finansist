@@ -1,15 +1,26 @@
 <script setup>
-import {computed, onMounted, ref, watch} from "vue";
-import {useRoute} from "vue-router";
+import {onMounted, ref, watch} from "vue";
+import {useRoute, useRouter} from "vue-router";
 import {Notify} from "quasar";
 import OperationTable from "../../components/Operations/OperationTable.vue";
-const route = useRoute()
+import { startOfMonth, endOfMonth, startOfWeek, endOfWeek, startOfQuarter,addWeeks, endOfQuarter, parse, format } from 'date-fns';
+import axios from "axios";
+
+const route = useRoute();
+const router = useRouter();
+
+const pizzerias = ref([])
+const pizzeriaIds = ref(null)
+
 const filterParams = route.query
-
-
 const operations  = ref([])
-const totalIncome = ref(0)
-const totalExpense = ref(0)
+
+const contractorsOptions = ref([])
+const contractors = ref([])
+const contractorIds = ref([])
+const isContractorLoading = ref(false)
+
+const totalAmount = ref(0)
 
 const pagination = ref({
   page: 1,
@@ -21,7 +32,8 @@ const filters = ref({
   dateFrom: '',
   dateTo: '',
   categoryQuery: '',
-  name: '',
+  parentCategoryId: null,
+  pizzerias: [],
   purpose_expression: '',
   sberDirection: null,
 });
@@ -31,11 +43,16 @@ watch(filters, () => {
 }, {deep: true})
 
 const refresh = async (p) => {
-  console.log(filters.value)
   try{
-    const response = await axios.get('/api/operations/', {params: {...filters.value, page: pagination.value.page}})
+    const response = await axios.get('/api/operations/', {params: {
+      ...filters.value,
+        page: pagination.value.page,
+        contractorIds: contractorIds.value,
+        pizzeriaIds: pizzeriaIds.value,
+    }})
 
     operations.value = response?.data?.data
+    totalAmount.value = operations.value.reduce((acc, operation) => acc + operation?.sber_amountRub, 0)
 
     pagination.value.rowsNumber = response.data?.meta?.total
     pagination.value.page = response.data?.meta?.current_page
@@ -49,18 +66,44 @@ const refresh = async (p) => {
   }
 }
 
-const columns = [
-  { name: 'categories', label: 'Категория', field: 'categories', align:'left'},
-  { name: 'description', label: 'Описание', field: 'description', align:'left'},
-  { name: 'types', label: 'Тип', field: 'types', align:'left'},
-  { name: 'is_completed', label: 'Статус', field: 'is_completed', align:'left'},
-  { name: 'date', label: 'Дата', field: 'date', align:'left'},
-  { name: 'amount', label: 'Сумма', field: 'amount', align:'left'},
-];
+const onContractorChange  = async (val, update, abort) => {
+  if (val.length > 4) {
+    isContractorLoading.value = true;
+    await fetchContractors(val);
+    update(() => contractorsOptions.value);
 
-const updatePagination = (newPagination) => {
-  pagination.value = newPagination;
-  applyFilters();
+  } else {
+    contractorsOptions.value = [];
+    update(() => contractorsOptions.value);
+  }
+};
+
+const fetchContractors = async (val) => {
+  try {
+    const response = await axios.get('/api/contractors', {
+      params: {
+        q: val || '',
+        ids: contractorIds.value,
+      },
+    });
+    contractorsOptions.value = response.data.data;
+    contractors.value = contractorsOptions.value.map((contractor) => ({
+      ...contractor,
+      value: contractor.id,
+      label: contractor.name,
+    }));
+  } catch (error) {
+  } finally {
+    isContractorLoading.value = false;
+  }
+};
+
+const fetchPizzerias = async () => {
+  try {
+    const response = await axios.get('/api/pizzerias');
+    pizzerias.value = response.data.data;
+  } catch (error) {
+  }
 };
 
 const applyFilters = () => {
@@ -68,22 +111,65 @@ const applyFilters = () => {
   refresh(sanitizedFilters)
 };
 
-const formatNumber = (value) => {
-  return new Intl.NumberFormat('ru-RU', {
-    style: 'decimal',
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  }).format(value)
+onMounted(async () => {
+    await fetchPizzerias()
+
+    await parseParams(filterParams)
+
+    if (contractorIds.value.length)
+      await fetchContractors()
+
+    if(pizzeriaIds.value.length){
+      filters.value.pizzerias = pizzerias.value.filter(pizzeria =>
+          pizzeriaIds.value.includes(String(pizzeria.id)))
+    }
+
+    await refresh()
+})
+
+const parseParams = async (filterParams) => {
+  contractorIds.value = filterParams.contractorIds || [];
+  filters.value.parentCategoryId = filterParams.parentCategoryId || null;
+
+  pizzeriaIds.value = filterParams.pizzeriaIds || [];
+
+  if (filterParams?.groupBy && filterParams?.date) {
+    const { groupBy, date } = filterParams;
+
+    switch (groupBy) {
+      case 'monthly': {
+        const parsedDate = parse(date, 'MM-yyyy', new Date());
+        filters.value.dateFrom = format(startOfMonth(parsedDate), 'yyyy-MM-dd');
+        filters.value.dateTo = format(endOfMonth(parsedDate), 'yyyy-MM-dd');
+        break;
+      }
+      case 'weekly': {
+        const [week, year] = date.split('-').map(Number);
+        const firstDayOfYear = new Date(year, 0, 1);
+        const weekStartDate = addWeeks(firstDayOfYear, week - 1);
+
+        filters.value.dateFrom = format(startOfWeek(weekStartDate, { weekStartsOn: 1 }), 'yyyy-MM-dd'); // Monday
+        filters.value.dateTo = format(endOfWeek(weekStartDate, { weekStartsOn: 1 }), 'yyyy-MM-dd'); // Sunday
+        break;
+      }
+      case 'quarterly': {
+        const parsedDate = parse(date, 'Q-yyyy', new Date());
+        filters.value.dateFrom = format(startOfQuarter(parsedDate), 'yyyy-MM-dd');
+        filters.value.dateTo = format(endOfQuarter(parsedDate), 'yyyy-MM-dd');
+        break;
+      }
+      default:
+        const parsedDate = parse(date, 'd-MM-yyyy', new Date());
+        filters.value.dateFrom = format(parsedDate, 'yyyy-MM-dd');
+        filters.value.dateTo = format(parsedDate, 'yyyy-MM-dd');
+    }
+  }
 }
 
-const formattedIncome = computed(() => formatNumber(totalIncome.value))
-const formattedExpense = computed(() => formatNumber(totalExpense.value))
-const formattedDifference = computed(() => formatNumber(totalIncome.value - Math.abs(totalExpense.value)))
+const clearFilters = async () => {
+  await router.push({ path: route.path, query: {} });
+}
 
-onMounted(() => {
-    filters.value = filterParams ? filterParams : filters.value
-    refresh()
-})
 </script>
 <template>
   <q-page v-if="operations">
@@ -100,15 +186,20 @@ onMounted(() => {
             v-model="filters.categoryQuery"
             label="Фильтр по категориям"
         />
-        <q-input
+        <q-select
             class="col-3 q-px-sm q-mt-sm"
-            clearable
             dense
             outlined
             filled
-            v-model="filters.name"
-            label="Название"
-        />
+            label="Пиццерия"
+            v-model="filters.pizzerias"
+            :options="pizzerias"
+            clearable
+            option-label="name"
+            option-value="id"
+            multiple
+        >
+        </q-select>
 
         <q-input
             class="col-3 q-px-sm q-mt-sm"
@@ -133,20 +224,43 @@ onMounted(() => {
                 {label: 'CREDIT', value: 'CREDIT'},
               ]"
         />
+
+        <q-select
+            class="col-6 q-mt-sm"
+            dense
+            outlined
+            filled
+            label="Контрагенты (получатели)"
+            v-model="contractors"
+            :options="contractorsOptions"
+            use-input
+            multiple
+            clearable
+            option-label="name"
+            @filter="onContractorChange"
+            :loading="isContractorLoading"
+
+        />
       </div>
       <div class="row q-mt-md">
         <q-btn class="text-right" dense size="sm" type="submit" label="Применить фильтры" color="primary" />
+        <q-btn class="text-right q-ml-sm" dense size="sm" @click="clearFilters" label="Очистить фильтры" color="primary" />
       </div>
       <div class="row justify-between items-center q-mt-md">
-        <div>
-          <q-btn
-              to="/operations/create"
-              class="text-right"
-              dense
-              size="sm"
-              label="Создать операцию"
-              color="primary"
-          />
+        <div class="row justify-between full-width">
+          <div>
+            <q-btn
+                to="/operations/create"
+                class="text-right"
+                dense
+                size="sm"
+                label="Создать операцию"
+                color="primary"
+            />
+          </div>
+          <div>
+            <p class="text-body2 q-px-sm q-py-xs bg-primary text-white rounded-borders">Итого: {{totalAmount}}</p>
+          </div>
         </div>
       </div>
     </q-form>

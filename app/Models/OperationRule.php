@@ -60,6 +60,9 @@ class OperationRule extends Model
 
     public static function validateOperation($operation): int
     {
+        //Если операция изменена вручную - не меняем категории
+        if($operation->is_manual) return 0;
+
         $payeeContractorId = $operation->payee_contractor_id;
         $rules = OperationRule::query()->where('contractor_id', $payeeContractorId)->get()
             ->sortByDesc(function ($rule) {

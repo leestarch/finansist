@@ -68,6 +68,10 @@ class Operation extends Model
             $query->where('pizzeria_id', $pizzeriaId);
         }
 
+        if ($pizzeriaIds = $filters['pizzeriaIds'] ?? null) {
+            $query->whereIn('pizzeria_id', $pizzeriaIds);
+        }
+
         if ($sberDirection = $filters['sberDirection'] ?? null) {
             if(is_array($sberDirection))
                 $sberDirection = $sberDirection['value'];
@@ -85,9 +89,15 @@ class Operation extends Model
             });
         }
 
+        if($contractorIds = $filters['contractorIds'] ?? null){
+            $query->whereHas('payeeContractor', function($q) use ($contractorIds) {
+                $q->whereIn('id', $contractorIds);
+            });
+        }
+
         if ($categoryId = $filters['categoryId'] ?? null) {
             $query->whereHas('categories', function (Builder $subQuery) use ($categoryId) {
-                $subQuery->where('categories.id', $categoryId);
+                $subQuery->where('categories.id', (int) $categoryId);
             });
         }
 
@@ -103,12 +113,12 @@ class Operation extends Model
             });
         }
 
-        if ($dateFrom = $filters['dateFrom'] ?? null) {
-            $query->whereDate('date_at', '>=', $dateFrom);
-        }
-
         if($purposeQuery = $filters['purposeQuery'] ?? null){
             $query->where('sber_paymentPurpose', 'like', "%$purposeQuery%");
+        }
+
+        if ($dateFrom = $filters['dateFrom'] ?? null) {
+            $query->whereDate('date_at', '>=', $dateFrom);
         }
 
         if ($dateTo = $filters['dateTo'] ?? null) {

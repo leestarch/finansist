@@ -22,7 +22,9 @@
               class="col-3 q-px-sm"
               dense outlined filled
               label="Пиццерия"
-              v-model="filters.pizzeria"
+              multiple
+              use-chips
+              v-model="filters.pizzerias"
               :options="pizzerias"
               clearable
               option-label="name"
@@ -100,10 +102,11 @@
                       name: 'OperationIndex',
                       query: {
                         parentCategoryId: node?.key,
-                        dateAt: date,
+                        date: date,
+                        groupBy: filters?.groupBy?.value || 'daily',
                         purposeQuery: filters.purposeQuery,
-                        pizzeriaId: filters.pizzeria?.id,
-                        contractorIds: contractorIds?.map(contractor => contractor.id),
+                        pizzeriaIds: filters.pizzerias?.map(pizzeria => pizzeria.id),
+                        contractorIds: contractorIds.map(contractor => contractor.id),
                       }
                     }"
                     class="text-decoration-none"
@@ -209,7 +212,7 @@ const filters = ref({
   type: null,
   purposeQuery: '',
   category: null,
-  pizzeria: null,
+  pizzerias: [],
 });
 
 const applyFilters = () => {
@@ -281,7 +284,7 @@ const refresh = async () => {
         startDate: filters.value.dateFrom,
         endDate: filters.value.dateTo,
         groupBy: filters.value.groupBy?.value,
-        pizzeriaId: filters.value.pizzeria?.id,
+        pizzeriaIds: filters.value.pizzerias.map(pizzeria => pizzeria.id),
         contractorIds: contractorIds.value.map(contractor => contractor.id),
         purposeQuery: filters.value.purposeQuery,
       }

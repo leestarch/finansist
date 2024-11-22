@@ -11,7 +11,7 @@ final class CategoryService
 {
     public static function getCategoryTree(
         bool $withSum = false, ?string $startDate = null,
-        ?string $endDate = null, string $groupBy = 'daily', ?int $pizzeriaId = null,
+        ?string $endDate = null, string $groupBy = 'daily', ?array $pizzeriaIds = null,
         ?array $contractorIds = null, ?string $purposeQuery = null
     ): array
     {
@@ -24,7 +24,7 @@ final class CategoryService
         $query = Category::query();
 
         if ($withSum) {
-            $withDependencies = self::getDependencies($startDate, $endDate, $pizzeriaId, $contractorIds, $purposeQuery);
+            $withDependencies = self::getDependencies($startDate, $endDate, $pizzeriaIds, $contractorIds, $purposeQuery);
             $query->with($withDependencies);
         }
 
@@ -123,46 +123,46 @@ final class CategoryService
 
 
     private static function getDependencies(
-        $startDate, $endDate, ?int $pizzeriaId, ?array $contractorIds, ?string $purposeQuery
+        $startDate, $endDate, ?array $pizzeriaIds, ?array $contractorIds, ?string $purposeQuery
     ):array
     {
         return [
             'operations' => self::operationQueryClosure(
-                $startDate, $endDate, $pizzeriaId, $contractorIds, $purposeQuery
+                $startDate, $endDate, $pizzeriaIds, $contractorIds, $purposeQuery
             ),
             'children.operations' => self::operationQueryClosure(
-                $startDate, $endDate, $pizzeriaId, $contractorIds, $purposeQuery
+                $startDate, $endDate, $pizzeriaIds, $contractorIds, $purposeQuery
             ),
             'children.children.operations' => self::operationQueryClosure(
-                $startDate, $endDate, $pizzeriaId, $contractorIds, $purposeQuery
+                $startDate, $endDate, $pizzeriaIds, $contractorIds, $purposeQuery
             ),
             'children.children.children.operations' => self::operationQueryClosure(
-                $startDate, $endDate, $pizzeriaId, $contractorIds, $purposeQuery
+                $startDate, $endDate, $pizzeriaIds, $contractorIds, $purposeQuery
             ),
             'children.children.children.children.operations' => self::operationQueryClosure(
-                $startDate, $endDate, $pizzeriaId, $contractorIds, $purposeQuery
+                $startDate, $endDate, $pizzeriaIds, $contractorIds, $purposeQuery
             ),
             'children.children.children.children.children.operations' => self::operationQueryClosure(
-                $startDate, $endDate, $pizzeriaId, $contractorIds, $purposeQuery
+                $startDate, $endDate, $pizzeriaIds, $contractorIds, $purposeQuery
             ),
             'children.children.children.children.children.children.operations' => self::operationQueryClosure(
-                $startDate, $endDate, $pizzeriaId, $contractorIds, $purposeQuery
+                $startDate, $endDate, $pizzeriaIds, $contractorIds, $purposeQuery
             ),
         ];
     }
 
 
     private static function operationQueryClosure(
-        $startDate, $endDate, $pizzeriaId, $contractorIds, $purposeQuery
+        $startDate, $endDate, $pizzeriaIds, $contractorIds, $purposeQuery
     ): callable
     {
-        return function($q) use ($startDate, $endDate, $pizzeriaId, $contractorIds, $purposeQuery) {
+        return function($q) use ($startDate, $endDate, $pizzeriaIds, $contractorIds, $purposeQuery) {
             $q->whereBetween('date_at', [$startDate, $endDate]);
 
             $q->where('sber_direction', Operation::DEBIT);
 
-            if($pizzeriaId) {
-                $q->where('pizzeria_id', $pizzeriaId);
+            if($pizzeriaIds) {
+                $q->whereIn('pizzeria_id', $pizzeriaIds);
             }
 
             if($contractorIds) {

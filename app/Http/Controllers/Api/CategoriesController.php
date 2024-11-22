@@ -19,12 +19,12 @@ class CategoriesController extends Controller
         $startDate = request()->get('startDate');
         $endDate = request()->get('endDate');
         $groupBy = request()->get('groupBy', 'daily');
-        $pizzeriaId = request()->get('pizzeriaId');
+        $pizzeriaIds = request()->get('pizzeriaIds');
         $contractorIds = request()->get('contractorIds');
         $purposeQuery = request()->get('purposeQuery');
 
         $categories = CategoryService::getCategoryTree(
-            true, $startDate, $endDate, $groupBy, $pizzeriaId, $contractorIds, $purposeQuery
+            true, $startDate, $endDate, $groupBy, $pizzeriaIds, $contractorIds, $purposeQuery
         );
         $pizzerias = Pizzeria::query()->select('id', 'name')->get();
 

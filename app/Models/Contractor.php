@@ -19,16 +19,18 @@ class Contractor extends Model
 
     public function scopeFilter(Builder $query, array $filters): Builder
     {
+        if($q =$filters['q'] ?? null)
+            $query->where('full_name', 'like', "%$q%")
+                ->orWhere('inn_kpp', 'like', "%" . $filters['q'] . "%");
 
-        if(isset($filters['q'])) {
-            $query->where('full_name', 'like', "%". $filters['q']."%")
-                ->orWhere('inn_kpp', 'like', "%". $filters['q']."%");
-        }
-        if(isset($filters['innKpp']))
-            $query->where('inn_kpp', 'like', "%". $filters['innKpp']."%");
+        if($innKpp = $filters['innKpp'] ?? null)
+            $query->where('inn_kpp', 'like', "%$innKpp%");
 
-        if(isset($filters['name']))
-            $query->where('full_name', 'like', "%". $filters['name']."%");
+        if($name = $filters['name'] ?? null)
+            $query->where('full_name', 'like', "%$name%");
+
+        if($ids = $filters['ids'] ?? null)
+            $query->whereIn('id', $ids);
 
         return $query;
     }
