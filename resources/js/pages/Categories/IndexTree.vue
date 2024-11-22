@@ -95,12 +95,12 @@
               >
                 <router-link
                     v-if="node.data[`date-${date}`]?.sum"
+                    target="_blank"
                     :to="{
                       name: 'OperationIndex',
                       query: {
                         parentCategoryId: node?.key,
-                        dateFrom: filters.dateFrom,
-                        dateTo: filters.dateTo,
+                        dateAt: date,
                         purposeQuery: filters.purposeQuery,
                         pizzeriaId: filters.pizzeria?.id,
                         contractorIds: contractorIds?.map(contractor => contractor.id),

@@ -20,7 +20,7 @@ class OperationController extends Controller
         if($categoryId = $request->input('parentCategoryId')) {
             $category = Category::query()->find($categoryId);
             $categoryIds = $category->geyNestedChildren();
-            $categoryIds[] = $categoryId;
+            $categoryIds[] = (int) $categoryId;
             $request->merge(['categoryIds' => $categoryIds]);
         }
 
