@@ -21,6 +21,7 @@ class OperationResource extends JsonResource
             'sber_paymentPurpose' => $this->sber_paymentPurpose,
             'is_completed' => $this->is_completed,
             'date_at' => Carbon::parse($this->date_at)->format('d-m-Y'),
+            'is_manual' => (bool)$this->is_manual,
             'categories' => implode(', ',$this->categories->pluck('name')->toArray()),
             'types' => implode(', ', $this->types->pluck('name')->toArray()),
         ];

@@ -1,6 +1,5 @@
 <?php
 
-
 use Illuminate\Support\Facades\Route;
 
 Route::group(['prefix' => 'operations'], function (){
@@ -8,6 +7,7 @@ Route::group(['prefix' => 'operations'], function (){
     Route::get('/summary', [\App\Http\Controllers\Api\OperationController::class, 'summary']);
     Route::get('/create', [\App\Http\Controllers\Api\OperationController::class, 'create']);
     Route::post('/', [\App\Http\Controllers\Api\OperationController::class, 'store']);
+    Route::put('/{id}', [\App\Http\Controllers\Api\OperationController::class, 'update']);
 
     Route::group(['prefix' => 'rules'], function (){
         Route::get('/', [\App\Http\Controllers\Api\OperationRuleController::class, 'index']);

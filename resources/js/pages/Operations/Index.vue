@@ -48,7 +48,7 @@ const refresh = async (p) => {
       ...filters.value,
         page: pagination.value.page,
         contractorIds: contractorIds.value,
-        pizzeriaIds: pizzeriaIds.value,
+        pizzeriaIds:  filters.value.pizzerias.map(pizzeria => pizzeria.id) || pizzeriaIds.value,
     }})
 
     operations.value = response?.data?.data
@@ -92,6 +92,7 @@ const fetchContractors = async (val) => {
       value: contractor.id,
       label: contractor.name,
     }));
+    contractorIds.value = contractorsOptions.value.map((contractor) => contractor.id);
   } catch (error) {
   } finally {
     isContractorLoading.value = false;

@@ -79,8 +79,12 @@ class Operation extends Model
             $query->where('sber_direction', $sberDirection);
         }
 
-        if($contractorIds = $filters['payee_contractor_id'] ?? null){
-            $query->whereIn('payee_contractor_id', $contractorIds);
+        if($contractorId = $filters['payeeContractorId'] ?? null){
+            $query->where('payee_contractor_id', $contractorId);
+        }
+
+        if($contractorIds = $filters['payeeContractorIds'] ?? null){
+            $query->wherein('payee_contractor_id', $contractorIds);
         }
 
         if ($category = $filters['category'] ?? null) {

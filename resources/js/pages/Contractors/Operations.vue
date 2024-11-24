@@ -1,6 +1,6 @@
 <script setup>
 import {useRoute} from "vue-router";
-import {Notify} from "quasar";
+import {Loading, Notify} from "quasar";
 import {onMounted, ref, watch} from "vue";
 import OperationTable from "../../components/Operations/OperationTable.vue";
 
@@ -21,6 +21,7 @@ const filters = ref({
   dateAt: null,
   dateFrom: null,
   dateTo: null,
+  payeeContractorIds: [],
 })
 
 watch(filters, () => {
@@ -31,7 +32,7 @@ const refresh = async () => {
   try {
     const response = await axios.get(`/api/operations`, {
       params: {
-        payee_contractor_id: contractorId,
+        payeeContractorId: contractorId,
         paginate: pagination.value.rowsPerPage,
         page: pagination.value.page,
         dateAt: filters.value.dateAt,
@@ -56,6 +57,7 @@ const refresh = async () => {
 }
 
 const checkContractorsOperation = async () => {
+  Loading.show()
   isChecking.value = true
   try {
     const response = await axios.get(`/api/contractors/${contractorId}/check`)
@@ -80,6 +82,7 @@ const checkContractorsOperation = async () => {
     })
   }
   isChecking.value = false
+  Loading.hide()
 }
 
 onMounted(() => {

@@ -107,4 +107,13 @@ class OperationController extends Controller
             'success' => true,
         ]);
     }
+
+    public function update(int $id, Request $request): JsonResponse
+    {
+        $operation = Operation::query()->findOrFail($id);
+        $operation->update($request->all());
+        return response()->json([
+            'success' => true,
+        ]);
+    }
 }
