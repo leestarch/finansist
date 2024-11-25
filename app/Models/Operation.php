@@ -23,7 +23,7 @@ class Operation extends Model
     public function categories(): BelongsToMany
     {
         return $this->belongsToMany(Category::class, 'categories_operations')
-        ->as('pivot');
+        ->as('pivot')->withPivot('sber_amountRub');
     }
 
     public function types(): BelongsToMany
@@ -44,6 +44,43 @@ class Operation extends Model
     public function pizzeria(): BelongsTo
     {
         return $this->belongsTo(Pizzeria::class);
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function splitOperation(array $data): void
+    {
+        if(array_sum($data) !== $this->sber_amountRub)
+            throw new \Exception('Сумма разделения не равна сумме операции');
+
+        $this->categories()->detach();
+
+        foreach ($data as $categoryId => $amount) {
+            $this->categories()->attach($categoryId, ['sber_amountRub' => $amount]);
+        }
+    }
+
+    public function getFullAmount(): int
+    {
+        if($this->categories->count() > 1){
+            return $this->categories->sum('pivot.sber_amountRub');
+        }
+        return $this->sber_amountRub;
+    }
+
+    public function isSplit(): bool
+    {
+        return $this->categories->count() > 1;
+    }
+
+    public function getAmountOfCategory(int $categoryId): int
+    {
+        if($this->isSplit()) {
+            return $this->categories->where('id', $categoryId)->first()->pivot->sber_amountRub;
+        } else {
+            return $this->sber_amountRub;
+        }
     }
 
 //    public function getAmountAttribute($value): string

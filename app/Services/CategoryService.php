@@ -34,7 +34,7 @@ final class CategoryService
         foreach ($categories->whereNull('parent_id') as $rootCategory) {
 
             $rootCategory->totals = self::calculateDailyTotals(
-                $rootCategory->operations, $rootCategory->children, $groupBy, true
+                $rootCategory->id, $rootCategory->operations, $rootCategory->children, $groupBy, true
             );
             $children = self::buildTree($rootCategory->children, $groupBy, $rootCategory->totals);
             // unset relations иначе релейшен будет перекрывать массив выше
@@ -48,7 +48,7 @@ final class CategoryService
     }
 
     private static function calculateDailyTotals(
-        $operations, $children = null, string $groupBy = 'daily', bool $isRoot = false, array $rootTotals = []
+        int $categoryId, $operations, $children = null, string $groupBy = 'daily', bool $isRoot = false, array $rootTotals = []
     ): array
     {
         $totals = [];
@@ -68,14 +68,14 @@ final class CategoryService
             }
 
             $operation->sber_direction === Operation::CREDIT
-                ? $totals[$dateKey]['sum'] += $operation->sber_amountRub
-                : $totals[$dateKey]['sum'] -= $operation->sber_amountRub;
+                ? $totals[$dateKey]['sum'] += $operation->getAmountOfCategory($categoryId)
+                : $totals[$dateKey]['sum'] -= $operation->getAmountOfCategory($categoryId);
 
         }
 
         if ($children instanceof Collection) {
             foreach ($children as $child) {
-                $childTotals = self::calculateDailyTotals($child->operations, $child->children, $groupBy, false, $rootTotals);
+                $childTotals = self::calculateDailyTotals($child->id, $child->operations, $child->children, $groupBy, false, $rootTotals);
                 foreach ($childTotals as $date => $data) {
                     if (!isset($totals[$date])) {
                         $totals[$date] = ['sum' => 0, 'percentage_of_root' => 0];
@@ -102,7 +102,7 @@ final class CategoryService
     {
         $newCategories = $categories->filter(function ($category) use ($groupBy, $rootTotals) {
             $category->totals = self::calculateDailyTotals(
-                $category->operations, $category->children, $groupBy, false, $rootTotals
+                $category->id, $category->operations, $category->children, $groupBy, false, $rootTotals
             );
 
             if ($category->children->isNotEmpty()) {

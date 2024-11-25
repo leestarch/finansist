@@ -22,6 +22,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('operation_id');
             $table->unsignedBigInteger('category_id');
+            $table->unsignedBigInteger('sber_amountRub')->nullable();
             $table->unsignedBigInteger('rule_id')->nullable();
             $table->timestamps();
         });
