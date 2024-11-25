@@ -108,8 +108,19 @@ class OperationController extends Controller
         ]);
     }
 
+    public function show(int $id, Request $request): OperationResource
+    {
+        $operationQuery = Operation::query();
+        if($request->get('include')) {
+            $operationQuery->with(explode(',', $request->get('include')));
+        }
+
+        return OperationResource::make($operationQuery->findOrFail($id));
+    }
+
     public function update(int $id, Request $request): JsonResponse
     {
+        dd($request->all());
         $operation = Operation::query()->findOrFail($id);
         $operation->update($request->all());
         return response()->json([

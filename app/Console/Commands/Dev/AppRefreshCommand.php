@@ -14,6 +14,9 @@ class AppRefreshCommand extends Command
             $this->call('db:seed');
             $this->call('load.budget.categories');
             $this->call('operation.rules.create.command');
+            $this->call('operation.categories.table', [
+                '--validate' => true
+            ]);
         }
     }
 }

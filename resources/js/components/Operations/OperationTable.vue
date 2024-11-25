@@ -12,6 +12,7 @@ const columns = ref([
   { name: 'sber_amountRub', label: 'Сумма', field: 'sber_amountRub', align: 'left' },
   { name: 'categories', label: 'Категория', field: 'categories', align: 'left' },
   { name: 'is_manual', label: 'is manual', field: 'is_manual', align: 'left' },
+  { name: 'actions', label: 'Действия', align: 'left' },
   { name: 'date_at', label: 'Дата', field: 'date_at', align: 'left' },
   { name: 'sber_paymentPurpose', label: 'Назначение', field: 'sber_paymentPurpose', align: 'left' },
 ]);
@@ -61,7 +62,7 @@ const handleIsManualChange = async (row) => {
             {{ item.row?.sber_amountRub }}
           </template>
           <template v-if="item.col.name === 'categories'">
-            {{ item.row?.categories }}
+            {{ item.row?.categories.map(category => category.name).join(', ') }}
           </template>
           <template v-if="item.col.name === 'is_manual'">
             <q-checkbox
@@ -69,6 +70,23 @@ const handleIsManualChange = async (row) => {
                 @update:modelValue="handleIsManualChange(item.row)"
                 :model-value="item.row.is_manual"
             />
+          </template>
+          <template v-if="item.col.name === 'actions'">
+            <div>
+              <router-link
+                  :to="{name: 'OperationEdit', params: {id: item.row.id}}"
+                  class="cursor-pointer"
+              >
+                <q-icon
+                    color="primary"
+                    size="xs"
+                    name="edit"
+                    class="cursor-pointer"
+                    @click="editOperation(item.row.id)"
+                />
+              </router-link>
+
+            </div>
           </template>
           <template v-if="item.col.name === 'date_at'">
             {{ item.row?.date_at }}
