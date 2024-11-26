@@ -12,6 +12,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class OperationController extends Controller
 {
@@ -120,11 +121,40 @@ class OperationController extends Controller
 
     public function update(int $id, Request $request): JsonResponse
     {
-        dd($request->all());
         $operation = Operation::query()->findOrFail($id);
-        $operation->update($request->all());
+
+        DB::beginTransaction();
+
+        $operation->update($request->except('categories'));
+        $operation->refresh();
+
+        if($categories = $request->get('categories')){
+            $categoriesToHandle = $this->mapCategories($categories);
+
+            try {
+                $operation->handleCategories($categoriesToHandle);
+            }catch (\Exception $e){
+                return response()->json([
+                    'success' => false,
+                    'message' => $e->getMessage(),
+                ]);
+            }
+            unset($request['categories']);
+        }
+        $request['is_manual'] = true;
+        DB::commit();
+
         return response()->json([
             'success' => true,
         ]);
+    }
+
+    private function mapCategories(array $categories):array
+    {
+        $mappedCategories = [];
+        foreach ($categories as $category){
+            $mappedCategories[$category['id']] = (int) $category['sber_amountRub'];
+        }
+        return $mappedCategories;
     }
 }

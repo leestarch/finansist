@@ -22,7 +22,8 @@ class OperationResource extends JsonResource
             'is_completed' => (bool) $this->is_completed,
             'pizzeria_id' => $this->pizzeria_id,
             'payee_contractor_id' => $this->payee_contractor_id,
-            'date_at' => Carbon::parse($this->date_at)->format('d-m-Y'),
+            'date_at' => $this->date_at,
+//            'date_at' => Carbon::parse($this->date_at)->format('d-m-Y'),
             'is_manual' => (bool)$this->is_manual,
             'types' => implode(', ', $this->types->pluck('name')->toArray()),
             'categories' => $this->whenLoaded(

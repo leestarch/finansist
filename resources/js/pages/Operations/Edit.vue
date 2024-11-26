@@ -19,7 +19,7 @@ const amountError = ref({
 
 const form = ref({
   pizzeria: null,
-  amount: '',
+  sber_amountRub: '',
   description: '',
   is_completed: false,
   date: '',
@@ -52,26 +52,31 @@ const refresh = async () => {
         include: 'payeeContractor,categories'
       }
     })
-    form.value.amount = response.data.data.sber_amountRub
-    form.value.date = format(new Date(response.data.data.date_at), 'yyyy-MM-dd')
+
+    form.value.sber_amountRub = response.data.data.sber_amountRub
+    form.value.date = format(new Date(response.data?.data?.date_at), 'yyyy-MM-dd')
     form.value.is_completed = response.data.data.is_completed
     form.value.pizzeria = pizzerias.value.find(pizzeria => pizzeria.id === response.data.data.pizzeria_id)
     form.value.contractor = response.data.data.payee_contractor
     form.value.description = response.data.data.sber_paymentPurpose
     form.value.categories = response.data.data.categories.map(cat => {
+      console.log(cat)
       return {
         category: {
           id: cat.id,
           name: cat.name
         },
-        amount: response.data.data.categories.length > 1 ? form.value.amount : cat.sber_amountRub,
-        percent: response.data.data.categories.length > 1 ? 100 : cat.sber_amountRub / form.value.amount * 100
+        amount: response.data.data.categories.length > 1 ? cat.sber_amountRub: form.value.sber_amountRub,
+        percent: response.data.data.categories.length > 1 ? ((cat.sber_amountRub / form.value.sber_amountRub) * 100).toFixed(2) : 100
       }
     })
 
   } catch (error) {
+    console.log(
+        error
+    )
     Notify.create({
-      message: 'Ошибка получения данных',
+      message: 'Ошибка получения данных операции',
       color: 'red'
     })
   }
@@ -145,6 +150,19 @@ const submitForm = async () => {
     return
   }
 
+  const total = form.value.categories.reduce(
+      (acc, cat) => acc + (parseFloat(cat.amount) || 0),
+      0
+  );
+
+  if(total !== parseFloat(form.value.sber_amountRub)) {
+    Notify.create({
+      message: 'Сумма категорий не равна сумме операции',
+      color: 'red'
+    })
+    return
+  }
+
   Loading.show()
   try {
     const response = await axios.put(`/api/operations/${operationId}`, {
@@ -154,6 +172,7 @@ const submitForm = async () => {
       is_completed: form.value.is_completed,
       payee_contractor_id: form.value.contractor.id,
       sber_paymentPurpose: form.value.description,
+      sber_amountRub: form.value.sber_amountRub,
       categories: form.value.categories.map(cat => {
         return {
           id: cat.category.id,
@@ -162,12 +181,25 @@ const submitForm = async () => {
       })
     })
 
+    if (response?.data?.success) {
+      Notify.create({
+        message: 'Данные успешно обновлены',
+        color: 'green'
+      })
+    }
+    if (!response.data.success) {
+      Notify.create({
+        message: response?.data?.message,
+        color: 'red'
+      })
+    }
+
   } catch (error) {
     console.log(
         error
     )
     Notify.create({
-      message: 'Ошибка отправки данных',
+      message: 'Проверьте правильность заполнения полей',
       color: 'red'
     })
   }
@@ -181,8 +213,8 @@ const onAmountInputChange = (val, item) => {
       0
   );
 
-  const difference = parseFloat(form.value.amount) - total;
-  const percent = (parseFloat(item.row.amount) / parseFloat(form.value.amount)) * 100;
+  const difference = parseFloat(form.value.sber_amountRub) - total;
+  const percent = (parseFloat(item.row.amount) / parseFloat(form.value.sber_amountRub)) * 100;
   item.row.percent = percent.toFixed(2);
 
   let message = '';
@@ -227,6 +259,12 @@ const filterCategories = (val, update) => {
   }
 };
 
+function onClear(val) {
+  console.log(val.id);
+  form.value.categories = form.value.categories.filter((cat) => cat?.category !== null);
+  // Add any other custom logic here if needed
+}
+
 onMounted( () => {
   Loading.show()
   fetchPizzerias()
@@ -252,7 +290,7 @@ onMounted( () => {
               <q-input
                   dense
                   outlined
-                  v-model="form.amount"
+                  v-model="form.sber_amountRub"
                   label="Сумма"
                   type="number"
                   required
@@ -355,7 +393,6 @@ onMounted( () => {
                   <q-td :item="item">
                     <template v-if="item.col.name === 'category'">
                       <div>
-                        {{ item.row.category }}
                         <q-select
                             dense
                             flat
@@ -366,6 +403,7 @@ onMounted( () => {
                             borderless
                             use-input
                             @filter="filterCategories"
+                            @clear="onClear"
                         />
                       </div>
                     </template>
@@ -403,7 +441,7 @@ onMounted( () => {
                 </div>
                 <div class="row col-3 justify-end">
                   <p>
-                    {{ ((form.categories.reduce((acc, cat) => acc + (parseFloat(cat.amount) || 0), 0)) / form.amount * 100).toFixed(2) }}%
+                    {{ ((form.categories.reduce((acc, cat) => acc + (parseFloat(cat.amount) || 0), 0)) / form.sber_amountRub * 100).toFixed(2) }}%
                   </p>
                 </div>
               </div>

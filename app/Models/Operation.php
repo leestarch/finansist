@@ -49,7 +49,7 @@ class Operation extends Model
     /**
      * @throws \Exception
      */
-    public function splitOperation(array $data): void
+    public function handleCategories(array $data): void
     {
         if(array_sum($data) !== $this->sber_amountRub)
             throw new \Exception('Сумма разделения не равна сумме операции');
@@ -82,11 +82,6 @@ class Operation extends Model
             return $this->sber_amountRub;
         }
     }
-
-//    public function getAmountAttribute($value): string
-//    {
-//        return is_numeric($value) ? number_format($value, 2, '.', ' ') : $value;
-//    }
 
     public function getDateAttribute($value): string
     {

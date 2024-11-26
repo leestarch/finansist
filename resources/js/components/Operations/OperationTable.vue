@@ -82,7 +82,6 @@ const handleIsManualChange = async (row) => {
                     size="xs"
                     name="edit"
                     class="cursor-pointer"
-                    @click="editOperation(item.row.id)"
                 />
               </router-link>
 
