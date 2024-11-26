@@ -83,27 +83,29 @@ class OperationController extends Controller
         ]);
     }
 
-    public function create(): JsonResponse
-    {
-        $categories = Category::query()->select(['id', 'name'])->get();
-        $types = Type::query()->select(['id', 'name'])->get();
-        return response()->json([
-            'categories' => $categories,
-            'types' => $types,
-        ]);
-    }
-
     public function store(OperationCreateRequest $request): JsonResponse
     {
+        DB::beginTransaction();
         $data = $request->validated();
-        $operation = Operation::query()->create([
-            'sber_amountRub' => $data['sber_amountRub'],
-            'description' => $data['description'],
-            'is_completed' => $data['is_completed'],
-            'date_at' => $data['date_at'],
-        ]);
-        $operation->categories()->attach($data['category']['id']);
-        $operation->types()->attach($data['type']['id']);
+        $request['is_manual'] = true;
+        $categories = $data['categories'] ?? null;
+        unset($data['categories']);
+
+        $operation = Operation::query()->create($data);
+        if($categories){
+
+            try {
+                $operation->refresh();
+                $categoriesToHandle = $this->mapCategories($categories);
+                $operation->handleCategories($categoriesToHandle);
+            }catch (\Exception $exception){
+                return response()->json([
+                    'success' => false,
+                    'message' => $exception->getMessage(),
+                ]);
+            }
+        }
+        DB::commit();
         return response()->json([
             'success' => true,
         ]);
@@ -124,7 +126,6 @@ class OperationController extends Controller
         $operation = Operation::query()->findOrFail($id);
 
         DB::beginTransaction();
-
         $operation->update($request->except('categories'));
         $operation->refresh();
 

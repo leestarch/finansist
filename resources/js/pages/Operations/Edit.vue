@@ -108,19 +108,6 @@ const fetchCategories = async () => {
     })
   }
 }
-
-const onContractorChange  = async (val, update) => {
-  if (val.length > 4) {
-    isContractorLoading.value = true;
-    await fetchContractors(val);
-    update(() => contractorsOptions.value);
-
-  } else {
-    contractorsOptions.value = [];
-    update(() => contractorsOptions.value);
-  }
-};
-
 const fetchContractors = async (val, id='') => {
   try {
     const response = await axios.get('/api/contractors', {
@@ -140,6 +127,19 @@ const fetchContractors = async (val, id='') => {
     isContractorLoading.value = false;
   }
 };
+
+const onContractorChange  = async (val, update) => {
+  if (val.length > 4) {
+    isContractorLoading.value = true;
+    await fetchContractors(val);
+    update(() => contractorsOptions.value);
+
+  } else {
+    contractorsOptions.value = [];
+    update(() => contractorsOptions.value);
+  }
+};
+
 
 const submitForm = async () => {
   if(amountError.value.difference !== 0){
@@ -262,7 +262,6 @@ const filterCategories = (val, update) => {
 function onClear(val) {
   console.log(val.id);
   form.value.categories = form.value.categories.filter((cat) => cat?.category !== null);
-  // Add any other custom logic here if needed
 }
 
 onMounted( () => {

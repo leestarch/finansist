@@ -14,12 +14,18 @@ class OperationCreateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'amount' => ['required', 'numeric'],
+            'pizzeria_id' => ['required', 'integer'],
+            'sber_amountRub' => ['required', 'numeric'],
             'description' => ['required', 'string'],
+            'sber_paymentPurpose' => ['required', 'string'],
+            'sber_direction' => ['required', 'string', 'in:DEBIT,CREDIT'],
+            'payer_contractor_id' => ['required', 'integer'],
+            'payee_contractor_id' => ['required', 'integer'],
             'is_completed' => ['required', 'boolean'],
-            'date' => ['required', 'date'],
-            'type' => ['required'],
-            'category' => ['required'],
+            'date_at' => ['required', 'date'],
+            'categories' => ['nullable', 'array'],
+            'categories.*.id' => ['required', 'integer'],
+            'categories.*.sber_amountRub' => ['required', 'integer'],
         ];
     }
 }
