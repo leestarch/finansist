@@ -11,20 +11,17 @@ const pagination = ref({
 });
 
 const filters = ref({
-  name: '',
   purpose_expression: '',
   operation_type: null,
 })
 
 const refresh = async () => {
   try {
-    const response = await axios.get(`/api/operations/rules`, {
+    const response = await axios.get(`/api/rules`, {
       params: {
         load: ['category'],
-        uniqueOperations: true,
         paginate: pagination.value.rowsPerPage,
         page: pagination.value.page,
-        name: filters.value.name,
         purpose_expression: filters.value.purpose_expression,
         operation_type: filters.value.operation_type?.value,
       }
@@ -57,16 +54,6 @@ onMounted(() => {
           Правила операций
         </p>
         <div class="row">
-          <q-input
-              class="col-3 q-px-sm"
-              clearable
-              dense
-              outlined
-              filled
-              v-model="filters.name"
-              label="Название"
-          />
-
           <q-input
               class="col-3 q-px-sm"
               clearable

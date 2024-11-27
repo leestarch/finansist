@@ -333,11 +333,11 @@ onMounted(() => {
                   outlined
                   required
                   filled
-                  label="Direction"
+                  label="Тип операции"
                   v-model="form.direction"
                   :options="[
-                    {label: 'DEBIT', value: 'DEBIT'},
-                    {label: 'CREDIT', value: 'CREDIT'},
+                    {label: 'Поступление (debit)', value: 'DEBIT'},
+                    {label: 'Выплата (credit)', value: 'CREDIT'},
                   ]"
               />
             </div>

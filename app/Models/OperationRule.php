@@ -33,15 +33,13 @@ class OperationRule extends Model
         }
 
         if ($contractorId = $filter['contractor_id'] ?? null){
-            $query->where('contractor_id', $contractorId);
+            $query->where('contractor_id', $contractorId)->orWhereNull('contractor_id');
         }
 
-        if($name = $filter['name'] ?? null){
-            $query->where('name', 'LIKE', "%$name%");
-        }
         if($purpose_expression = $filter['purpose_expression'] ?? null){
             $query->where('purpose_expression', 'LIKE', "%$purpose_expression%");
         }
+
         if($operation_type = $filter['operation_type'] ?? null){
             $query->where('operation_type', $operation_type);
         }
@@ -64,9 +62,13 @@ class OperationRule extends Model
         if($operation->is_manual) return 0;
 
         $payeeContractorId = $operation->payee_contractor_id;
-        $rules = OperationRule::query()->where('contractor_id', $payeeContractorId)->get()
+        $rules = OperationRule::query()->where('contractor_id', $payeeContractorId)
+            ->orWhereNull('contractor_id')
+            ->get()
             ->sortByDesc(function ($rule) {
                 return !empty($rule->purpose_expression);
+            })->sortByDesc(function ($rule) {
+                return !is_null($rule->contractor_id);
             });
 
         foreach ($rules as $rule){

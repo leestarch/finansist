@@ -23,15 +23,6 @@ class OperationRuleController extends Controller
 
         $rules->filter($request->all());
 
-        if($request->uniqueOperations)
-            $rules->groupBy('name')
-                ->selectRaw('
-                name,
-                ANY_VALUE(id) as id, 
-                ANY_VALUE(purpose_expression) as purpose_expression, 
-                ANY_VALUE(category_id) as category_id, 
-                ANY_VALUE(operation_type) as operation_type
-            ');
 
         return OperationRuleResource::collection($rules->paginate($paginate));
     }
@@ -50,15 +41,19 @@ class OperationRuleController extends Controller
     {
         $data = $request->validated();
         if(empty($data['contractor_ids'])){
-            $data['contractor_ids'] = Contractor::query()->pluck('id')->toArray();
-        }
-        foreach ($data['contractor_ids'] as $contractorId){
             OperationRule::query()->firstOrCreate([
                 'category_id' => $data['category_id'],
-                'contractor_id' => $contractorId,
+                'contractor_id' => null,
                 'purpose_expression' => $data['purpose_expression'] ?? null,
-                'name' => $data['name'] ?? null,
             ]);
+        }else{
+            foreach ($data['contractor_ids'] as $contractorId){
+                OperationRule::query()->firstOrCreate([
+                    'category_id' => $data['category_id'],
+                    'contractor_id' => $contractorId,
+                    'purpose_expression' => $data['purpose_expression'] ?? null,
+                ]);
+            }
         }
 
         return response()->json([
@@ -68,26 +63,20 @@ class OperationRuleController extends Controller
 
     public function update(int $id, Request $request): JsonResponse
     {
-        // TODO КАК ОБНОВЛЯТЬ КАТЕГОРИИ?
         $operationType = $request->get('operation_type');
         if(is_array($operationType)){
             $operationType = $operationType['value'];
         }
 
-        $rules = OperationRule::query()->where('name', $request->name)->get();
-        $updated = 0;
-        foreach ($rules as $rule){
-            $updated += $rule->update([
-                'name' => $request->name,
-                'purpose_expression' => $request->purpose_expression,
-                'category_id' => $request->category_id,
-                'operation_type' => $operationType,
-            ]);
-        }
+        $rule = OperationRule::query()->findOrFail($id);
+        $rule->update([
+            'purpose_expression' => $request->purpose_expression,
+            'category_id' => $request->category_id,
+            'operation_type' => $operationType,
+        ]);
 
         return response()->json([
             'success' => true,
-            'rules_updated' => $updated,
         ]);
     }
 

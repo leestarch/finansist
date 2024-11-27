@@ -23,7 +23,7 @@ const operationTypes = [
 
 const refresh = async () => {
   try{
-     const response = await axios.get(`/api/operations/rules/${ruleId}`, {
+     const response = await axios.get(`/api/rules/${ruleId}`, {
        params:{
           include: 'category'
        }
@@ -45,7 +45,7 @@ onMounted(async () => {
 
 const submitForm = async () => {
   try {
-    const response = await axios.put(`/api/operations/rules/${ruleId}`, rule.value)
+    const response = await axios.put(`/api/rules/${ruleId}`, rule.value)
     if(response?.data?.success) {
       Notify.create({
         message:'Данные успешно сохранены',
@@ -116,16 +116,6 @@ const onCategorySelectChange = async (val, update, abort) => {
               hint="Start typing to search"
               @filter="onCategorySelectChange"
               :loading="isCategoryLoading"
-          />
-
-          <q-input
-              model-value="name"
-              label="Название правила"
-              class="col-3 q-mt-md"
-              outlined
-              dense
-              v-model="rule.name"
-              filled
           />
 
           <q-select

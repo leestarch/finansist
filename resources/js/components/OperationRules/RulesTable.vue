@@ -11,7 +11,6 @@ const emit = defineEmits(['update:pagination', 'refresh']);
 
 const columns = ref([
   { name: 'category', label: 'Категория', field: row=>row?.category?.name, align: 'left' },
-  { name: 'name', label: 'Название', field: 'name', align: 'left' },
   { name: 'purpose_expression', label: 'Регулярное выражение', field: 'purpose_expression', align: 'left' },
   { name: 'actions', label: 'Действия', align: 'left' },
 ]);
@@ -55,11 +54,6 @@ const handlePaginationUpdate = (page) => {
       >
         <template v-slot:body-cell="item">
           <q-td :item="item">
-            <template v-if="item.col.name === 'name'">
-              <router-link :to="`/operations/rules/edit/${item.row.id}`">
-                {{ item.row?.name }}
-              </router-link>
-            </template>
             <template v-if="item.col.name === 'purpose_expression'">
               {{ item.row?.purpose_expression }}
             </template>

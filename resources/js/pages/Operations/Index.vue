@@ -18,7 +18,11 @@ const operations  = ref([])
 const contractorsOptions = ref([])
 const contractors = ref([])
 const contractorIds = ref([])
-const isContractorLoading = ref(false)
+const isLoading = ref(false)
+
+const categories = ref([])
+const categoryIds = ref([])
+const categoriesOptions = ref([])
 
 const totalAmount = ref(0)
 
@@ -33,6 +37,7 @@ const filters = ref({
   dateTo: '',
   categoryQuery: '',
   parentCategoryId: null,
+  categories: [],
   pizzerias: [],
   purpose_expression: '',
   sberDirection: null,
@@ -48,6 +53,7 @@ const refresh = async (p) => {
       ...filters.value,
         page: pagination.value.page,
         contractorIds: contractorIds.value,
+        categoryIds: filters.value.categories.map(category => category.id),
         pizzeriaIds:  filters.value.pizzerias.map(pizzeria => pizzeria.id) || pizzeriaIds.value,
     }})
 
@@ -66,9 +72,39 @@ const refresh = async (p) => {
   }
 }
 
+const onCategoriesChange  = async (val, update, abort) => {
+
+  if (val.length > 3) {
+    isLoading.value = true;
+    await fetchCategories(val);
+    update(() => categoriesOptions.value);
+    isLoading.value = false;
+  } else {
+    categoriesOptions.value = [];
+    update(() => categoriesOptions.value);
+  }
+};
+
+const fetchCategories = async (val = '') => {
+  try{
+    const response = await axios.get('/api/categories', {
+      params: {
+        q: val || '',
+      },
+    });
+
+    categoriesOptions.value = response.data.data;
+  }catch (e) {
+    Notify.create({
+      message:'Ошибка получения данных',
+      color:'red',
+      timeout: 2000
+    })
+  }
+}
 const onContractorChange  = async (val, update, abort) => {
-  if (val.length > 4) {
-    isContractorLoading.value = true;
+  if (val.length > 3) {
+    isLoading.value = true;
     await fetchContractors(val);
     update(() => contractorsOptions.value);
 
@@ -79,6 +115,7 @@ const onContractorChange  = async (val, update, abort) => {
 };
 
 const fetchContractors = async (val) => {
+  isLoading.value = true;
   try {
     const response = await axios.get('/api/contractors', {
       params: {
@@ -95,7 +132,7 @@ const fetchContractors = async (val) => {
     contractorIds.value = contractorsOptions.value.map((contractor) => contractor.id);
   } catch (error) {
   } finally {
-    isContractorLoading.value = false;
+    isLoading.value = false;
   }
 };
 
@@ -111,6 +148,7 @@ const applyFilters = () => {
   const sanitizedFilters = JSON.parse(JSON.stringify(filters.value));
   refresh(sanitizedFilters)
 };
+
 
 onMounted(async () => {
     await fetchPizzerias()
@@ -178,15 +216,24 @@ const clearFilters = async () => {
       <div class="row">
         <q-input class="col-2 q-px-sm q-mt-sm" clearable dense outlined filled v-model="filters.dateFrom" label="Дата начала" type="date" />
         <q-input class="col-2 q-px-sm q-mt-sm" dense clearable outlined filled v-model="filters.dateTo" label="Дата окончания" type="date" />
-        <q-input
-            class="col-3 q-px-sm q-mt-sm"
-            clearable
-            dense
-            outlined
-            filled
-            v-model="filters.categoryQuery"
-            label="Фильтр по категориям"
-        />
+          <q-select
+              class="col-3 q-px-sm q-mt-sm"
+              dense
+              outlined
+              filled
+              flat
+              label="Категория"
+              v-model="filters.categories"
+              :options="categoriesOptions"
+              option-label="name"
+              clearable
+              multiple
+              use-input
+              borderless
+              use-chips
+              @filter="onCategoriesChange"
+              :loading="isLoading"
+          />
         <q-select
             class="col-3 q-px-sm q-mt-sm"
             dense
@@ -239,7 +286,7 @@ const clearFilters = async () => {
             clearable
             option-label="name"
             @filter="onContractorChange"
-            :loading="isContractorLoading"
+            :loading="isLoading"
 
         />
       </div>

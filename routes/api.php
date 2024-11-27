@@ -9,13 +9,14 @@ Route::group(['prefix' => 'operations'], function (){
     Route::post('/', [\App\Http\Controllers\Api\OperationController::class, 'store']);
     Route::put('/{id}', [\App\Http\Controllers\Api\OperationController::class, 'update']);
 
-    Route::group(['prefix' => 'rules'], function (){
-        Route::get('/', [\App\Http\Controllers\Api\OperationRuleController::class, 'index']);
-        Route::get('/{id}', [\App\Http\Controllers\Api\OperationRuleController::class, 'show']);
-        Route::post('/', [\App\Http\Controllers\Api\OperationRuleController::class, 'store']);
-        Route::put('/{id}', [\App\Http\Controllers\Api\OperationRuleController::class, 'update']);
-        Route::delete('/{id}', [\App\Http\Controllers\Api\OperationRuleController::class, 'destroy']);
-    });
+});
+
+Route::group(['prefix' => 'rules'], function (){
+    Route::get('/', [\App\Http\Controllers\Api\OperationRuleController::class, 'index']);
+    Route::get('/{id}', [\App\Http\Controllers\Api\OperationRuleController::class, 'show']);
+    Route::post('/', [\App\Http\Controllers\Api\OperationRuleController::class, 'store']);
+    Route::put('/{id}', [\App\Http\Controllers\Api\OperationRuleController::class, 'update']);
+    Route::delete('/{id}', [\App\Http\Controllers\Api\OperationRuleController::class, 'destroy']);
 });
 
 Route::prefix('categories')->group(function () {

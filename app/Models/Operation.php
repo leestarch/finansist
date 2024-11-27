@@ -138,9 +138,12 @@ class Operation extends Model
         }
 
         if ($categoryIds = $filters['categoryIds'] ?? null) {
-            $query->whereHas('categories', function (Builder $subQuery) use ($categoryIds) {
-                $subQuery->whereIn('categories.id', (array) $categoryIds);
-            });
+            if(in_array(0, $categoryIds))
+                $query->whereDoesntHave('categories');
+            else
+                $query->whereHas('categories', function (Builder $subQuery) use ($categoryIds) {
+                    $subQuery->whereIn('categories.id', (array) $categoryIds);
+                });
         }
 
         if ($category = $filters['categoryQuery'] ?? null) {

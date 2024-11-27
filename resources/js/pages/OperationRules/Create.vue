@@ -18,7 +18,6 @@ const selectedCategory = ref(null)
 const selectedOperationType = ref(operationTypes[0])
 
 const rule = ref({
-  name: '',
   purpose_expression: '',
   operation_type: selectedOperationType?.value?.value,
 })
@@ -28,28 +27,28 @@ const submitForm = async () => {
   rule.value.category_id = selectedCategory?.value?.id;
 
   try {
-    const response = await axios.post('/api/operations/rules', rule.value);
+    const response = await axios.post('/api/rules', rule.value);
     if(response.data.success) {
       Notify.create({
-        message: "Rule created",
+        message: "Правило успешно создано",
         color: "green",
       });
     } else {
       Notify.create({
-        message: "Rule creation failed",
+        message: "Правило не создано",
         color: "red",
       });
     }
   } catch (e) {
     Notify.create({
-      message: "Rule creation failed",
+      message: "Ошибка создания правила",
       color: "red",
     });
   }
 }
 
 const onCategorySelectChange = async (val, update, abort) => {
-  if (val.length > 4) {
+  if (val.length > 3) {
     isCategoryLoading.value = true;
     try {
       const response = await axios.get('/api/categories', {
@@ -62,7 +61,7 @@ const onCategorySelectChange = async (val, update, abort) => {
       update(() => categories.value);
     } catch (e) {
       Notify.create({
-        message: "Fetching categories failed",
+        message: "Ошибка получения категорий",
         color: "red",
       });
     }
@@ -71,7 +70,7 @@ const onCategorySelectChange = async (val, update, abort) => {
 }
 
 const onContractorSelectChange = async (val, update, abort) => {
-  if (val.length > 4) {
+  if (val.length > 3) {
     isContractorLoading.value = true;
     try {
       const response = await axios.get('/api/contractors', {
@@ -83,7 +82,7 @@ const onContractorSelectChange = async (val, update, abort) => {
       update(() => categories.value);
     } catch (e) {
       Notify.create({
-        message: "Fetching contragents failed",
+        message: "Ошибка получения контрагентов",
         color: "red",
       });
     }
@@ -115,16 +114,6 @@ const onContractorSelectChange = async (val, update, abort) => {
               input-debounce="300"
               @filter="onCategorySelectChange"
               :loading="isCategoryLoading"
-          />
-
-          <q-input
-              model-value="name"
-              label="Название правила"
-              class="col-3 q-mt-md"
-              outlined
-              dense
-              v-model="rule.name"
-              filled
           />
 
           <q-input

@@ -12,6 +12,11 @@ class LoadBudgetCategories extends Command
 
     public function handle()
     {
+        Category::query()->firstOrCreate([
+            'id' => 0,
+            'name' =>  'Без категории',
+        ]);
+
         $categories = json_decode(file_get_contents(base_path('categories.json')));
 
         foreach ($categories->items as $category) {

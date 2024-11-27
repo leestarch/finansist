@@ -17,7 +17,6 @@ return new class extends Migration
 
             $table->unsignedBigInteger('category_id')->nullable();
             $table->unsignedBigInteger('contractor_id')->nullable();
-            $table->string('name', 100)->nullable();
             $table->string('purpose_expression')->nullable();
             $table->string('operation_type')->default(OperationRule::DEBIT)->nullable();
 
