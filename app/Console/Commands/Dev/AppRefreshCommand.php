@@ -9,7 +9,7 @@ class AppRefreshCommand extends Command
     protected $signature = 'app.refresh';
     public function handle()
     {
-        if(app()->environment() === 'local') {
+//        if(app()->environment() === 'local') {
             $this->call('migrate:refresh');
             $this->call('db:seed');
             $this->call('load.budget.categories');
@@ -17,7 +17,7 @@ class AppRefreshCommand extends Command
             $this->call('operation.categories.table', [
                 '--validate' => true
             ]);
-        }
+//        }
     }
 }
 
