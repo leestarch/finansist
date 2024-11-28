@@ -14,10 +14,6 @@ class OperationSeeder extends Seeder
      */
     public function run(): void
     {
-        $sqlFilePath = storage_path('app/private/categories.sql');
-        $sqlContent = file_get_contents($sqlFilePath);
-        DB::unprepared($sqlContent);
-
         $sqlFilePath = storage_path('app/private/operations.sql');
         $sqlContent = file_get_contents($sqlFilePath);
         DB::unprepared($sqlContent);

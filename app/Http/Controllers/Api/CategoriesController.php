@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Category\MinifiedCategoryResource;
 use App\Models\Category;
+use App\Models\Contractor;
 use App\Models\Pizzeria;
 use App\Services\CategoryService;
 use Illuminate\Http\JsonResponse;
@@ -36,11 +37,55 @@ class CategoriesController extends Controller
 
     public function index(Request $request): AnonymousResourceCollection
     {
-        $q = $request->get('q');
+        $paginate = $request->get('paginate', 20);
 
-        $categories = Category::query();
-        if($q) $categories->where('name', 'like', "%$q%");
+        $categories = Category::query()->where('id', '!=', 0);
+        if($load = $request->get('load'))
+            $categories->with(explode(',', $load));
 
-        return MinifiedCategoryResource::collection($categories->get());
+        if($q = $request->get('q'))
+            $categories->where('name', 'like', "%$q%");
+
+        return MinifiedCategoryResource::collection($categories->paginate($paginate));
+    }
+
+    public function show(int $id): MinifiedCategoryResource
+    {
+        $category = Category::query();
+        if($load = request()->get('load'))
+            $category->with(explode(',', $load));
+
+        return MinifiedCategoryResource::make($category->findOrFail($id));
+    }
+
+    public function store(Request $request): JsonResponse
+    {
+        $data = $request->validate([
+            'name' => 'required|string',
+            'parent_id' => 'nullable|integer',
+        ]);
+        $category = Category::query()->create($data);
+        return response()->json([
+            'success' => 1,
+            'id' => $category->id,
+        ]);
+    }
+
+    public function update(int $id, Request $request): JsonResponse
+    {
+        $category = Category::query()->findOrFail($id);
+        $category->update($request->only('name', 'parent_id'));
+        return response()->json([
+            'success' => 1,
+        ]);
+    }
+
+    public function destroy(int $id): JsonResponse
+    {
+        $category = Category::query()->findOrFail($id);
+        $category->delete();
+        return response()->json([
+            'success' => 1,
+        ]);
     }
 }

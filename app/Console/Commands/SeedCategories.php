@@ -6,11 +6,31 @@ use App\Models\Category;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 
-class LoadBudgetCategories extends Command
+class SeedCategories extends Command
 {
-    protected $signature = 'load.budget.categories';
+    protected $signature = 'seed.categories {--from-sql} {--from-json}';
 
-    public function handle()
+    public function handle(): void
+    {
+        DB::table('categories')->truncate();
+
+        if($this->option('from-sql')){
+            $this->fromSql();
+        }
+        if($this->option('from-json')) {
+            $this->fromJson();
+        }
+
+    }
+
+    private function fromSql(): void
+    {
+        $sqlFilePath = storage_path('app/private/categories.sql');
+        $sqlContent = file_get_contents($sqlFilePath);
+        DB::unprepared($sqlContent);
+    }
+
+    private function fromJson(): void
     {
         Category::query()->firstOrCreate([
             'id' => 0,

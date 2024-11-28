@@ -13,6 +13,8 @@ Route::any('/operations/rules/create', [\App\Http\Controllers\Controller::class,
 Route::any('/operations/rules/edit/{id}', [\App\Http\Controllers\Controller::class, 'vue']);
 
 Route::any('/categories', [\App\Http\Controllers\Controller::class, 'vue']);
+Route::any('/categories/edit/{id}', [\App\Http\Controllers\Controller::class, 'vue']);
+Route::any('/categories/create', [\App\Http\Controllers\Controller::class, 'vue']);
 Route::any('/categories-tree', [\App\Http\Controllers\Controller::class, 'vue']);
 
 Route::any('/contractors/{id}', [\App\Http\Controllers\Controller::class, 'vue']);

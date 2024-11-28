@@ -1,18 +1,18 @@
 <?php
 
-namespace App\Console\Commands\Operation;
+namespace Database\Seeders;
 
-use App\Models\Contractor;
 use App\Models\OperationRule;
-use Illuminate\Console\Command;
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Illuminate\Database\Seeder;
 
-/**
- * @deprecated
- */
-class OperationCreateRuleCommand extends Command
+class RuleSeeder extends Seeder
 {
-    protected $signature = 'operation.rules.create.command';
-    public function handle()
+    /**
+     * Run the database seeds.
+     */
+    public function run(): void
+
     {
         OperationRule::query()->firstOrCreate([
             'category_id' => 8,
@@ -887,28 +887,4 @@ class OperationCreateRuleCommand extends Command
         ]);
 
     }
-    // Массив категорий из списка тг для создания правил
-//$data = [
-//  2 => "HR-менеджер"
-//  4 => "Аренда"
-//  6 => "Банковские услуги"
-//  7 => "Бухгалтерские услуги"
-//  8 => "Взносы в маркетинговый фонд"
-//  12 => "Вывоз отходов"
-//  16 => "Дезинсекция и дезинфекция"
-//  20 => "Закупщик сырья"
-//  43 => "Оплата труда доставки"
-//  44 => "Оплата труда кухни"
-//  47 => "Охрана и безопасность"
-//  52 => "Подрядчики"
-//  57 => "Программирование"
-//  72 => "Распространение, размещение"
-//  79 => "Расчетный Food Cost"
-//  81 => "Ревизор-контролер"
-//  84 => "Рекрутинг"
-//  90 => "Страхование"
-//  109 => "Электроэнергия"
-//  123 => "Выплата Дивидендов"
-//  169 => "Полученные займы"
-//];
 }

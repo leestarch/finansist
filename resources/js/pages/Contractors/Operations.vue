@@ -8,6 +8,7 @@ const route = useRoute()
 const contractorId = route.params.id
 const operations = ref([])
 const isChecking = ref(false)
+const contractor = ref({})
 
 const pagination = ref({
   page: 1,
@@ -56,6 +57,19 @@ const refresh = async () => {
   }
 }
 
+const fetchContractors = async () => {
+  try {
+    const response = await axios.get('/api/contractors/' + contractorId)
+    contractor.value = response.data.data
+  } catch (e) {
+    Notify.create({
+      message:'Ошибка получения данных',
+      color:'red',
+      timeout: 2000
+    })
+  }
+}
+
 const checkContractorsOperation = async () => {
   Loading.show()
   isChecking.value = true
@@ -86,6 +100,7 @@ const checkContractorsOperation = async () => {
 }
 
 onMounted(() => {
+  fetchContractors()
   refresh()
 })
 
@@ -95,6 +110,21 @@ onMounted(() => {
   <q-page class="bg-grey-3">
     <div class="row justify-center">
       <div class="row justify-center col-12 q-px-md q-pt-lg q-mb-sm">
+        <div class="col-12 bg-white shadow-24 q-pa-sm rounded-borders q-mb-md">
+          <div class="row justify-center">
+            <span class="text-h6">
+              Информация о контрагенте
+            </span>
+          </div>
+          <div class="row">
+            <div class="col-12 text-h6">
+              Имя контрагента: {{contractor.full_name}}
+            </div>
+            <div class="col-12 text-h6">
+              ИНН контрагента: {{contractor.inn_kpp}}
+            </div>
+          </div>
+        </div>
         <div class="col-3 bg-accent bg-white shadow-24 q-pa-sm rounded-borders mb">
           <div class="row">
             <span class="text-h6 text-center ">

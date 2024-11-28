@@ -17,6 +17,14 @@ class MinifiedCategoryResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
+            'parent' => $this->whenLoaded(
+                'parent',
+                fn() => new MinifiedCategoryResource($this->parent)
+            ),
+            'children' => $this->whenLoaded(
+                'children',
+                fn() => MinifiedCategoryResource::collection($this->children)
+            ),
         ];
     }
 }

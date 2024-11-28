@@ -70,7 +70,7 @@ const submitForm = async () => {
 }
 
 const onCategorySelectChange = async (val, update, abort) => {
-  if (val.length > 4) {
+  if (val.length > 3) {
     isCategoryLoading.value = true;
     try {
       const response = await axios.get('/api/categories', {

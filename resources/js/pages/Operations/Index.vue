@@ -1,7 +1,7 @@
 <script setup>
 import {onMounted, ref, watch} from "vue";
 import {useRoute, useRouter} from "vue-router";
-import {Notify} from "quasar";
+import {Loading, Notify} from "quasar";
 import OperationTable from "../../components/Operations/OperationTable.vue";
 import { startOfMonth, endOfMonth, startOfWeek, endOfWeek, startOfQuarter,addWeeks, endOfQuarter, parse, format } from 'date-fns';
 import axios from "axios";
@@ -35,6 +35,7 @@ const pagination = ref({
 const filters = ref({
   dateFrom: '',
   dateTo: '',
+  splitFilter: null,
   categoryQuery: '',
   parentCategoryId: null,
   categories: [],
@@ -48,9 +49,11 @@ watch(filters, () => {
 }, {deep: true})
 
 const refresh = async (p) => {
+  Loading.show();
   try{
     const response = await axios.get('/api/operations/', {params: {
       ...filters.value,
+        isSplit: filters.value.splitFilter?.value,
         page: pagination.value.page,
         contractorIds: contractorIds.value,
         categoryIds: filters.value.categories.map(category => category.id),
@@ -70,6 +73,7 @@ const refresh = async (p) => {
       timeout: 2000
     })
   }
+  Loading.hide()
 }
 
 const onCategoriesChange  = async (val, update, abort) => {
@@ -287,7 +291,20 @@ const clearFilters = async () => {
             option-label="name"
             @filter="onContractorChange"
             :loading="isLoading"
-
+        />
+        <q-select
+            class="col-3 q-px-sm q-mt-sm"
+            clearable
+            dense
+            outlined
+            filled
+            v-model="filters.splitFilter"
+            label="Разделенные операции"
+            :options="[
+                {label: 'Все', value: null},
+                {label: 'Разделенные', value: true},
+                {label: 'Неразделенные', value: false},
+              ]"
         />
       </div>
       <div class="row q-mt-md">

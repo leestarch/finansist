@@ -90,6 +90,7 @@ class Operation extends Model
 
     public function scopeFilter(Builder $query, array $filters): Builder
     {
+
         if ($type = $filters['type'] ?? null) {
             $query->whereHas('types', function ($subQuery) use ($type) {
                 $subQuery->where('name', $type['name']);
@@ -166,6 +167,24 @@ class Operation extends Model
 
         if ($dateAt = $filters['dateAt'] ?? null) {
             $query->whereDate('date_at', '=', Carbon::parse($dateAt));
+        }
+
+        if($isSplit = $filters['isSplit'] ?? null){
+            $isSplit = $isSplit === 'true';
+
+//            if ($isSplit) {
+//                $query->has('categories', '>', 1);
+//            } else {
+//                $query->where(function ($query) {
+//                    $query->doesntHave('categories')
+//                        ->orHas('categories', '=', 1);
+//                });
+//            }
+//            $query->whereRaw(
+//                $isSplit
+//                    ? '(SELECT COUNT(*) FROM categories_operations WHERE categories_operations.operation_id = operations.id) > 1'
+//                    : '(SELECT COUNT(*) FROM categories_operations WHERE categories_operations.operation_id = operations.id) <= 1'
+//            );
         }
 
         return $query;

@@ -21,6 +21,10 @@ Route::group(['prefix' => 'rules'], function (){
 Route::prefix('categories')->group(function () {
     Route::get('/tree', [\App\Http\Controllers\Api\CategoriesController::class, 'indexTree']);
     Route::get('/', [\App\Http\Controllers\Api\CategoriesController::class, 'index']);
+    Route::post('/', [\App\Http\Controllers\Api\CategoriesController::class, 'store']);
+    Route::put('/{id}', [\App\Http\Controllers\Api\CategoriesController::class, 'update']);
+    Route::get('/{id}', [\App\Http\Controllers\Api\CategoriesController::class, 'show']);
+    Route::delete('/{id}', [\App\Http\Controllers\Api\CategoriesController::class, 'destroy']);
 });
 
 Route::prefix('contractors')->group(function () {

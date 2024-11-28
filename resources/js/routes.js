@@ -49,8 +49,20 @@ export default [
     },
     {
         path:'/categories',
-        component:() => import('@/pages/Categories/IndexDepr.vue'),
-        name:'IndexDepr',
+        component:() => import('@/pages/Categories/Index.vue'),
+        name:'CategoriesIndex',
+        meta: { requiresAuth: true }
+    },
+    {
+        path:'/categories/edit/:id',
+        component:() => import('@/pages/Categories/Edit.vue'),
+        name:'CategoriesEdit',
+        meta: { requiresAuth: true }
+    },
+    {
+        path:'/categories/create',
+        component:() => import('@/pages/Categories/Create.vue'),
+        name:'CategoriesCreate',
         meta: { requiresAuth: true }
     },
     {

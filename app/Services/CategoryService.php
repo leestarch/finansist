@@ -28,7 +28,7 @@ final class CategoryService
             $query->with($withDependencies);
         }
 
-        $categories = $query->get();
+        $categories = $query->get()->where('id', '!=',0);
         $result = [];
 
         foreach ($categories->whereNull('parent_id') as $rootCategory) {

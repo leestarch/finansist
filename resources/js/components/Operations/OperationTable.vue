@@ -62,7 +62,22 @@ const handleIsManualChange = async (row) => {
             {{ item.row?.sber_amountRub }}
           </template>
           <template v-if="item.col.name === 'categories'">
-            {{ item.row?.categories.map(category => category.name).join(', ') }}
+            <template v-if="item.row?.categories.length > 1">
+              <span>
+                <template v-for="(category, index) in item.row.categories">
+                  <span>
+                    {{ category.name }}
+                    <span class="text-primary">
+                      ({{ category.sber_amountRub }})
+                    </span>
+                    <span v-if="index < item.row.categories.length - 1">, </span>
+                  </span>
+                </template>
+              </span>
+            </template>
+            <template v-else>
+              {{ item.row?.categories.map(category => category.name).join(', ') }}
+            </template>
           </template>
           <template v-if="item.col.name === 'is_manual'">
             <q-checkbox

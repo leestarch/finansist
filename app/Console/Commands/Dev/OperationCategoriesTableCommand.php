@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\DB;
 
 class OperationCategoriesTableCommand extends Command
 {
-    protected $signature = 'operation.categories.table {--restore} {--validate}';
+    protected $signature = 'operation.categories.manage.table {--restore} {--validate}';
     public function handle()
     {
         DB::table('categories_operations')->truncate();
