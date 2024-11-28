@@ -2,7 +2,7 @@
 
 namespace App\Exceptions;
 
-use App\Services\TelegramBotService;
+//use App\Services\TelegramBotService;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Support\Facades\Auth;
 use Throwable;
@@ -37,13 +37,13 @@ class Handler extends ExceptionHandler
                     $user = 'Пользователь: (' . Auth::user()->id . ')' . Auth::user()->name . " \n";
                 }
 
-                with(new TelegramBotService())->sendChatTextMessage(TelegramBotService::ERROR_ID, "Выброшено исключение: " . $e->getMessage() . "\n-----------\n" . "\n" .
-                    'Файл/Строка: ' . $e->getFile() . ": " . $e->getLine() . "\n" . "\n" .
-                    'Код ошибки: ' . $e->getCode() . "\n" . "\n" .
-                    'Путь: ' . (isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '') . "\n" . "\n" .
-                    'IP: ' . (isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '') . "\n" . "\n" .
-                    'Агент: ' . (isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '') . "\n" . "\n" .
-                    $user);
+//                with(new TelegramBotService())->sendChatTextMessage(TelegramBotService::ERROR_ID, "Выброшено исключение: " . $e->getMessage() . "\n-----------\n" . "\n" .
+//                    'Файл/Строка: ' . $e->getFile() . ": " . $e->getLine() . "\n" . "\n" .
+//                    'Код ошибки: ' . $e->getCode() . "\n" . "\n" .
+//                    'Путь: ' . (isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '') . "\n" . "\n" .
+//                    'IP: ' . (isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '') . "\n" . "\n" .
+//                    'Агент: ' . (isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '') . "\n" . "\n" .
+//                    $user);
 
             }
         }
