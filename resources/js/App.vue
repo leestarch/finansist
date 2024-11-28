@@ -2,18 +2,33 @@
 import {onMounted, ref, provide, computed} from "vue";
 import {useQuasar} from "quasar";
 import {useUserStore} from "./plugins/store/users.js";
+import router from "./plugins/router.js";
 
 const props = defineProps(['user_id', 'is_worker'])
 const store = useUserStore()
 const user = computed(() => {
     return store.user;
 });
+const isAuth = ref(localStorage.getItem('token') !== null);
 
 const $q = useQuasar()
 const drawer = ref(false)
 onMounted(async () => {
     provide('user', user)
 })
+
+const logout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    $q.notify({
+        color: 'positive',
+        position: 'top',
+        message: 'Вы вышли из системы',
+        icon: 'check'
+    });
+    isAuth.value = false;
+    router.push('/login');
+}
 </script>
 
 <template>
@@ -22,11 +37,15 @@ onMounted(async () => {
           <q-toolbar>
               <q-btn  flat @click="drawer = !drawer" round dense icon="menu" />
               <q-toolbar-title>
-                <q-btn flat text-color="white" color="grey-8" :to="{name: 'OperationIndex'}">Finansist</q-btn>
+                <q-btn v-if="isAuth" flat text-color="white" color="grey-8" :to="{name: 'OperationIndex'}">Finansist</q-btn>
               </q-toolbar-title>
+            <q-toolbar-title class="text-right">
+              <q-btn v-if="isAuth" flat text-color="white" color="grey-8" @click="logout">Выход</q-btn>
+            </q-toolbar-title>
           </q-toolbar>
       </q-header>
       <q-drawer
+          v-if="isAuth"
           v-model="drawer"
           show-if-above
           :width="200"

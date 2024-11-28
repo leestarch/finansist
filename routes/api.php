@@ -8,7 +8,6 @@ Route::group(['prefix' => 'operations'], function (){
     Route::get('/summary', [\App\Http\Controllers\Api\OperationController::class, 'summary']);
     Route::post('/', [\App\Http\Controllers\Api\OperationController::class, 'store']);
     Route::put('/{id}', [\App\Http\Controllers\Api\OperationController::class, 'update']);
-
 });
 
 Route::group(['prefix' => 'rules'], function (){
@@ -33,3 +32,5 @@ Route::prefix('contractors')->group(function () {
 Route::prefix('pizzerias')->group(function () {
     Route::get('/', [\App\Http\Controllers\Api\PizzeriaController::class, 'index']);
 });
+
+Route::post('login', [\App\Http\Controllers\Api\AuthController::class, 'login']);
