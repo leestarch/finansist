@@ -19,7 +19,7 @@ const refresh = async () => {
   try {
     const response = await axios.get(`/api/rules`, {
       params: {
-        load: ['category'],
+        load: ['category,contractor'],
         paginate: pagination.value.rowsPerPage,
         page: pagination.value.page,
         purpose_expression: filters.value.purpose_expression,
@@ -31,6 +31,7 @@ const refresh = async () => {
     pagination.value.page = response.data?.meta?.current_page
     pagination.value.totalPages = response.data?.meta?.last_page
     operationRules.value = response?.data?.data
+    console.log(response.data.data)
   } catch (e) {
     Notify.create({
       message:'Ошибка получения данных',
@@ -80,6 +81,8 @@ onMounted(() => {
         </div>
         <div class="row q-mt-sm q-ml-sm">
           <q-btn class="text-right" dense size="sm" @click="refresh" label="Применить фильтры" color="primary" />
+          <q-btn class="text-right q-ml-sm" dense size="sm" :to="{name: 'CreateRule'}"
+                 label="Создать правило" color="primary" />
         </div>
       </div>
       <RulesTable

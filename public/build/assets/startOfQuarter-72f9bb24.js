@@ -1,0 +1,1 @@
+import{t as c,c as n}from"./format-04e7afb3.js";function f(a,t,r){const e=c(a,r==null?void 0:r.in);return isNaN(t)?n((r==null?void 0:r.in)||a,NaN):(t&&e.setDate(e.getDate()+t),e)}function d(a,t,r){return f(a,t*7,r)}function h(a,t){const r=c(a,t==null?void 0:t.in),e=r.getMonth(),u=e-e%3;return r.setMonth(u,1),r.setHours(0,0,0,0),r}export{f as a,d as b,h as s};

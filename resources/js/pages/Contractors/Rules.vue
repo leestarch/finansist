@@ -19,9 +19,10 @@ const fetchRules = async () => {
     const response = await axios.get(`/api/rules`, {
       params: {
         contractor_id: contractorId,
-        load: ['category'],
+        load: ['category,contractor'],
       }
     })
+    console.log(response.data.data)
     rules.value = response.data.data
   } catch (e) {
     Notify.create({

@@ -1,7 +1,9 @@
 <script setup>
 import { ref } from 'vue';
 import {Notify} from "quasar";
+import {createRouter as $router, useRoute} from "vue-router";
 
+const route = useRoute()
 const props = defineProps({
   rules: Array,
   pagination: Object,
@@ -11,6 +13,7 @@ const emit = defineEmits(['update:pagination', 'refresh']);
 
 const columns = ref([
   { name: 'category', label: 'Категория', field: row=>row?.category?.name, align: 'left' },
+  { name: 'contractor', label: 'Контрагент', field: row=>row?.contractor?.full_name, align: 'left' },
   { name: 'purpose_expression', label: 'Регулярное выражение', field: 'purpose_expression', align: 'left' },
   { name: 'actions', label: 'Действия', align: 'left' },
 ]);
@@ -60,12 +63,28 @@ const handlePaginationUpdate = (page) => {
             <template v-if="item.col.name === 'category'">
               {{ item.row?.category?.name }}
             </template>
+            <template v-if="item.col.name === 'contractor'">
+              <template v-if="!item.row?.contractor?.name">
+                Для всех
+              </template>
+              <template v-if="item.row?.contractor?.full_name">
+              {{ item.row?.contractor?.full_name }}
+              </template>
+            </template>
             <template v-if="item.col.name === 'actions'">
-              <div class="row justify-center">
+              <div class="row justify-between">
+                <router-link class="q-mr-sm" :to="{name: 'EditRule', params: {id: item?.row?.id}}">
+                  <q-icon
+                      name="edit"
+                      size="xs"
+                      class="cursor-pointer"
+                      color="primary"
+                  />
+                </router-link>
                 <q-icon
                     @click="deleteRule(item.row.id)"
                     name="delete"
-                    size="sm"
+                    size="xs"
                     class="cursor-pointer"
                     color="negative"
                 />

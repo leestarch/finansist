@@ -18,7 +18,7 @@ class OperationRuleController extends Controller
         $paginate = $request->get('paginate', 50);
         $rules = OperationRule::query();
         if($load = $request->get('load')){
-            $rules->with($load);
+            $rules->with(explode(',', $load[0]));
         }
 
         $rules->filter($request->all());
