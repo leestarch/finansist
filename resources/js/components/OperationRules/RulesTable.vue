@@ -20,7 +20,7 @@ const columns = ref([
 
 const deleteRule = async (id) => {
   try {
-    const response = await axios.delete(`/api/operations/rules/${id}`)
+    const response = await axios.delete(`/api/rules/${id}`)
     if(response?.data?.success) {
       Notify.create({
         message:'Правило успешно удалено',

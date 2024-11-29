@@ -19,14 +19,16 @@ class SeedOperationCommand extends Command
         $operations = Operation::query();
         $operations->chunk(1000, function ($chunk) {
             $data = $chunk->toArray();
-            $response = Http::withoutVerifying()->accept('application/json')
-                ->post('https://fin.lookin.team/api/seed', [
-                     'data' => $data
-                ]);
+            retry(5, function () use ($data) {
+                $response = Http::withoutVerifying()->accept('application/json')
+                    ->post('https://fin.lookin.team/api/seed', [
+                        'data' => $data
+                    ]);
 
-            if ($response->failed()) {
-                dump($response->json());
-            }
+                if ($response->failed()) {
+                    dump($response->json());
+                }
+            });
         });
     }
 }
