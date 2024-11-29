@@ -19,7 +19,16 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => ['http://localhost:8080', 'http://127.0.0.1:8080', 'http://localhost:8000', 'http://127.0.0.1:8000', 'https://milavitsa.store', 'https://dyatlovait.ru'],
+    'allowed_origins' => [
+        'http://localhost:8080',
+        'http://127.0.0.1:8080',
+        'https://lookin.team',
+        'https://www.lookin.team',
+        'http://localhost:8000',
+        'http://127.0.0.1:8000',
+        'https://lib.lookin.team',
+        'https://fin.lookin.team',
+    ],
 
     'allowed_origins_patterns' => [],
 
