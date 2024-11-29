@@ -1,15 +1,13 @@
 <script setup>
-import {onMounted, ref, provide, computed} from "vue";
+import {onMounted, ref, provide, computed, inject} from "vue";
 import {useQuasar} from "quasar";
 import {useUserStore} from "./plugins/store/users.js";
 import router from "./plugins/router.js";
 
 const props = defineProps(['user_id', 'is_worker'])
-const store = useUserStore()
-const user = computed(() => {
-    return store.user;
-});
-const isAuth = ref(localStorage.getItem('token') !== null);
+const user = inject('user')
+const isAuth = ref(user?.id || null);
+console.log(user)
 
 const $q = useQuasar()
 const drawer = ref(false)
@@ -18,16 +16,16 @@ onMounted(async () => {
 })
 
 const logout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    $q.notify({
-        color: 'positive',
-        position: 'top',
-        message: 'Вы вышли из системы',
-        icon: 'check'
-    });
-    isAuth.value = false;
-    router.push('/login');
+    // localStorage.removeItem('token');
+    // localStorage.removeItem('user');
+    // $q.notify({
+    //     color: 'positive',
+    //     position: 'top',
+    //     message: 'Вы вышли из системы',
+    //     icon: 'check'
+    // });
+    // isAuth.value = false;
+    // router.push('/login');
 }
 </script>
 
@@ -39,9 +37,9 @@ const logout = () => {
               <q-toolbar-title>
                 <q-btn v-if="isAuth" flat text-color="white" color="grey-8" :to="{name: 'OperationIndex'}">Finansist</q-btn>
               </q-toolbar-title>
-            <q-toolbar-title class="text-right">
-              <q-btn v-if="isAuth" flat text-color="white" color="grey-8" @click="logout">Выход</q-btn>
-            </q-toolbar-title>
+<!--            <q-toolbar-title class="text-right">-->
+<!--              <q-btn v-if="isAuth" flat text-color="white" color="grey-8" @click="logout">Выход</q-btn>-->
+<!--            </q-toolbar-title>-->
           </q-toolbar>
       </q-header>
       <q-drawer

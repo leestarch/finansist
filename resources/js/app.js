@@ -16,6 +16,7 @@ createApp(
 )
     .use(pinia)
     .provide('user_id', props.user_id)
+    .provide('user', props.user)
     .use(router)
     .provide('auth', auth)
     .use(quasarInstance, quasarConfig)
