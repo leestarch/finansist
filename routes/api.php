@@ -38,4 +38,4 @@ Route::prefix('pizzerias')->group(function () {
 });
 
 Route::post('login', [\App\Http\Controllers\Api\AuthController::class, 'login']);
-Route::post('/seed', [\App\Http\Controllers\Api\OperationController::class, 'seed']);
+Route::post('seed', [\App\Http\Controllers\Api\OperationController::class, 'seed']);
