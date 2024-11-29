@@ -10,6 +10,7 @@ use App\Models\OperationRule;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Str;
 
 class OperationRuleController extends Controller
 {
@@ -44,14 +45,14 @@ class OperationRuleController extends Controller
             OperationRule::query()->firstOrCreate([
                 'category_id' => $data['category_id'],
                 'contractor_id' => null,
-                'purpose_expression' => $data['purpose_expression'] ?? null,
+                'purpose_expression' => $this->handleExpression($data['purpose_expression'] ?? null),
             ]);
         }else{
             foreach ($data['contractor_ids'] as $contractorId){
                 OperationRule::query()->firstOrCreate([
                     'category_id' => $data['category_id'],
                     'contractor_id' => $contractorId,
-                    'purpose_expression' => $data['purpose_expression'] ?? null,
+                    'purpose_expression' => $this->handleExpression($data['purpose_expression'] ?? null),
                 ]);
             }
         }
@@ -70,7 +71,7 @@ class OperationRuleController extends Controller
 
         $rule = OperationRule::query()->findOrFail($id);
         $rule->update([
-            'purpose_expression' => $request->purpose_expression,
+            'purpose_expression' => $this->handleExpression($request->purpose_expression),
             'category_id' => $request->category_id,
             'operation_type' => $operationType,
         ]);
@@ -87,5 +88,13 @@ class OperationRuleController extends Controller
         return response()->json([
             'success' => true,
         ]);
+    }
+
+    private function handleExpression(?string $expression): ?string
+    {
+        if($expression){
+            return Str::start(Str::finish($expression, '/'), '/');
+        }
+        return null;
     }
 }
