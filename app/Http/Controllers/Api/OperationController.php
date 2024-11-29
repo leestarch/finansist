@@ -165,7 +165,7 @@ class OperationController extends Controller
         $validate = $request->validated();
         $data = $validate['data'];
         foreach ($data as $operation){
-           Operation::query()->create($operation);
+           Operation::query()->firstOrCreate($operation);
         }
         return response()->json([
             'success' => true,
