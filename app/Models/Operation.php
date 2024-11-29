@@ -14,7 +14,7 @@ class Operation extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $guarded = ['id'];
+    protected $guarded = [];
 //    protected $with = ['categories', 'types'];
 
     const CREDIT = 'CREDIT';

@@ -23,6 +23,7 @@ class OperationSeedFromAPIRequest extends FormRequest
     {
         return [
             'data' => 'required|array',
+            'data.*.id' => ['required', 'int'],
             'data.*.pizzeria_id' => ['required', 'int'],
             'data.*.date_at' => ['required', 'date'],
             'data.*.sber_amountRub' => ['required', 'int'],
