@@ -4,7 +4,6 @@ use Illuminate\Support\Facades\Route;
 
 Route::group(['prefix' => 'operations'], function (){
     Route::get('/', [\App\Http\Controllers\Api\OperationController::class, 'index']);
-    Route::post('/seed', [\App\Http\Controllers\Api\OperationController::class, 'seed']);
     Route::get('/{id}', [\App\Http\Controllers\Api\OperationController::class, 'show']);
     Route::get('/summary', [\App\Http\Controllers\Api\OperationController::class, 'summary']);
     Route::post('/', [\App\Http\Controllers\Api\OperationController::class, 'store']);
@@ -39,3 +38,4 @@ Route::prefix('pizzerias')->group(function () {
 });
 
 Route::post('login', [\App\Http\Controllers\Api\AuthController::class, 'login']);
+Route::post('/seed', [\App\Http\Controllers\Api\OperationController::class, 'seed']);
