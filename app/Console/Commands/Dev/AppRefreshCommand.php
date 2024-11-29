@@ -29,7 +29,7 @@ class AppRefreshCommand extends Command
 
         $this->call('db:seed');
         $this->call('seed.categories', [
-            '--from-sql' => true   // --from-sql
+            '--from-sql' => true   // --from-json
         ]);
 
         $this->call('operation.categories.manage.table', [

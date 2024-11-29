@@ -22,7 +22,7 @@ class OperationSeedFromAPIRequest extends FormRequest
             'data.*.sber_amountRub' => ['required', 'int'],
             'data.*.sber_direction' => ['required', 'string'],
             'data.*.sber_paymentPurpose' => ['required', 'string'],
-            'data.*.sber_operationId' => ['required', 'int'],
+            'data.*.sber_operationId' => ['required', 'string'],
             'data.*.payer_contractor_id' => ['required', 'int'],
             'data.*.payee_contractor_id' => ['required', 'int'],
             'data.*.is_completed' => ['required', 'bool'],
