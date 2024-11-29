@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Operation\OperationCreateRequest;
+use App\Http\Requests\Operation\OperationSeedFromAPIRequest;
 use App\Http\Resources\OperationResource;
 use App\Models\Category;
 use App\Models\Operation;
@@ -157,5 +158,17 @@ class OperationController extends Controller
             $mappedCategories[$category['id']] = (int) $category['sber_amountRub'];
         }
         return $mappedCategories;
+    }
+
+    public function seed(OperationSeedFromAPIRequest $request): JsonResponse
+    {
+        $validate = $request->validated();
+        $data = $validate['data'];
+        foreach ($data as $operation){
+           Operation::query()->create($operation);
+        }
+        return response()->json([
+            'success' => true,
+        ]);
     }
 }

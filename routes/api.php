@@ -8,6 +8,7 @@ Route::group(['prefix' => 'operations'], function (){
     Route::get('/summary', [\App\Http\Controllers\Api\OperationController::class, 'summary']);
     Route::post('/', [\App\Http\Controllers\Api\OperationController::class, 'store']);
     Route::put('/{id}', [\App\Http\Controllers\Api\OperationController::class, 'update']);
+    Route::post('/seed', [\App\Http\Controllers\Api\OperationController::class, 'seed']);
 });
 
 Route::group(['prefix' => 'rules'], function (){

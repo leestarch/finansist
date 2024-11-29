@@ -22,3 +22,6 @@ Route::any('/contractors/{id}/rules', [\App\Http\Controllers\Controller::class, 
 Route::any('/contractors/{id}/operations', [\App\Http\Controllers\Controller::class, 'vue']);
 
 Route::any('/contractors', [\App\Http\Controllers\Controller::class, 'vue']);
+
+Route::get('/auth', [\App\Http\Controllers\Api\AuthController::class, 'adminAuth'])->name('adminAuth');
+Route::get('/ditLogin', [\App\Http\Controllers\Api\AuthController::class, 'ditLogin'])->name('ditLogin');
