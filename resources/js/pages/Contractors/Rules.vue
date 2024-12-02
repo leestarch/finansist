@@ -43,6 +43,18 @@ onMounted(() => {
   <q-page class="bg-grey-3">
     <div class="row justify-center">
       <div class="justify-center col-12 q-px-md q-mt-lg">
+        <p class="text-blue-5 row items-center">
+          <router-link
+              :to="{ name: 'ContractorShow', params: { id: contractorId }}"
+              custom
+              v-slot="{ navigate }"
+          >
+            <div @click="navigate" class="cursor-pointer">
+              <q-icon size="sm" name="keyboard_arrow_left" />
+              Назад
+            </div>
+          </router-link>
+        </p>
         <p class="text-h6 text-center">
           Правила
         </p>
