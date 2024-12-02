@@ -36,7 +36,7 @@ class OperationRule extends Model
             $query->where('contractor_id', $contractorId);
 
             $includeCommons = $filter['include_commons'] ?? true;
-            if(!($includeCommons == 'false')){
+            if($includeCommons !== 'false'){
                 $query->orWhereNull('contractor_id');
             }
         }
@@ -45,7 +45,7 @@ class OperationRule extends Model
             $query->whereIn('contractor_id', $contractorIds);
 
             $includeCommons = $filter['include_commons'] ?? true;
-            if(!($includeCommons == 'false')){
+            if($includeCommons !== 'false'){
                 $query->orWhereNull('contractor_id');
             }
         }
