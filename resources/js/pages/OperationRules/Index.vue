@@ -2,8 +2,13 @@
 import {onMounted, ref} from "vue";
 import {Notify} from "quasar";
 import RulesTable from "../../components/OperationRules/RulesTable.vue";
+import axios from "axios";
 
 const operationRules = ref([])
+const contractors = ref([])
+const contractorIds = ref([])
+const isLoading = ref(false)
+
 const pagination = ref({
   page: 1,
   rowsPerPage: 20,
@@ -13,6 +18,7 @@ const pagination = ref({
 const filters = ref({
   purpose_expression: '',
   operation_type: null,
+  include_commons: false
 })
 
 const refresh = async () => {
@@ -24,6 +30,8 @@ const refresh = async () => {
         page: pagination.value.page,
         purpose_expression: filters.value.purpose_expression,
         operation_type: filters.value.operation_type?.value,
+        include_commons: Boolean(filters.value.include_commons),
+        contractor_ids: contractorIds.value ? contractorIds.value.map(contractor => contractor.id) : null,
       }
     })
 
@@ -33,6 +41,7 @@ const refresh = async () => {
     operationRules.value = response?.data?.data
     console.log(response.data.data)
   } catch (e) {
+    console.log(e)
     Notify.create({
       message:'Ошибка получения данных',
       color:'red',
@@ -40,6 +49,30 @@ const refresh = async () => {
     })
   }
 }
+
+const onContractorChange  = async (val, update, abort) => {
+  if (val.length > 3) {
+    isLoading.value = true;
+    try {
+      const response = await axios.get('/api/contractors', {
+        params: {
+          q: val,
+        },
+      });
+      contractors.value = response.data.data;
+
+      update(() => contractors.value);
+    } catch (error) {
+      console.log(error);
+      abort();
+    } finally {
+      isLoading.value = false;
+    }
+  } else {
+    contractors.value = [];
+    update(() => contractors.value);
+  }
+};
 
 onMounted(() => {
   refresh()
@@ -78,6 +111,29 @@ onMounted(() => {
                 {label: 'CREDIT', value: 'CREDIT'},
               ]"
           />
+
+          <div class="col-5 row bg-grey-3 rounded-borders">
+            <q-select
+                class="q-px-sm col-8"
+                dense
+                borderless
+                label="Контрагенты (получатели)"
+                v-model="contractorIds"
+                :options="contractors"
+                use-input
+                multiple
+                clearable
+                option-label="name"
+                @filter="onContractorChange"
+                :loading="isLoading"
+                use-chips
+            />
+            <q-checkbox
+                class="col-4"
+                v-model="filters.include_commons"
+                label="включая общие"
+            />
+          </div>
         </div>
         <div class="row q-mt-sm q-ml-sm">
           <q-btn class="text-right" dense size="sm" @click="refresh" label="Применить фильтры" color="primary" />

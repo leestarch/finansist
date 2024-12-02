@@ -33,7 +33,19 @@ class OperationRule extends Model
         }
 
         if ($contractorId = $filter['contractor_id'] ?? null){
-            $query->where('contractor_id', $contractorId)->orWhereNull('contractor_id');
+            $query->where('contractor_id', $contractorId);
+
+            if(!($filter['include_commons'] == 'false')){
+                $query->orWhereNull('contractor_id');
+            }
+        }
+
+        if ($contractorIds = $filter['contractor_ids'] ?? null){
+            $query->whereIn('contractor_id', $contractorIds);
+
+            if(!($filter['include_commons'] == 'false')){
+                $query->orWhereNull('contractor_id');
+            }
         }
 
         if($purpose_expression = $filter['purpose_expression'] ?? null){
