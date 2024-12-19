@@ -78,6 +78,8 @@ class OperationRuleController extends Controller
 
         return response()->json([
             'success' => true,
+            'rule' => $rule,
+            'request' => $request
         ]);
     }
 

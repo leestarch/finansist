@@ -122,7 +122,7 @@ onMounted(() => {
             </div>
           </router-link>
         </p>
-        <div class="col-12 bg-white shadow-24 q-pa-sm rounded-borders q-mb-md">
+        <div class="col-12 bg-white shadow-24 q-pa-md rounded-borders q-mb-md">
           <div class="row justify-center">
             <span class="text-h6">
               Информация о контрагенте
@@ -135,38 +135,40 @@ onMounted(() => {
             <div class="col-12 text-h6">
               ИНН контрагента: {{contractor.inn_kpp}}
             </div>
-          </div>
-        </div>
-        <div class="col-3 bg-accent bg-white shadow-24 q-pa-sm rounded-borders mb">
-          <div class="row">
-            <span class="text-h6 text-center ">
-              Действия
-            </span>
-            <span class="text-body2 q-mt-md">
-              Проверить все операции контрагента:
+            <div>
               <q-btn
-                  class="q-ml-sm"
+                  class="q-my-sm q-mr-sm q-px-sm"
                   dense
-                  size="sm"
+                  no-caps
+                  size="md"
+                  label="Проверить"
+                  icon="assignment_turned_in"
                   @click="checkContractorsOperation"
-                  label="проверить"
                   color="primary"
-              />
-            </span>
-            <span class="text-body2 q-mt-md">
-              Создать новую операцию:
+              >
+                <q-tooltip>
+                  Проверить операции контрагента
+                </q-tooltip>
+              </q-btn>
               <q-btn
-                  class="q-ml-sm"
+                  class="q-my-sm q-px-md"
                   dense
-                  size="sm"
-                  :to="{name: 'OperationCreate', params: {contractorId: contractorId}}"
-                  label="создать"
+                  no-caps
+                  size="md"
+                  label="Создать"
+                  icon="add_circle_outline"
+                  @click="checkContractorsOperation"
                   color="primary"
-              />
-            </span>
+              >
+                <q-tooltip>
+                  Создать новую операцию
+                </q-tooltip>
+              </q-btn>
+            </div>
           </div>
         </div>
-        <div class="col-9 bg-grey-3 q-px-sm ">
+
+        <div class="col-12 bg-grey-3 q-px-sm ">
           <div class="bg-white shadow-3 q-px-sm rounded-borders q-pb-md">
             <p class="text-h6 text-center">
               Операции контрагента

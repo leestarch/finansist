@@ -61,7 +61,7 @@ const handlePaginationUpdate = (page) => {
               {{ item.row?.purpose_expression }}
             </template>
             <template v-if="item.col.name === 'category'">
-              {{ item.row?.category?.name }}
+              {{ item.row?.category?.name }} {{item.row?.category?.id}}
             </template>
             <template v-if="item.col.name === 'contractor'">
               <template v-if="!item.row?.contractor?.name">
@@ -69,6 +69,7 @@ const handlePaginationUpdate = (page) => {
               </template>
               <template v-if="item.row?.contractor?.full_name">
               {{ item.row?.contractor?.full_name }}
+                {{ item.row?.contractor?.id }}
               </template>
             </template>
             <template v-if="item.col.name === 'actions'">

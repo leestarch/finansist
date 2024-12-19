@@ -22,18 +22,18 @@ const operationTypes = [
 ]
 
 const refresh = async () => {
-  try{
-     const response = await axios.get(`/api/rules/${ruleId}`, {
-       params:{
-          include: 'category'
-       }
-     })
-     rule.value = response.data.data
-     selectedCategory.value = rule.value.category
-  }catch (e) {
+  try {
+    const response = await axios.get(`/api/rules/${ruleId}`, {
+      params: {
+        include: 'category'
+      }
+    })
+    rule.value = response.data.data
+    selectedCategory.value = rule.value.category
+  } catch (e) {
     Notify.create({
-      message:'Ошибка получения данных',
-      color:'red',
+      message: 'Ошибка получения данных',
+      color: 'red',
       timeout: 2000
     })
   }
@@ -45,24 +45,28 @@ onMounted(async () => {
 
 const submitForm = async () => {
   try {
-    const response = await axios.put(`/api/rules/${ruleId}`, rule.value)
-    if(response?.data?.success) {
+    const response = await axios.put(`/api/rules/${ruleId}`, {
+      category_id: selectedCategory.value.id,
+      operation_type: rule.value.operation_type,
+      purpose_expression: rule.value.purpose_expression
+    })
+    if (response?.data?.success) {
       Notify.create({
-        message:'Данные успешно сохранены',
-        color:'green',
+        message: 'Данные успешно сохранены',
+        color: 'green',
         timeout: 2000
       })
-    }else{
+    } else {
       Notify.create({
-        message:'Ошибка сохранения данных',
-        color:'red',
+        message: 'Ошибка сохранения данных',
+        color: 'red',
         timeout: 2000
       })
     }
-  }catch (e) {
+  } catch (e) {
     Notify.create({
-      message:'Ошибка сохранения данных',
-      color:'red',
+      message: 'Ошибка сохранения данных',
+      color: 'red',
       timeout: 2000
     })
   }
@@ -96,7 +100,8 @@ const onCategorySelectChange = async (val, update, abort) => {
   <q-page class="row shadow-3 bg-grey-2">
     <div class="row q-mx-auto bg-white col-10 col-sm-8">
       <q-card class="bg-white q-px-xl blue col-12">
-        <div class="text-h4 q-mt-md">
+        <q-btn class="q-my-md" icon="arrow_back" to="/operations/rules">Назад</q-btn>
+        <div class="text-h4">
           Редактирование правила
         </div>
         <q-form class="q-mt-xl" @submit.prevent="submitForm">
