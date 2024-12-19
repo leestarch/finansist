@@ -141,7 +141,7 @@ onMounted(() => {
                  label="Создать правило" color="primary" />
         </div>
       </div>
-      <RulesTabsale
+      <RulesTable
           :rules="operationRules"
           :pagination="pagination"
           @update:pagination="(newPagination) => { pagination = newPagination; refresh(); }"
