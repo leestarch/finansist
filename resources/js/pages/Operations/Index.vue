@@ -76,6 +76,17 @@ const refresh = async (p) => {
   Loading.hide()
 }
 
+const loadOperations = async() => {
+  try {
+    Notify.create({message: 'Синхронизация запущена!'})
+    const response = await axios.get('/api/get-operations')
+    Notify.create({message: 'Синхронизация закончена!'})
+  } catch (e) {
+    Notify.create({message: 'Ошибка! Синхронизация транзакций не удалась!', color:'error'})
+  }
+
+}
+
 const onCategoriesChange  = async (val, update, abort) => {
 
   if (val.length > 3) {
@@ -308,15 +319,16 @@ const clearFilters = async () => {
         />
       </div>
       <div class="row q-mt-md">
-        <q-btn class="text-right" dense size="sm" type="submit" label="Применить фильтры" color="primary" />
-        <q-btn class="text-right q-ml-sm" dense size="sm" @click="clearFilters" label="Очистить фильтры" color="primary" />
+        <q-btn class="text-right q-pa-xs" dense size="sm" type="submit" label="Применить фильтры" color="primary" />
+        <q-btn class="text-right q-ml-sm q-pa-xs" dense size="sm" @click="clearFilters" label="Очистить фильтры" color="primary" />
       </div>
       <div class="row justify-between items-center q-mt-md">
         <div class="row justify-between full-width">
           <div>
+            <q-btn @click="loadOperations" label="Синхронизироать тразакции" dense size="sm" color="primary" class="q-mr-sm q-pa-xs"/>
             <q-btn
                 to="/operations/create"
-                class="text-right"
+                class="text-right q-pa-xs"
                 dense
                 size="sm"
                 label="Создать операцию"

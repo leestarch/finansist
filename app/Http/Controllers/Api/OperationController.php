@@ -9,20 +9,23 @@ use App\Http\Resources\OperationResource;
 use App\Models\Category;
 use App\Models\Operation;
 use App\Models\Type;
+use GuzzleHttp\Client;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class OperationController extends Controller
 {
     public function index(Request $request): AnonymousResourceCollection
     {
-        if($categoryId = $request->input('parentCategoryId')) {
+        if ($categoryId = $request->input('parentCategoryId')) {
             $category = Category::query()->find($categoryId);
             $categoryIds = $category->geyNestedChildren();
-            $categoryIds[] = (int) $categoryId;
+            $categoryIds[] = (int)$categoryId;
             $request->merge(['categoryIds' => $categoryIds]);
         }
 
@@ -93,13 +96,13 @@ class OperationController extends Controller
         unset($data['categories']);
 
         $operation = Operation::query()->create($data);
-        if($categories){
+        if ($categories) {
 
             try {
                 $operation->refresh();
                 $categoriesToHandle = $this->mapCategories($categories);
                 $operation->handleCategories($categoriesToHandle);
-            }catch (\Exception $exception){
+            } catch (\Exception $exception) {
                 return response()->json([
                     'success' => false,
                     'message' => $exception->getMessage(),
@@ -115,7 +118,7 @@ class OperationController extends Controller
     public function show(int $id, Request $request): OperationResource
     {
         $operationQuery = Operation::query();
-        if($request->get('include')) {
+        if ($request->get('include')) {
             $operationQuery->with(explode(',', $request->get('include')));
         }
 
@@ -130,12 +133,12 @@ class OperationController extends Controller
         $operation->update($request->except('categories'));
         $operation->refresh();
 
-        if($categories = $request->get('categories')){
+        if ($categories = $request->get('categories')) {
             $categoriesToHandle = $this->mapCategories($categories);
 
             try {
                 $operation->handleCategories($categoriesToHandle);
-            }catch (\Exception $e){
+            } catch (\Exception $e) {
                 return response()->json([
                     'success' => false,
                     'message' => $e->getMessage(),
@@ -151,11 +154,11 @@ class OperationController extends Controller
         ]);
     }
 
-    private function mapCategories(array $categories):array
+    private function mapCategories(array $categories): array
     {
         $mappedCategories = [];
-        foreach ($categories as $category){
-            $mappedCategories[$category['id']] = (int) $category['sber_amountRub'];
+        foreach ($categories as $category) {
+            $mappedCategories[$category['id']] = (int)$category['sber_amountRub'];
         }
         return $mappedCategories;
     }
@@ -164,11 +167,44 @@ class OperationController extends Controller
     {
         $validate = $request->validated();
         $data = $validate['data'];
-        foreach ($data as $operation){
-           Operation::query()->firstOrCreate($operation);
+        foreach ($data as $operation) {
+            Operation::query()->firstOrCreate($operation);
         }
         return response()->json([
             'success' => true,
         ]);
+    }
+
+    public function getOperations()
+    {
+        try {
+            $client = new Client();
+            $response = $client->request('GET', 'https://api.lookin.team/api/finance/fin-lookin/operations', [
+                'start_at' => '2024-12-01'
+            ]);
+
+// Обработка ответа
+            $body = $response->getBody();
+            $transactions = collect(json_decode($body)->data); // Декодируем JSON в ассоциативный масси
+            foreach ($transactions as $transaction) {
+                Operation::updateOrCreate([
+                    'sber_operationId' => $transaction->sber_operationId,
+                ], [
+                    'pizzeria_id' => $transaction->pizzeria->id,
+                    'date_at' => $transaction->date_at,
+                    'sber_amountRub' => $transaction->sber_amountRub,
+                    'sber_direction' => $transaction->sber_direction,
+                    'sber_paymentPurpose' => $transaction->sber_paymentPurpose,
+                    'sber_operationId' => $transaction->sber_operationId,
+                    'payer_contractor_id' => $transaction->payer_contractor_id,
+                    'payee_contractor_id' => $transaction->payee_contractor_id,
+                    'is_manual' => $transaction->is_manual,
+                    'created_at' => $transaction->created_at,
+                ]);
+            }
+        } catch (\Exception $e) {
+            Log::error('Error in getOperations():', ['message' => $e->getMessage(), 'trace' => $e->getTraceAsString()]);
+            throw $e;
+        }
     }
 }

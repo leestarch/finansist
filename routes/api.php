@@ -37,5 +37,7 @@ Route::prefix('pizzerias')->group(function () {
     Route::get('/', [\App\Http\Controllers\Api\PizzeriaController::class, 'index']);
 });
 
+Route::get('/get-operations', [\App\Http\Controllers\Api\OperationController::class, 'getOperations']);
+
 Route::post('login', [\App\Http\Controllers\Api\AuthController::class, 'login']);
 Route::post('seed', [\App\Http\Controllers\Api\OperationController::class, 'seed']);
