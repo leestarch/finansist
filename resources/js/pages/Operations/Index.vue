@@ -1,9 +1,19 @@
 <script setup>
 import {onMounted, ref, watch} from "vue";
 import {useRoute, useRouter} from "vue-router";
-import {Loading, Notify} from "quasar";
+import {Loading, Notify, date} from "quasar";
 import OperationTable from "../../components/Operations/OperationTable.vue";
-import { startOfMonth, endOfMonth, startOfWeek, endOfWeek, startOfQuarter,addWeeks, endOfQuarter, parse, format } from 'date-fns';
+import {
+  startOfMonth,
+  endOfMonth,
+  startOfWeek,
+  endOfWeek,
+  startOfQuarter,
+  addWeeks,
+  endOfQuarter,
+  parse,
+  format
+} from 'date-fns';
 import axios from "axios";
 
 const route = useRoute();
@@ -13,7 +23,7 @@ const pizzerias = ref([])
 const pizzeriaIds = ref(null)
 
 const filterParams = route.query
-const operations  = ref([])
+const operations = ref([])
 
 const contractorsOptions = ref([])
 const contractors = ref([])
@@ -25,6 +35,7 @@ const categoryIds = ref([])
 const categoriesOptions = ref([])
 
 const totalAmount = ref(0)
+
 
 const pagination = ref({
   page: 1,
@@ -44,21 +55,39 @@ const filters = ref({
   sberDirection: null,
 });
 
+const dateFromFormatted = ref('')
+const dateToFormatted = ref('')
+const menuDateFrom = ref(false)
+const menuDateTo = ref(false)
+
+const updateDateFrom = (val) => {
+  filters.value.dateFrom = val;
+  dateFromFormatted.value = date.formatDate(val, 'DD.MM.YYYY');
+  menuDateFrom.value = false;
+};
+const updateDateTo = (val) => {
+  filters.value.dateTo = val;
+  dateToFormatted.value = date.formatDate(val, 'DD.MM.YYYY');
+  menuDateTo.value = false;
+};
+
 watch(filters, () => {
   pagination.value.page = 1
 }, {deep: true})
 
 const refresh = async (p) => {
   Loading.show();
-  try{
-    const response = await axios.get('/api/operations/', {params: {
-      ...filters.value,
+  try {
+    const response = await axios.get('/api/operations/', {
+      params: {
+        ...filters.value,
         isSplit: filters.value.splitFilter?.value,
         page: pagination.value.page,
         contractorIds: contractorIds.value,
         categoryIds: filters.value.categories.map(category => category.id),
-        pizzeriaIds:  filters.value.pizzerias.map(pizzeria => pizzeria.id) || pizzeriaIds.value,
-    }})
+        pizzeriaIds: filters.value.pizzerias.map(pizzeria => pizzeria.id) || pizzeriaIds.value,
+      }
+    })
 
     operations.value = response?.data?.data
     totalAmount.value = operations.value.reduce((acc, operation) => acc + operation?.sber_amountRub, 0)
@@ -66,28 +95,28 @@ const refresh = async (p) => {
     pagination.value.rowsNumber = response.data?.meta?.total
     pagination.value.page = response.data?.meta?.current_page
     pagination.value.totalPages = response.data?.meta?.last_page
-  }catch (e) {
+  } catch (e) {
     Notify.create({
-      message:'Ошибка получения данных',
-      color:'red',
+      message: 'Ошибка получения данных',
+      color: 'red',
       timeout: 2000
     })
   }
   Loading.hide()
 }
 
-const loadOperations = async() => {
+const loadOperations = async () => {
   try {
     Notify.create({message: 'Синхронизация запущена!'})
     const response = await axios.get('/api/get-operations')
     Notify.create({message: 'Синхронизация закончена!'})
   } catch (e) {
-    Notify.create({message: 'Ошибка! Синхронизация транзакций не удалась!', color:'error'})
+    Notify.create({message: 'Ошибка! Синхронизация транзакций не удалась!', color: 'error'})
   }
 
 }
 
-const onCategoriesChange  = async (val, update, abort) => {
+const onCategoriesChange = async (val, update, abort) => {
 
   if (val.length > 3) {
     isLoading.value = true;
@@ -101,7 +130,7 @@ const onCategoriesChange  = async (val, update, abort) => {
 };
 
 const fetchCategories = async (val = '') => {
-  try{
+  try {
     const response = await axios.get('/api/categories', {
       params: {
         q: val || '',
@@ -109,15 +138,15 @@ const fetchCategories = async (val = '') => {
     });
 
     categoriesOptions.value = response.data.data;
-  }catch (e) {
+  } catch (e) {
     Notify.create({
-      message:'Ошибка получения данных',
-      color:'red',
+      message: 'Ошибка получения данных',
+      color: 'red',
       timeout: 2000
     })
   }
 }
-const onContractorChange  = async (val, update, abort) => {
+const onContractorChange = async (val, update, abort) => {
   if (val.length > 3) {
     isLoading.value = true;
     await fetchContractors(val);
@@ -166,19 +195,19 @@ const applyFilters = () => {
 
 
 onMounted(async () => {
-    await fetchPizzerias()
+  await fetchPizzerias()
 
-    await parseParams(filterParams)
+  await parseParams(filterParams)
 
-    if (contractorIds.value.length)
-      await fetchContractors()
+  if (contractorIds.value.length)
+    await fetchContractors()
 
-    if(pizzeriaIds.value.length){
-      filters.value.pizzerias = pizzerias.value.filter(pizzeria =>
-          pizzeriaIds.value.includes(String(pizzeria.id)))
-    }
+  if (pizzeriaIds.value.length) {
+    filters.value.pizzerias = pizzerias.value.filter(pizzeria =>
+        pizzeriaIds.value.includes(String(pizzeria.id)))
+  }
 
-    await refresh()
+  await refresh()
 })
 
 const parseParams = async (filterParams) => {
@@ -188,7 +217,7 @@ const parseParams = async (filterParams) => {
   pizzeriaIds.value = filterParams.pizzeriaIds || [];
 
   if (filterParams?.groupBy && filterParams?.date) {
-    const { groupBy, date } = filterParams;
+    const {groupBy, date} = filterParams;
 
     switch (groupBy) {
       case 'monthly': {
@@ -202,8 +231,8 @@ const parseParams = async (filterParams) => {
         const firstDayOfYear = new Date(year, 0, 1);
         const weekStartDate = addWeeks(firstDayOfYear, week - 1);
 
-        filters.value.dateFrom = format(startOfWeek(weekStartDate, { weekStartsOn: 1 }), 'yyyy-MM-dd'); // Monday
-        filters.value.dateTo = format(endOfWeek(weekStartDate, { weekStartsOn: 1 }), 'yyyy-MM-dd'); // Sunday
+        filters.value.dateFrom = format(startOfWeek(weekStartDate, {weekStartsOn: 1}), 'yyyy-MM-dd'); // Monday
+        filters.value.dateTo = format(endOfWeek(weekStartDate, {weekStartsOn: 1}), 'yyyy-MM-dd'); // Sunday
         break;
       }
       case 'quarterly': {
@@ -221,34 +250,75 @@ const parseParams = async (filterParams) => {
 }
 
 const clearFilters = async () => {
-  await router.push({ path: route.path, query: {} });
+  await router.push({path: route.path, query: {}});
 }
 
 </script>
 <template>
   <q-page v-if="operations">
     <q-form @submit.prevent="applyFilters" class="items-center q-pa-md bg-grey-4">
-      <div class="row">
-        <q-input class="col-2 q-px-sm q-mt-sm" clearable dense outlined filled v-model="filters.dateFrom" label="Дата начала" type="date" />
-        <q-input class="col-2 q-px-sm q-mt-sm" dense clearable outlined filled v-model="filters.dateTo" label="Дата окончания" type="date" />
-          <q-select
-              class="col-3 q-px-sm q-mt-sm"
+        <div class="row">
+          <q-input
+              class="col-2 q-px-sm q-mt-sm"
               dense
               outlined
               filled
-              flat
-              label="Категория"
-              v-model="filters.categories"
-              :options="categoriesOptions"
-              option-label="name"
-              clearable
-              multiple
-              use-input
-              borderless
-              use-chips
-              @filter="onCategoriesChange"
-              :loading="isLoading"
-          />
+              v-model="dateFromFormatted"
+              label="Дата начала"
+              readonly
+              @click.native.stop="menuDateFrom = true"
+          >
+            <template v-slot:append>
+              <q-icon name="event" @click.stop="menuDateFrom = true"/>
+            </template>
+            <q-menu v-model="menuDateFrom" anchor="bottom left" self="top left">
+              <q-date
+                  v-model="filters.dateFrom"
+                  mask="YYYY-MM-DD"
+                  @update:model-value="updateDateFrom"
+              />
+            </q-menu>
+          </q-input>
+          <q-input
+              class="col-2 q-px-sm q-mt-sm"
+              dense
+              outlined
+              filled
+              v-model="dateToFormatted"
+              label="Дата окончания"
+              readonly
+              @click.native.stop="menuDateTo = true"
+          >
+            <template v-slot:append>
+              <q-icon name="event" @click.stop="menuDateTo = true"/>
+            </template>
+            <q-menu v-model="menuDateTo" anchor="bottom left" self="top left">
+              <q-date
+                  v-model="filters.dateFrom"
+                  mask="YYYY-MM-DD"
+                  @update:model-value="updateDateTo"
+              />
+            </q-menu>
+          </q-input>
+
+        <q-select
+            class="col-3 q-px-sm q-mt-sm"
+            dense
+            outlined
+            filled
+            flat
+            label="Категория"
+            v-model="filters.categories"
+            :options="categoriesOptions"
+            option-label="name"
+            clearable
+            multiple
+            use-input
+            borderless
+            use-chips
+            @filter="onCategoriesChange"
+            :loading="isLoading"
+        />
         <q-select
             class="col-3 q-px-sm q-mt-sm"
             dense
@@ -319,13 +389,15 @@ const clearFilters = async () => {
         />
       </div>
       <div class="row q-mt-md">
-        <q-btn class="text-right q-pa-xs" dense size="sm" type="submit" label="Применить фильтры" color="primary" />
-        <q-btn class="text-right q-ml-sm q-pa-xs" dense size="sm" @click="clearFilters" label="Очистить фильтры" color="primary" />
+        <q-btn class="text-right q-pa-xs" dense size="sm" type="submit" label="Применить фильтры" color="primary"/>
+        <q-btn class="text-right q-ml-sm q-pa-xs" dense size="sm" @click="clearFilters" label="Очистить фильтры"
+               color="primary"/>
       </div>
       <div class="row justify-between items-center q-mt-md">
         <div class="row justify-between full-width">
           <div>
-            <q-btn @click="loadOperations" label="Синхронизироать тразакции" dense size="sm" color="primary" class="q-mr-sm q-pa-xs"/>
+            <q-btn @click="loadOperations" label="Синхронизироать тразакции" dense size="sm" color="primary"
+                   class="q-mr-sm q-pa-xs"/>
             <q-btn
                 to="/operations/create"
                 class="text-right q-pa-xs"
@@ -336,7 +408,7 @@ const clearFilters = async () => {
             />
           </div>
           <div>
-            <p class="text-body2 q-px-sm q-py-xs bg-primary text-white rounded-borders">Итого: {{totalAmount}}</p>
+            <p class="text-body2 q-px-sm q-py-xs bg-primary text-white rounded-borders">Итого: {{ totalAmount }}</p>
           </div>
         </div>
       </div>

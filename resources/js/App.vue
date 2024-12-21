@@ -61,6 +61,11 @@ const logout = () => {
 <!--                  </q-item>-->
                 <q-item  v-ripple>
                   <q-item-section>
+                    <q-btn flat color="grey-8" :to="{name: 'OperationIndex'}">Операции</q-btn>
+                  </q-item-section>
+                </q-item>
+                <q-item  v-ripple>
+                  <q-item-section>
                     <q-btn flat color="grey-8" :to="{name: 'CategoriesTree'}">Дерево категорий</q-btn>
                   </q-item-section>
                 </q-item>

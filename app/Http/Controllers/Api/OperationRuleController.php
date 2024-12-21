@@ -99,4 +99,14 @@ class OperationRuleController extends Controller
         }
         return null;
     }
+
+    public function getOperationsByRule(Request $request)
+    {
+        $rule = (object) $request->input('rule');
+        if(!property_exists($rule,'contractor_id')) $rule->contractor_id = null;
+        if(!property_exists($rule,'purpose_expression')) $rule->purpose_expression = null;
+        if(!property_exists($rule,'operation_type')) $rule->operation_type = null;
+        $operations = OperationRule::getOperationsByRule($rule);
+        return $operations;
+    }
 }

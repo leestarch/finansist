@@ -16,7 +16,6 @@ class OperationCreateRequest extends FormRequest
         return [
             'pizzeria_id' => ['required', 'integer'],
             'sber_amountRub' => ['required', 'numeric'],
-            'description' => ['required', 'string'],
             'sber_paymentPurpose' => ['required', 'string'],
             'sber_direction' => ['required', 'string', 'in:DEBIT,CREDIT'],
             'payer_contractor_id' => ['required', 'integer'],

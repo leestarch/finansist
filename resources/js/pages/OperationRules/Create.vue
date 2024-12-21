@@ -94,6 +94,7 @@ const onContractorSelectChange = async (val, update, abort) => {
   <q-page class="row shadow-3 bg-grey-2">
     <div class="row q-mx-auto bg-white col-10 col-sm-8">
       <q-card class="bg-white q-px-xl blue col-12">
+        <q-btn class="q-my-md" icon="arrow_back" to="/operations/rules">Назад</q-btn>
         <div class="text-h4 q-mt-md">
           Создание правила
         </div>
@@ -132,6 +133,9 @@ const onContractorSelectChange = async (val, update, abort) => {
               clearable
               outlined
               filled
+              option-value="value"
+              option-label="label"
+              emit-value
               v-model="rule.operation_type"
               :options="operationTypes"
               label="Тип операции"

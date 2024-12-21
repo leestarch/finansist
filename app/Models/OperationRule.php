@@ -70,10 +70,15 @@ class OperationRule extends Model
         return $updatedOperations;
     }
 
-    public static function validateOperation($operation): int
+    /**
+     * Проверяет операцию по правилам, возвращает правило по которому проходит операция или null, если ничего не нашлось
+     * @param $operation
+     * @return OperationRule|null
+     */
+    public static function validateOperation($operation): OperationRule | null
     {
         //Если операция изменена вручную - не меняем категории
-        if($operation->is_manual) return 0;
+        if($operation->is_manual) return null;
 
         $payeeContractorId = $operation->payee_contractor_id;
         $rules = OperationRule::query()->where('contractor_id', $payeeContractorId)
@@ -88,22 +93,16 @@ class OperationRule extends Model
         foreach ($rules as $rule){
             if($expression = $rule->purpose_expression){
                 $isValid = self::validateExpression($operation, $expression);
-                if($isValid && $rule->contractor_id === $payeeContractorId){
-                    $res = $operation->categories()->sync([
-                        $rule->category_id => ['rule_id' => $rule->id]
-                    ]);
-                    return sizeof($res['updated']);
+                if(($isValid && $rule->contractor_id === $payeeContractorId) || ($isValid && $rule->contractor_id === null)){
+                    return $rule;
                 }
             }else{
                 if($rule->contractor_id === $payeeContractorId){
-                    $res = $operation->categories()->sync([
-                        $rule->category_id => ['rule_id' => $rule->id]
-                    ]);
-                    return sizeof($res['updated']);
+                    return $rule;
                 }
             }
         }
-        return 0;
+        return null;
     }
 
     private static function validateExpression(Operation $operation, string $expression): bool
@@ -117,4 +116,26 @@ class OperationRule extends Model
         }
 
     }
+
+    public static function getOperationsByRule($rule)
+    {
+        $verifiedOperations = collect();
+        $operations = Operation::with('payeeContractor')->get();
+        foreach ($operations as $operation) {
+            $payeeContractorId = $operation->payee_contractor_id;
+            if($expression = $rule->purpose_expression){
+                $isValid = OperationRule::validateExpression($operation, $expression);
+                if(($isValid && $rule?->contractor_id == $payeeContractorId) || ($isValid && $rule?->contractor_id === null)){
+                    logger('test');
+                    $verifiedOperations->push($operation);
+                }
+            }else{
+                if($rule?->contractor_id === $payeeContractorId){
+                    $verifiedOperations->push($operation);
+                }
+            }
+        }
+        return $verifiedOperations;
+    }
+
 }

@@ -11,10 +11,14 @@ class OperationValidateCommand extends Command
     protected $signature = 'operation.validate';
     public function handle(): void
     {
-        $operationsQuery = Operation::query()->where('sber_direction', Operation::DEBIT);
+        $operationsQuery = Operation::query();
         foreach ($operationsQuery->cursor() as $operation) {
-            $updatedOperationsCount = OperationRule::validateOperation($operation);
-            dump('Операция проверена, изменено категорий у операций: ' . $updatedOperationsCount);
+//            dump($operation);
+            $operationRule= OperationRule::validateOperation($operation);
+            if($operationRule)
+                $res = $operation->categories()->sync([
+                    $operationRule->category_id => ['rule_id' => $operationRule->id]
+                ]);
         }
     }
 }

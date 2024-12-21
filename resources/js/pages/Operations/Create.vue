@@ -1,6 +1,6 @@
 <script setup>
 import {onMounted, ref} from 'vue'
-import {Loading, Notify} from 'quasar'
+import {date, Loading, Notify} from 'quasar'
 import axios from 'axios'
 
 const categories = ref([])
@@ -17,7 +17,7 @@ const amountError = ref({
 const form = ref({
   pizzeria: null,
   sber_amountRub: '',
-  description: '',
+  sber_paymentPurpose: '',
   is_completed: false,
   date_at: '',
   direction: null,
@@ -25,6 +25,15 @@ const form = ref({
   contractorPayee: null,
   categories: [],
 })
+
+const dateFormatted = ref('')
+const menuDate = ref(false)
+
+const updateDate = (val) => {
+  form.value.date_at = val;
+  dateFormatted.value = date.formatDate(val, 'DD.MM.YYYY');
+  menuDate.value = false;
+};
 
 const processInput = (inputText) => {
   const cleanedInput = inputText.replace(/,/g, '.');
@@ -121,7 +130,7 @@ const submitForm = async () => {
       ...form.value,
       payer_contractor_id: form.value?.contractorPayer?.id,
       payee_contractor_id: form.value?.contractorPayee?.id,
-      sber_paymentPurpose: form.value.description,
+      sber_paymentPurpose: form.value.sber_paymentPurpose,
       sber_direction: form.value.direction?.value,
       categories: form.value.categories.map(cat => ({id: cat.category.id, sber_amountRub: cat.amount}))
     })
@@ -219,7 +228,7 @@ onMounted(() => {
     <div class="row q-mx-auto bg-white col-10 col-sm-8">
       <q-card class="bg-white q-px-xl blue col-12">
         <div class="text-h4 q-mt-md">
-          Редактирование операции
+          Создание операции
         </div>
         <q-form class="q-mt-xl" @submit.prevent="submitForm">
           <div class="row items-center justify-between">
@@ -244,13 +253,26 @@ onMounted(() => {
             </div>
             <div class="col-4">
               <q-input
+                  class="col-2 q-px-sm q-mt-sm"
                   dense
                   outlined
-                  v-model="form.date_at"
-                  label="Date"
-                  type="date"
-                  required
-              />
+                  filled
+                  v-model="dateFormatted"
+                  label="Дата"
+                  readonly
+                  @click.native.stop="menuDate = true"
+              >
+                <template v-slot:append>
+                  <q-icon name="event" @click.stop="menuDate = true"/>
+                </template>
+                <q-menu v-model="menuDate" anchor="bottom left" self="top left">
+                  <q-date
+                      v-model="form.date_at"
+                      mask="YYYY-MM-DD"
+                      @update:model-value="updateDate"
+                  />
+                </q-menu>
+              </q-input>
             </div>
             <div class="col-5 text-right">
               <q-checkbox
@@ -351,7 +373,7 @@ onMounted(() => {
                   type="textarea"
                   dense
                   outlined
-                  v-model="form.description"
+                  v-model="form.sber_paymentPurpose"
                   label="Назначение"
                   required
               />

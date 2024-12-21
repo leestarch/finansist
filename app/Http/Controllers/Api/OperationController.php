@@ -8,6 +8,7 @@ use App\Http\Requests\Operation\OperationSeedFromAPIRequest;
 use App\Http\Resources\OperationResource;
 use App\Models\Category;
 use App\Models\Operation;
+use App\Models\OperationRule;
 use App\Models\Type;
 use GuzzleHttp\Client;
 use Illuminate\Http\JsonResponse;
@@ -187,7 +188,7 @@ class OperationController extends Controller
             $body = $response->getBody();
             $transactions = collect(json_decode($body)->data); // Декодируем JSON в ассоциативный масси
             foreach ($transactions as $transaction) {
-                Operation::updateOrCreate([
+                $operation =  Operation::updateOrCreate([
                     'sber_operationId' => $transaction->sber_operationId,
                 ], [
                     'pizzeria_id' => $transaction->pizzeria->id,
@@ -201,6 +202,12 @@ class OperationController extends Controller
                     'is_manual' => $transaction->is_manual,
                     'created_at' => $transaction->created_at,
                 ]);
+                $operationRule = OperationRule::validateOperation($operation);
+                if($operationRule) {
+                    $res = $operation->categories()->sync([
+                        $operationRule->category_id => ['rule_id' => $operationRule->id]
+                    ]);
+                }
             }
         } catch (\Exception $e) {
             Log::error('Error in getOperations():', ['message' => $e->getMessage(), 'trace' => $e->getTraceAsString()]);
