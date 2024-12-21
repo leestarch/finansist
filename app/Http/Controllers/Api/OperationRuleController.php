@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Operation\OperationRuleStore;
 use App\Http\Resources\OperationRuleResource;
 use App\Models\Contractor;
+use App\Models\Operation;
 use App\Models\OperationRule;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -18,7 +19,7 @@ class OperationRuleController extends Controller
     {
         $paginate = $request->get('paginate', 50);
         $rules = OperationRule::query();
-        if($load = $request->get('load')){
+        if ($load = $request->get('load')) {
             $rules->with(explode(',', $load[0]));
         }
 
@@ -31,7 +32,7 @@ class OperationRuleController extends Controller
     public function show(int $id, Request $request): OperationRuleResource
     {
         $ruleQuery = OperationRule::query();
-        if($include = $request->get('include')) {
+        if ($include = $request->get('include')) {
             $include = explode(',', $include);
             $ruleQuery->with($include);
         }
@@ -41,14 +42,14 @@ class OperationRuleController extends Controller
     public function store(OperationRuleStore $request): JsonResponse
     {
         $data = $request->validated();
-        if(empty($data['contractor_ids'])){
+        if (empty($data['contractor_ids'])) {
             OperationRule::query()->firstOrCreate([
                 'category_id' => $data['category_id'],
                 'contractor_id' => null,
                 'purpose_expression' => $this->handleExpression($data['purpose_expression'] ?? null),
             ]);
-        }else{
-            foreach ($data['contractor_ids'] as $contractorId){
+        } else {
+            foreach ($data['contractor_ids'] as $contractorId) {
                 OperationRule::query()->firstOrCreate([
                     'category_id' => $data['category_id'],
                     'contractor_id' => $contractorId,
@@ -65,7 +66,7 @@ class OperationRuleController extends Controller
     public function update(int $id, Request $request): JsonResponse
     {
         $operationType = $request->get('operation_type');
-        if(is_array($operationType)){
+        if (is_array($operationType)) {
             $operationType = $operationType['value'];
         }
 
@@ -94,7 +95,7 @@ class OperationRuleController extends Controller
 
     private function handleExpression(?string $expression): ?string
     {
-        if($expression){
+        if ($expression) {
             return Str::start(Str::finish($expression, '/'), '/');
         }
         return null;
@@ -102,11 +103,25 @@ class OperationRuleController extends Controller
 
     public function getOperationsByRule(Request $request)
     {
-        $rule = (object) $request->input('rule');
-        if(!property_exists($rule,'contractor_id')) $rule->contractor_id = null;
-        if(!property_exists($rule,'purpose_expression')) $rule->purpose_expression = null;
-        if(!property_exists($rule,'operation_type')) $rule->operation_type = null;
+        $rule = (object)$request->input('rule');
+        if (!property_exists($rule, 'contractor_id')) $rule->contractor_id = null;
+        if (!property_exists($rule, 'purpose_expression')) $rule->purpose_expression = null;
+        if (!property_exists($rule, 'operation_type')) $rule->operation_type = null;
         $operations = OperationRule::getOperationsByRule($rule);
         return $operations;
+    }
+
+    public function validateOperationsByRule(Request $request)
+    {
+        $rule = (object)$request->input('rule');
+        if (!property_exists($rule, 'contractor_id')) $rule->contractor_id = null;
+        if (!property_exists($rule, 'purpose_expression')) $rule->purpose_expression = null;
+        if (!property_exists($rule, 'operation_type')) $rule->operation_type = null;
+        $operations = OperationRule::getOperationsByRule($rule);
+        foreach ($operations as $operation) {
+            $res = $operation->categories()->sync([
+                $rule->category_id => ['rule_id' => $rule->id]
+            ]);
+        }
     }
 }

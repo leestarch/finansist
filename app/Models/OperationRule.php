@@ -91,16 +91,7 @@ class OperationRule extends Model
             });
 
         foreach ($rules as $rule){
-            if($expression = $rule->purpose_expression){
-                $isValid = self::validateExpression($operation, $expression);
-                if(($isValid && $rule->contractor_id === $payeeContractorId) || ($isValid && $rule->contractor_id === null)){
-                    return $rule;
-                }
-            }else{
-                if($rule->contractor_id === $payeeContractorId){
-                    return $rule;
-                }
-            }
+            if($validatedRule = self::validateOperationByRule($rule, $operation)) return $validatedRule;
         }
         return null;
     }
@@ -117,6 +108,11 @@ class OperationRule extends Model
 
     }
 
+    public static function validateOperationByRule($rule, $operation)
+    {
+       $operations = self::getOperationsByRule($rule);
+    }
+
     public static function getOperationsByRule($rule)
     {
         $verifiedOperations = collect();
@@ -126,11 +122,10 @@ class OperationRule extends Model
             if($expression = $rule->purpose_expression){
                 $isValid = OperationRule::validateExpression($operation, $expression);
                 if(($isValid && $rule?->contractor_id == $payeeContractorId) || ($isValid && $rule?->contractor_id === null)){
-                    logger('test');
                     $verifiedOperations->push($operation);
                 }
             }else{
-                if($rule?->contractor_id === $payeeContractorId){
+                if($rule?->contractor_id == $payeeContractorId){
                     $verifiedOperations->push($operation);
                 }
             }

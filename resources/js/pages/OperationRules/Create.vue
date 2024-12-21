@@ -17,6 +17,32 @@ const selectedContractors = ref([])
 const selectedCategory = ref(null)
 const selectedOperationType = ref(operationTypes[0])
 
+const operationsDialog = ref(false)
+const operations = ref([])
+
+const operationsHeaders = ref([
+  {
+    name: 'sum',
+    label: 'Сумма',
+    field: 'sber_amountRub',
+  },
+  {
+    name: 'date',
+    label: 'Дата',
+    field: 'date_at',
+  },
+  {
+    name: 'payee_contractor',
+    label: 'Контрагент',
+    field: 'payee_contractor',
+  },
+  {
+    name: 'purpose',
+    label: 'Назначение платежа',
+    field: 'sber_paymentPurpose'
+  }
+])
+
 const rule = ref({
   purpose_expression: '',
   operation_type: selectedOperationType?.value?.value,
@@ -89,9 +115,46 @@ const onContractorSelectChange = async (val, update, abort) => {
   }
   isContractorLoading.value = false;
 }
+
+const getOperationsByRule = async () => {
+  try {
+    const response = await axios.get('/api/rules/operations-by-rule', {
+      params: {
+        rule: rule.value
+      }
+    })
+    operations.value = response.data
+    operationsDialog.value = true
+  } catch (e) {
+    console.log(e)
+    Notify.create({
+      message: 'Ошибка получения данных',
+      color: 'red',
+      timeout: 2000
+    })
+  }
+}
 </script>
 <template>
   <q-page class="row shadow-3 bg-grey-2">
+    <q-dialog v-model="operationsDialog">
+      <q-card>
+        <q-table
+            title="Найденные операции соответствующие правилу"
+            :rows="operations"
+            :columns="operationsHeaders"
+            row-key="id"
+        >
+          <template v-slot:body-cell-payee_contractor="props">
+            <q-td :props="props">
+              <div>
+                {{ props.row.payee_contractor?.full_name || 'Нет данных' }}
+              </div>
+            </q-td>
+          </template>
+        </q-table>
+      </q-card>
+    </q-dialog>
     <div class="row q-mx-auto bg-white col-10 col-sm-8">
       <q-card class="bg-white q-px-xl blue col-12">
         <q-btn class="q-my-md" icon="arrow_back" to="/operations/rules">Назад</q-btn>
@@ -164,6 +227,13 @@ const onContractorSelectChange = async (val, update, abort) => {
               class="q-mt-md"
               label="Создать"
               type="submit"
+              color="primary"
+          />
+
+          <q-btn
+              class="q-ml-md q-mt-md"
+              label="Показать соответствующие операции"
+              @click="getOperationsByRule"
               color="primary"
           />
         </q-form>

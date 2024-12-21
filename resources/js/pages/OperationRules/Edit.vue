@@ -87,6 +87,24 @@ const getOperationsByRule = async () => {
   }
 }
 
+const validateOperations = async () => {
+  try {
+    const response = await axios.get('/api/rules/validate-by-rule', {
+      params: {
+        rule: rule.value
+      }
+    })
+    operations.value = response.data
+    operationsDialog.value = true
+  } catch (e) {
+    Notify.create({
+      message: 'Ошибка при валидации',
+      color: 'red',
+      timeout: 2000
+    })
+  }
+}
+
 onMounted(async () => {
   await refresh()
 })
@@ -261,12 +279,13 @@ const onContractorSelectChange = async (val, update, abort) => {
               @click="getOperationsByRule"
               color="primary"
           />
-<!--          <q-btn-->
-<!--              class="q-mt-md"-->
-<!--              label="Провести привязку"-->
-<!--              @click="validateOperations"-->
-<!--              color="primary"-->
-<!--          />-->
+          <q-btn
+              v-if="rule.id"
+              class="q-ml-md q-mt-md"
+              label="Провести привязку"
+              @click="validateOperations"
+              color="primary"
+          />
         </q-form>
       </q-card>
     </div>

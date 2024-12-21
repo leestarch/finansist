@@ -12,6 +12,7 @@ Route::group(['prefix' => 'operations'], function (){
 
 Route::group(['prefix' => 'rules'], function (){
     Route::get('/operations-by-rule', [\App\Http\Controllers\Api\OperationRuleController::class, 'getOperationsByRule']);
+    Route::get('/validate-by-rule', [\App\Http\Controllers\Api\OperationRuleController::class, 'validateOperationsByRule']);
     Route::get('/', [\App\Http\Controllers\Api\OperationRuleController::class, 'index']);
     Route::get('/{id}', [\App\Http\Controllers\Api\OperationRuleController::class, 'show']);
     Route::post('/', [\App\Http\Controllers\Api\OperationRuleController::class, 'store']);
