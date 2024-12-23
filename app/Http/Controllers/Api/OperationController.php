@@ -179,7 +179,7 @@ class OperationController extends Controller
 
     public function getOperations(Request $request)
     {
-        set_time_limit(300);
+        set_time_limit(6000);
         $start_at = $request->input('start_at', now()->startOfMonth()->toDateString());
         $end_at = $request->input('end_at', now()->endOfMonth()->toDateString());
         try {
@@ -215,13 +215,14 @@ class OperationController extends Controller
                     'is_manual' => $transaction->is_manual,
                     'created_at' => $transaction->created_at,
                 ]);
-                $operationRule = OperationRule::validateOperation($operation);
-                if($operationRule) {
-                    $res = $operation->categories()->sync([
-                        $operationRule->category_id => ['rule_id' => $operationRule->id]
-                    ]);
-                }
+//                $operationRule = OperationRule::validateOperation($operation);
+//                if($operationRule) {
+//                    $res = $operation->categories()->sync([
+//                        $operationRule->category_id => ['rule_id' => $operationRule->id]
+//                    ]);
+//                }
             }
+            return response()->json(['count' => $transactions->count()]);
         } catch (\Exception $e) {
             Log::error('Error in getOperations():', ['message' => $e->getMessage(), 'trace' => $e->getTraceAsString()]);
             throw $e;
