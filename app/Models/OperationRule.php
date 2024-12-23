@@ -28,33 +28,33 @@ class OperationRule extends Model
 
     public function scopeFilter(Builder $query, array $filter): Builder
     {
-        if($categoryId = $filter['category_id'] ?? null){
+        if ($categoryId = $filter['category_id'] ?? null) {
             $query->where('category_id', $categoryId);
         }
 
-        if ($contractorId = $filter['contractor_id'] ?? null){
+        if ($contractorId = $filter['contractor_id'] ?? null) {
             $query->where('contractor_id', $contractorId);
 
             $includeCommons = $filter['include_commons'] ?? true;
-            if($includeCommons !== 'false'){
+            if ($includeCommons !== 'false') {
                 $query->orWhereNull('contractor_id');
             }
         }
 
-        if ($contractorIds = $filter['contractor_ids'] ?? null){
+        if ($contractorIds = $filter['contractor_ids'] ?? null) {
             $query->whereIn('contractor_id', $contractorIds);
 
             $includeCommons = $filter['include_commons'] ?? true;
-            if($includeCommons !== 'false'){
+            if ($includeCommons !== 'false') {
                 $query->orWhereNull('contractor_id');
             }
         }
 
-        if($purpose_expression = $filter['purpose_expression'] ?? null){
+        if ($purpose_expression = $filter['purpose_expression'] ?? null) {
             $query->where('purpose_expression', 'LIKE', "%$purpose_expression%");
         }
 
-        if($operation_type = $filter['operation_type'] ?? null){
+        if ($operation_type = $filter['operation_type'] ?? null) {
             $query->where('operation_type', $operation_type);
         }
 
@@ -64,7 +64,7 @@ class OperationRule extends Model
     public static function validateOperations(Collection $operations): int
     {
         $updatedOperations = 0;
-        foreach ($operations as $operation){
+        foreach ($operations as $operation) {
             self::validateOperation($operation) && $updatedOperations++;
         }
         return $updatedOperations;
@@ -75,23 +75,24 @@ class OperationRule extends Model
      * @param $operation
      * @return OperationRule|null
      */
-    public static function validateOperation($operation): OperationRule | null
+    public static function validateOperation($operation, Collection $rules): OperationRule|null
     {
         //Если операция изменена вручную - не меняем категории
-        if($operation->is_manual) return null;
+        if ($operation->is_manual) return null;
 
         $payeeContractorId = $operation->payee_contractor_id;
-        $rules = OperationRule::query()->where('contractor_id', $payeeContractorId)
-            ->orWhereNull('contractor_id')
-            ->get()
+        $filteredRules = $rules->filter(function ($query) use ($payeeContractorId) {
+            $query->where('contractor_id', $payeeContractorId)
+                ->orWhereNull('contractor_id');
+        })
             ->sortByDesc(function ($rule) {
                 return !empty($rule->purpose_expression);
             })->sortByDesc(function ($rule) {
                 return !is_null($rule->contractor_id);
             });
 
-        foreach ($rules as $rule){
-            if($validatedRule = self::validateOperationByRule($rule, $operation)) return $validatedRule;
+        foreach ($filteredRules as $rule) {
+            if ($validatedRule = self::validateOperationByRule($rule, $operation)) return $validatedRule;
         }
         return null;
     }
@@ -100,7 +101,7 @@ class OperationRule extends Model
     {
         try {
             return preg_match($expression, $operation->sber_paymentPurpose) === 1;
-        }catch (\Exception $e){
+        } catch (\Exception $e) {
             $expression = Str::start($expression, '/');
             $expression = Str::finish($expression, '/');
             return preg_match($expression, $operation->sber_paymentPurpose) === 1;
@@ -110,7 +111,7 @@ class OperationRule extends Model
 
     public static function validateOperationByRule($rule, $operation)
     {
-       $operations = self::getOperationsByRule($rule);
+        $operations = self::getOperationsByRule($rule);
     }
 
     public static function getOperationsByRule($rule)
@@ -119,13 +120,13 @@ class OperationRule extends Model
         $operations = Operation::with('payeeContractor')->get();
         foreach ($operations as $operation) {
             $payeeContractorId = $operation->payee_contractor_id;
-            if($expression = $rule->purpose_expression){
+            if ($expression = $rule->purpose_expression) {
                 $isValid = OperationRule::validateExpression($operation, $expression);
-                if(($isValid && $rule?->contractor_id == $payeeContractorId) || ($isValid && $rule?->contractor_id === null)){
+                if (($isValid && $rule?->contractor_id == $payeeContractorId) || ($isValid && $rule?->contractor_id === null)) {
                     $verifiedOperations->push($operation);
                 }
-            }else{
-                if($rule?->contractor_id == $payeeContractorId){
+            } else {
+                if ($rule?->contractor_id == $payeeContractorId) {
                     $verifiedOperations->push($operation);
                 }
             }
