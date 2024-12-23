@@ -30,6 +30,15 @@ const contractors = ref([])
 const contractorIds = ref([])
 const isLoading = ref(false)
 
+const operationSyncDialog = ref(false)
+const syncStart_at = ref(null)
+const syncEnd_at = ref(null)
+const start_at_menu = ref(false)
+const end_at_menu = ref(false)
+const start_at_formatted = ref('')
+const end_at_formatted = ref('')
+
+
 const categories = ref([])
 const categoryIds = ref([])
 const categoriesOptions = ref([])
@@ -71,6 +80,17 @@ const updateDateTo = (val) => {
   menuDateTo.value = false;
 };
 
+const updateStart_at = (val) => {
+  syncStart_at.value = val;
+  start_at_formatted.value = date.formatDate(val, 'DD.MM.YYYY');
+  start_at_menu.value = false;
+};
+const updateEnd_at = (val) => {
+  syncEnd_at.value = val;
+  end_at_formatted.value = date.formatDate(val, 'DD.MM.YYYY');
+  end_at_menu.value = false;
+};
+
 watch(filters, () => {
   pagination.value.page = 1
 }, {deep: true})
@@ -108,7 +128,13 @@ const refresh = async (p) => {
 const loadOperations = async () => {
   try {
     Notify.create({message: 'Синхронизация запущена!'})
-    const response = await axios.get('/api/get-operations')
+    operationSyncDialog.value = false
+    const response = await axios.get('/api/get-operations', {
+      params: {
+        start_at: syncStart_at.value,
+        end_at: syncEnd_at.value
+      }
+    })
     Notify.create({message: 'Синхронизация закончена!'})
   } catch (e) {
     Notify.create({message: 'Ошибка! Синхронизация транзакций не удалась!', color: 'error'})
@@ -256,6 +282,60 @@ const clearFilters = async () => {
 </script>
 <template>
   <q-page v-if="operations">
+    <q-dialog v-model="operationSyncDialog">
+      <q-card style="min-width: 300px;">
+        <q-input
+            class="col-2 q-px-sm q-mt-sm"
+            dense
+            outlined
+            filled
+            v-model="start_at_formatted"
+            label="Дата начала"
+            readonly
+            @click.native.stop="start_at_menu = true"
+        >
+          <template v-slot:append>
+            <q-icon name="event" @click.stop="start_at_menu = true"/>
+          </template>
+          <q-menu v-model="start_at_menu" anchor="bottom left" self="top left">
+            <q-date
+                v-model="syncStart_at"
+                mask="YYYY-MM-DD"
+                @update:model-value="updateStart_at"
+            />
+          </q-menu>
+        </q-input>
+
+        <q-input
+            class="col-2 q-px-sm q-mt-sm"
+            dense
+            outlined
+            filled
+            v-model="end_at_formatted"
+            label="Дата начала"
+            readonly
+            @click.native.stop="end_at_menu = true"
+        >
+          <template v-slot:append>
+            <q-icon name="event" @click.stop="end_at_menu = true"/>
+          </template>
+          <q-menu v-model="end_at_menu" anchor="bottom left" self="top left">
+            <q-date
+                v-model="syncEnd_at"
+                mask="YYYY-MM-DD"
+                @update:model-value="updateEnd_at"
+            />
+          </q-menu>
+        </q-input>
+
+        <q-btn
+            @click="loadOperations"
+            label="Сохранить"
+            color="primary"
+            class="q-mt-md full-width"
+        />
+      </q-card>
+    </q-dialog>
     <q-form @submit.prevent="applyFilters" class="items-center q-pa-md bg-grey-4">
         <div class="row">
           <q-input
@@ -396,8 +476,14 @@ const clearFilters = async () => {
       <div class="row justify-between items-center q-mt-md">
         <div class="row justify-between full-width">
           <div>
-            <q-btn @click="loadOperations" label="Синхронизироать тразакции" dense size="sm" color="primary"
-                   class="q-mr-sm q-pa-xs"/>
+            <q-btn
+                @click="operationSyncDialog = true"
+                label="Синхронизировать транзакции"
+                dense
+                size="sm"
+                color="primary"
+                class="q-mr-sm q-pa-xs"
+            />
             <q-btn
                 to="/operations/create"
                 class="text-right q-pa-xs"

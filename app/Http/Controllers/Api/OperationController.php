@@ -10,6 +10,7 @@ use App\Models\Category;
 use App\Models\Operation;
 use App\Models\OperationRule;
 use App\Models\Type;
+use Firebase\JWT\JWT;
 use GuzzleHttp\Client;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -176,12 +177,24 @@ class OperationController extends Controller
         ]);
     }
 
-    public function getOperations()
+    public function getOperations(Request $request)
     {
+        set_time_limit(300);
+        $start_at = $request->input('start_at', now()->startOfMonth()->toDateString());
+        $end_at = $request->input('end_at', now()->endOfMonth()->toDateString());
         try {
             $client = new Client();
+
+            $payload = ['start_at' => $start_at];
+            $token = JWT::encode($payload, config('app.key'), 'HS256');
+
             $response = $client->request('GET', 'https://api.lookin.team/api/finance/fin-lookin/operations', [
-                'start_at' => '2024-12-01'
+                'query' => [
+                    'start_at' => $start_at,
+                    'end_at' => $end_at,
+                    'token' => $token,
+                    'tokenTest' => $payload['start_at'],
+                ],
             ]);
 
 // Обработка ответа
