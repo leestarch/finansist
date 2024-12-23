@@ -6,6 +6,7 @@ import axios from "axios";
 
 const operationRules = ref([])
 const contractors = ref([])
+const categoriesOptions = ref([])
 const contractorIds = ref([])
 const isLoading = ref(false)
 
@@ -32,6 +33,7 @@ const refresh = async () => {
         operation_type: filters.value.operation_type?.value,
         include_commons: Boolean(filters.value.include_commons),
         contractor_ids: contractorIds.value ? contractorIds.value.map(contractor => contractor.id) : null,
+        category_id: filters.value.categories,
       }
     })
 
@@ -74,6 +76,37 @@ const onContractorChange  = async (val, update, abort) => {
   }
 };
 
+const onCategoriesChange = async (val, update, abort) => {
+
+  if (val.length > 3) {
+    isLoading.value = true;
+    await fetchCategories(val);
+    update(() => categoriesOptions.value);
+    isLoading.value = false;
+  } else {
+    categoriesOptions.value = [];
+    update(() => categoriesOptions.value);
+  }
+};
+
+const fetchCategories = async (val = '') => {
+  try {
+    const response = await axios.get('/api/categories', {
+      params: {
+        q: val || '',
+      },
+    });
+
+    categoriesOptions.value = response.data.data;
+  } catch (e) {
+    Notify.create({
+      message: 'Ошибка получения данных',
+      color: 'red',
+      timeout: 2000
+    })
+  }
+}
+
 onMounted(() => {
   refresh()
 })
@@ -112,7 +145,26 @@ onMounted(() => {
               ]"
           />
 
-          <div class="col-5 row bg-grey-3 rounded-borders">
+          <q-select
+              class="col-3 q-px-sm"
+              dense
+              outlined
+              filled
+              flat
+              label="Категория"
+              v-model="filters.categories"
+              :options="categoriesOptions"
+              option-label="name"
+              clearable
+              multiple
+              use-input
+              borderless
+              use-chips
+              @filter="onCategoriesChange"
+              :loading="isLoading"
+          />
+
+          <div class="q-my-md q-ml-sm col-5 row bg-grey-3 rounded-borders">
             <q-select
                 class="q-px-sm col-8"
                 dense
