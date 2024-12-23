@@ -195,6 +195,8 @@ class OperationController extends Controller
                     'token' => $token,
                     'tokenTest' => $payload['start_at'],
                 ],
+                'stream' => true,
+                'read_timeout' => 120, // Время ожидания для чтения данных
             ]);
 
 // Обработка ответа
