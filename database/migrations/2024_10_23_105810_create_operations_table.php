@@ -16,7 +16,7 @@ return new class extends Migration
 
             $table->foreignId('pizzeria_id')->nullable();
             $table->date('date_at')->nullable()->default(null);
-            $table->bigInteger('sber_amountRub')->nullable();
+            $table->float('sber_amountRub')->nullable();
             $table->string('sber_direction')->nullable();
             $table->text('sber_paymentPurpose')->nullable();
             $table->string('sber_operationId')->nullable();
