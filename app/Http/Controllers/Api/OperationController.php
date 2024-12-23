@@ -203,6 +203,7 @@ class OperationController extends Controller
 // Обработка ответа
             $body = $response->getBody();
             $transactions = collect(json_decode($body)->data); // Декодируем JSON в ассоциативный масси
+            $rules = OperationRule::all();
             foreach ($transactions as $transaction) {
                 $operation =  Operation::updateOrCreate([
                     'sber_operationId' => $transaction->sber_operationId,
@@ -218,12 +219,12 @@ class OperationController extends Controller
                     'is_manual' => $transaction->is_manual,
                     'created_at' => $transaction->created_at,
                 ]);
-//                $operationRule = OperationRule::validateOperation($operation);
-//                if($operationRule) {
-//                    $res = $operation->categories()->sync([
-//                        $operationRule->category_id => ['rule_id' => $operationRule->id]
-//                    ]);
-//                }
+                $operationRule = OperationRule::validateOperation($operation, $rules);
+                if($operationRule) {
+                    $res = $operation->categories()->sync([
+                        $operationRule->category_id => ['rule_id' => $operationRule->id]
+                    ]);
+                }
             }
             return response()->json(['count' => $transactions->count()]);
         } catch (\Exception $e) {
