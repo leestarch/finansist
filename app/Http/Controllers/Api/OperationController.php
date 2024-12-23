@@ -33,7 +33,8 @@ class OperationController extends Controller
 
         $operationsQuery = Operation::query()
             ->filter($request->all())
-            ->with('categories', 'types');
+            ->with('categories', 'types')
+        ->orderByDesc('date_at');
 
         $operations = $operationsQuery->paginate($request->input('paginate', 50))
             ->withQueryString();
