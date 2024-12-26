@@ -186,14 +186,14 @@ function transformCategory(category) {
 const getCurrentMonthFirstDay = () => {
   const date = new Date();
   date.setDate(1);
-  return date.toISOString().split("T")[0];
+  return date?.toISOString()?.split("T")[0];
 };
 
 const getCurrentMonthLastDay = () => {
   const date = new Date();
   date.setMonth(date.getMonth() + 1);
   date.setDate(0);
-  return date.toISOString().split("T")[0];
+  return date?.toISOString()?.split("T")[0];
 };
 
 const formatNumber = (value) => {
@@ -206,7 +206,7 @@ const formatNumber = (value) => {
 
 
 const filters = ref({
-  groupBy: null,
+  groupBy: {label:'Месяцам', value: 'monthly'},
   dateFrom: getCurrentMonthFirstDay(),
   dateTo: getCurrentMonthLastDay(),
   type: null,
@@ -273,9 +273,9 @@ const refresh = async () => {
     message: 'Загрузка...'
   });
   try {
-    const startDate = parseISO(filters.value.dateFrom);
-    const endDate = parseISO(filters.value.dateTo);
-    const groupBy = filters.value.groupBy?.value || 'daily';
+    const startDate = parseISO(filters?.value?.dateFrom);
+    const endDate = parseISO(filters?.value?.dateTo);
+    const groupBy = filters.value?.groupBy?.value || 'daily';
 
     dateColumns.value = generateDateColumns(startDate, endDate, groupBy);
 

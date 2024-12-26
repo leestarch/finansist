@@ -39,11 +39,11 @@ onMounted(() => {
             <p>Контрагент: {{contractor.full_name}}</p>
         </div>
         <div class="row text-h6">
-          <p v-if="contractor.inn">ИНН: {{ contractor.inn_kpp }}</p>
+          <p v-if="contractor.inn_kpp">ИНН: {{ contractor.inn_kpp }}</p>
           <p v-else>ИНН отсутствует</p>
         </div>
         <div class="row text-h6">
-          <p><router-link :to="{name: 'ContractorOperations', params: {id: contractor.id}}">Операции</router-link></p>
+          <p><router-link :to="{name: 'ContractorOperations', params: {id: contractor.id}}">Опеерации</router-link></p>
         </div>
         <div class="row text-h6">
           <p><router-link :to="{name: 'ContractorRules', params: {id: contractor.id}}">Правила</router-link></p>
