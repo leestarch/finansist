@@ -9,23 +9,24 @@ const props = defineProps({
 });
 
 const columns = ref([
-  { name: 'sber_amountRub', label: 'Сумма', field: 'sber_amountRub', align: 'left' },
-  { name: 'categories', label: 'Категория', field: 'categories', align: 'left' },
-  { name: 'is_manual', label: 'is manual', field: 'is_manual', align: 'left' },
-  { name: 'actions', label: 'Действия', align: 'left' },
-  { name: 'date_at', label: 'Дата', field: 'date_at', align: 'left' },
-  { name: 'sber_paymentPurpose', label: 'Назначение', field: 'sber_paymentPurpose', align: 'left' },
+  {name: 'sber_amountRub', label: 'Сумма', field: 'sber_amountRub', align: 'left'},
+  {name: 'categories', label: 'Категория', field: 'categories', align: 'left'},
+  {name: 'contractor', label: 'Контрагент', field: 'payee_contractor', align: 'left'},
+  {name: 'is_manual', label: 'is manual', field: 'is_manual', align: 'left'},
+  {name: 'actions', label: 'Действия', align: 'left'},
+  {name: 'date_at', label: 'Дата', field: 'date_at', align: 'left'},
+  {name: 'sber_paymentPurpose', label: 'Назначение', field: 'sber_paymentPurpose', align: 'left'},
 ]);
 
 const emit = defineEmits(['update:pagination', 'refresh']);
 const handlePaginationUpdate = (page) => {
-  emit('update:pagination', { ...props.pagination, page });
+  emit('update:pagination', {...props.pagination, page});
 };
 
 const handleIsManualChange = async (row) => {
   Loading.show()
   try {
-    const response = await axios.put(`/api/operations/${row.id}`, {is_manual: row.is_manual})
+    const response = await axios.put(`/api/operations/${row?.id}`, {is_manual: row.is_manual})
     if (response?.data?.success) {
       Notify.create({
         message: 'Обновлено',
@@ -33,7 +34,7 @@ const handleIsManualChange = async (row) => {
         timeout: 2000
       })
     }
-  }catch (e) {
+  } catch (e) {
     Notify.create({
       message: 'Ошибка обновления',
       color: 'red',
@@ -76,9 +77,25 @@ const handleIsManualChange = async (row) => {
               </span>
             </template>
             <template v-else>
-              {{ item.row?.categories.map(category => category.name).join(', ') }}
+              <router-link v-if="item.row?.categories?.[0]?.id" :to="{name: 'CategoriesEdit', params: {id: item.row?.categories?.[0]?.id}}" target="_blank">
+                {{ item.row?.categories?.map(category => category?.name).join(', ') }}
+              </router-link>
             </template>
           </template>
+          <template v-if="item.col.name === 'contractor'">
+            <router-link v-if="item.row?.payee_contractor?.id" :to="{name: 'ContractorShow', params: {id: item.row?.payee_contractor?.id}}" target="_blank">
+              <div>{{ item.row?.payee_contractor?.full_name }}</div>
+            </router-link>
+          </template>
+          <!--          <template v-if="item.col.name === 'contractor'">-->
+          <!--                  <span>-->
+          <!--                    {{ category.name }}-->
+          <!--                    <span class="text-primary">-->
+          <!--                      ({{ category.sber_amountRub }})-->
+          <!--                    </span>-->
+          <!--                    <span v-if="index < item.row.categories.length - 1">, </span>-->
+          <!--                  </span>-->
+          <!--          </template>-->
           <template v-if="item.col.name === 'is_manual'">
             <q-checkbox
                 @update:model-value="(val) => item.row.is_manual = val"
@@ -89,7 +106,7 @@ const handleIsManualChange = async (row) => {
           <template v-if="item.col.name === 'actions'">
             <div>
               <router-link
-                  :to="{name: 'OperationEdit', params: {id: item.row.id}}"
+                  :to="{name: 'OperationEdit', params: {id: item?.row?.id}}"
                   class="cursor-pointer"
               >
                 <q-icon

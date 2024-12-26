@@ -61,14 +61,16 @@ const handlePaginationUpdate = (page) => {
               {{ item.row?.purpose_expression }}
             </template>
             <template v-if="item.col.name === 'category'">
-              {{ item.row?.category?.name }}
+              <router-link :to="{name: 'CategoriesEdit', params: {id: item.row?.category?.id}}" target="_blank">{{ item.row?.category?.name }}</router-link>
             </template>
             <template v-if="item.col.name === 'contractor'">
               <template v-if="!item.row?.contractor?.name">
                 Для всех
               </template>
               <template v-if="item.row?.contractor?.full_name">
-              {{ item.row?.contractor?.full_name }}
+                <router-link :to="{name: 'ContractorShow', params: {id: item.row?.contractor?.id}}" target="_blank">
+                  <div>{{ item.row?.contractor?.full_name }}</div>
+                </router-link>
               </template>
             </template>
             <template v-if="item.col.name === 'actions'">

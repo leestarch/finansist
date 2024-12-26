@@ -33,66 +33,19 @@ const logout = () => {
   <q-layout view="hHh lpR fFf">
       <q-header elevated class="bg-primary text-white">
           <q-toolbar>
-              <q-btn  flat @click="drawer = !drawer" round dense icon="menu" />
+
               <q-toolbar-title>
-                <q-btn v-if="isAuth" flat text-color="white" color="grey-8" :to="{name: 'OperationIndex'}">Finansist</q-btn>
+                <q-btn flat color="" :to="{name: 'OperationIndex'}">Операции</q-btn>
+                <q-btn flat color="" :to="{name: 'CategoriesTree'}">Дерево категорий</q-btn>
+                <q-btn flat color="" :to="{name: 'IndexRule'}">Правила операций</q-btn>
+                <q-btn flat color="" :to="{name: 'ContractorIndex'}">Контрагенты</q-btn>
+                <q-btn flat color="" :to="{name: 'CategoriesIndex'}">Категории</q-btn>
               </q-toolbar-title>
 <!--            <q-toolbar-title class="text-right">-->
 <!--              <q-btn v-if="isAuth" flat text-color="white" color="grey-8" @click="logout">Выход</q-btn>-->
 <!--            </q-toolbar-title>-->
           </q-toolbar>
       </q-header>
-      <q-drawer
-          v-if="isAuth"
-          v-model="drawer"
-          show-if-above
-          :width="200"
-          :breakpoint="500"
-          bordered
-          overlay
-          class="bg-grey-2 "
-      >
-          <q-scroll-area class="fit">
-              <q-list padding class="menu-list">
-<!--                  <q-item  v-ripple>-->
-<!--                      <q-item-section>-->
-<!--                          <q-btn flat color="grey-8" :to="{name: 'Categories'}">Категории</q-btn>-->
-<!--                      </q-item-section>-->
-<!--                  </q-item>-->
-                <q-item  v-ripple>
-                  <q-item-section>
-                    <q-btn flat color="grey-8" :to="{name: 'OperationIndex'}">Операции</q-btn>
-                  </q-item-section>
-                </q-item>
-                <q-item  v-ripple>
-                  <q-item-section>
-                    <q-btn flat color="grey-8" :to="{name: 'CategoriesTree'}">Дерево категорий</q-btn>
-                  </q-item-section>
-                </q-item>
-<!--                <q-item  v-ripple>-->
-<!--                  <q-item-section>-->
-<!--                    <q-btn flat color="grey-8" :to="{name: 'IndexSummary'}">Summary</q-btn>-->
-<!--                  </q-item-section>-->
-<!--                </q-item>-->
-                <q-item  v-ripple>
-                  <q-item-section>
-                    <q-btn flat color="grey-8" :to="{name: 'IndexRule'}">Правила операций</q-btn>
-                  </q-item-section>
-                </q-item>
-                <q-item  v-ripple>
-                  <q-item-section>
-                    <q-btn flat color="grey-8" :to="{name: 'ContractorIndex'}">Контрагенты</q-btn>
-                  </q-item-section>
-                </q-item>
-                <q-item  v-ripple>
-                  <q-item-section>
-                    <q-btn flat color="grey-8" :to="{name: 'CategoriesIndex'}">Категории</q-btn>
-                  </q-item-section>
-                </q-item>
-              </q-list>
-          </q-scroll-area>
-      </q-drawer>
-
     <q-page-container>
       <router-view/>
     </q-page-container>

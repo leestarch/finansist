@@ -81,8 +81,9 @@ class OperationRule extends Model
         if ($operation->is_manual) return null;
 
         $payeeContractorId = $operation->payee_contractor_id;
+
         $filteredRules = $rules->filter(function ($query) use ($payeeContractorId) {
-            $query->where('contractor_id', $payeeContractorId)
+            return $query->where('contractor_id', $payeeContractorId)
                 ->orWhereNull('contractor_id');
         })
             ->sortByDesc(function ($rule) {
@@ -111,7 +112,17 @@ class OperationRule extends Model
 
     public static function validateOperationByRule($rule, $operation)
     {
-        $operations = self::getOperationsByRule($rule);
+        if ($expression = $rule->purpose_expression) {
+            $isValid = self::validateExpression($operation, $expression);
+            if (($isValid && $rule?->contractor_id == $operation->payee_contractor_id) || ($isValid && $rule?->contractor_id === null)) {
+                return $rule;
+            }
+        } else {
+            if ($rule?->contractor_id == $operation->payee_contractor_id) {
+                return $rule;
+            }
+        }
+        return null;
     }
 
     public static function getOperationsByRule($rule)

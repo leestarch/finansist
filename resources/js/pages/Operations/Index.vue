@@ -468,11 +468,7 @@ const clearFilters = async () => {
               ]"
         />
       </div>
-      <div class="row q-mt-md">
-        <q-btn class="text-right q-pa-xs" dense size="sm" type="submit" label="Применить фильтры" color="primary"/>
-        <q-btn class="text-right q-ml-sm q-pa-xs" dense size="sm" @click="clearFilters" label="Очистить фильтры"
-               color="primary"/>
-      </div>
+
       <div class="row justify-between items-center q-mt-md">
         <div class="row justify-between full-width">
           <div>
@@ -494,9 +490,14 @@ const clearFilters = async () => {
             />
           </div>
           <div>
-            <p class="text-body2 q-px-sm q-py-xs bg-primary text-white rounded-borders">Итого: {{ totalAmount }}</p>
+            <p class="text-body2 q-px-sm q-py-xs text-primary rounded-borders primary-borders">Итого: {{ totalAmount }}</p>
           </div>
         </div>
+      </div>
+      <div class="row justify-end q-mt-md">
+        <q-btn class="text-right q-pa-xs" dense size="sm" type="submit" label="Применить фильтры" color="green"/>
+        <q-btn class="text-right q-ml-sm q-pa-xs" dense size="sm" @click="clearFilters" label="Очистить фильтры"
+               color="red"/>
       </div>
     </q-form>
     <OperationTable

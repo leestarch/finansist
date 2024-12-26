@@ -26,6 +26,7 @@ class OperationResource extends JsonResource
 //            'date_at' => Carbon::parse($this->date_at)->format('d-m-Y'),
             'is_manual' => (bool)$this->is_manual,
             'types' => implode(', ', $this->types->pluck('name')->toArray()),
+            'direction' => $this->sber_direction,
             'categories' => $this->whenLoaded(
                 'categories',
                 fn() => $this->categories->map(fn($category)=> [

@@ -25,7 +25,6 @@ class OperationRuleController extends Controller
 
         $rules->filter($request->all());
 
-
         return OperationRuleResource::collection($rules->paginate($paginate));
     }
 

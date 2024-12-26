@@ -7,6 +7,7 @@ use App\Http\Requests\Operation\OperationCreateRequest;
 use App\Http\Requests\Operation\OperationSeedFromAPIRequest;
 use App\Http\Resources\OperationResource;
 use App\Models\Category;
+use App\Models\Contractor;
 use App\Models\Operation;
 use App\Models\OperationRule;
 use App\Models\Type;
@@ -33,7 +34,7 @@ class OperationController extends Controller
 
         $operationsQuery = Operation::query()
             ->filter($request->all())
-            ->with('categories', 'types')
+            ->with(['categories', 'types', 'payeeContractor'])
         ->orderByDesc('date_at');
 
         $operations = $operationsQuery->paginate($request->input('paginate', 50))
@@ -204,12 +205,37 @@ class OperationController extends Controller
             $body = $response->getBody();
             $transactions = collect(json_decode($body)->data); // Декодируем JSON в ассоциативный масси
             $rules = OperationRule::all();
+            $contractors = Contractor::all();
             foreach ($transactions as $transaction) {
+                if(!$contractors->where('id', $transaction->payee_contractor_id)->first()) {
+                    $payeeData = json_decode($transaction->sber_rurTransfer);
+                    $payee_inn = isset($payeeData['payeeInn']) ? $payeeData['payeeInn'] : null;
+                    $payee = Contractor::create([
+                        'inn_kpp' => $payee_inn,
+                        'full_name' => $payeeData['payeeName'],
+                        'bank_name' => isset($payeeData) && isset($payeeData['payeeBankName']) ? $payeeData['payeeBankName'] : null,
+                        'corr_account' => isset($payeeData) && isset($payeeData['payeeBankCorrAccount']) ? $payeeData['payeeBankCorrAccount'] : null,
+                        'bank_bik' => isset($payeeData) && isset($payeeData['payeeBankBic']) ? $payeeData['payeeBankBic'] : null,
+                        'checking_account' => isset($payeeData) && isset($payeeData['payeeAccount']) ? $payeeData['payeeAccount'] : null,
+                    ]);
+                }
+                if(!$contractors->where('id', $transaction->payer_contractor_id)->first()) {
+                    $payerData = json_decode($transaction->sber_rurTransfer);
+                    $payee_inn = isset($payerData['payerInn']) ? $payeeData['payerInn'] : null;
+                    $payer = Contractor::create([
+                        'inn_kpp' => $payerData['payerInn'],
+                        'full_name' => $payerData['payerName'],
+                        'bank_name' => isset($payerData) && isset($payerData['payerBankName']) ? $payerData['payerBankName'] : null,
+                        'corr_account' => isset($payerData) && isset($payerData['payerBankCorrAccount']) ? $payerData['payerBankCorrAccount'] : null,
+                        'bank_bik' => isset($payerData) && isset($payerData['payerBankBic']) ? $payerData['payerBankBic'] : null,
+                        'checking_account' => isset($payerData) && isset($payerData['payerAccount']) ? $payerData['payerAccount'] : null,
+                    ]);
+                }
                 $operation =  Operation::updateOrCreate([
                     'sber_operationId' => $transaction->sber_operationId,
                 ], [
                     'pizzeria_id' => $transaction->pizzeria->id,
-                    'date_at' => $transaction->date_at,
+                    'date_at' => $transaction->sber_operationDate,
                     'sber_amountRub' => $transaction->sber_amountRub,
                     'sber_direction' => $transaction->sber_direction,
                     'sber_paymentPurpose' => $transaction->sber_paymentPurpose,
@@ -219,7 +245,7 @@ class OperationController extends Controller
                     'is_manual' => $transaction->is_manual,
                     'created_at' => $transaction->created_at,
                 ]);
-                $operationRule = OperationRule::validateOperation($operation, $rules);
+                $operationRule = OperationRule::validateOperation($operation, unserialize(serialize($rules)));
                 if($operationRule) {
                     $res = $operation->categories()->sync([
                         $operationRule->category_id => ['rule_id' => $operationRule->id]
