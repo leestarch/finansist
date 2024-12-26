@@ -208,27 +208,29 @@ class OperationController extends Controller
             $contractors = Contractor::all();
             foreach ($transactions as $transaction) {
                 if(!$contractors->where('id', $transaction->payee_contractor_id)->first()) {
-                    $payeeData = json_decode($transaction->sber_rurTransfer);
-                    $payee_inn = isset($payeeData['payeeInn']) ? $payeeData['payeeInn'] : null;
+                    $payeeData = $transaction->sber_rurTransfer;
+                    $payee_inn = $payeeData?->payeeInn ?: null;
                     $payee = Contractor::create([
+                        'id' => $transaction->payee_contractor_id,
                         'inn_kpp' => $payee_inn,
-                        'full_name' => $payeeData['payeeName'],
-                        'bank_name' => isset($payeeData) && isset($payeeData['payeeBankName']) ? $payeeData['payeeBankName'] : null,
-                        'corr_account' => isset($payeeData) && isset($payeeData['payeeBankCorrAccount']) ? $payeeData['payeeBankCorrAccount'] : null,
-                        'bank_bik' => isset($payeeData) && isset($payeeData['payeeBankBic']) ? $payeeData['payeeBankBic'] : null,
-                        'checking_account' => isset($payeeData) && isset($payeeData['payeeAccount']) ? $payeeData['payeeAccount'] : null,
+                        'full_name' => $payeeData->payeeName,
+                        'bank_name' => $payeeData->payeeBankName ?: null,
+                        'corr_account' => $payeeData->payeeBankCorrAccount ?: null,
+                        'bank_bik' => $payeeData->payeeBankBic ?: null,
+                        'checking_account' => $payeeData->payeeAccount ?: null,
                     ]);
                 }
                 if(!$contractors->where('id', $transaction->payer_contractor_id)->first()) {
                     $payerData = json_decode($transaction->sber_rurTransfer);
-                    $payee_inn = isset($payerData['payerInn']) ? $payeeData['payerInn'] : null;
+                    $payee_inn = $payerData?->payerInn ?: null;
                     $payer = Contractor::create([
-                        'inn_kpp' => $payerData['payerInn'],
-                        'full_name' => $payerData['payerName'],
-                        'bank_name' => isset($payerData) && isset($payerData['payerBankName']) ? $payerData['payerBankName'] : null,
-                        'corr_account' => isset($payerData) && isset($payerData['payerBankCorrAccount']) ? $payerData['payerBankCorrAccount'] : null,
-                        'bank_bik' => isset($payerData) && isset($payerData['payerBankBic']) ? $payerData['payerBankBic'] : null,
-                        'checking_account' => isset($payerData) && isset($payerData['payerAccount']) ? $payerData['payerAccount'] : null,
+                        'id' => $transaction->payer_contractor_id,
+                        'inn_kpp' => $payerData->payerInn,
+                        'full_name' => $payerData->payerName,
+                        'bank_name' => $payerData?->payerBankName ?: null,
+                        'corr_account' => $payerData?->payerBankCorrAccount ?: null,
+                        'bank_bik' => $payerData?->payerBankBic ?: null,
+                        'checking_account' => $payerData?->payerAccount ?: null,
                     ]);
                 }
                 $operation =  Operation::updateOrCreate([

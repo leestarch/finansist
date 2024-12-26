@@ -490,7 +490,7 @@ const clearFilters = async () => {
             />
           </div>
           <div>
-            <p class="text-body2 q-px-sm q-py-xs text-primary rounded-borders primary-borders">Итого: {{ totalAmount }}</p>
+            <p class="text-body2 q-px-sm q-py-xs text-primary rounded-borders primary-borders">Итого: {{ totalAmount.toFixed(2) }}</p>
           </div>
         </div>
       </div>
