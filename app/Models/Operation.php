@@ -97,6 +97,10 @@ class Operation extends Model
             });
         }
 
+        if($sum = $filters['sum'] ?? null) {
+            $query->where('sber_amountRub', 'like', '%'. $sum.'%');
+        }
+
         if ($pizzeriaId = $filters['pizzeriaId'] ?? null) {
             $query->where('pizzeria_id', $pizzeriaId);
         }

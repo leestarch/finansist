@@ -338,6 +338,18 @@ const clearFilters = async () => {
     </q-dialog>
     <q-form @submit.prevent="applyFilters" class="items-center q-pa-md bg-grey-4">
         <div class="row">
+
+          <q-input
+              class="col-3 q-px-sm q-mt-sm"
+              clearable
+              dense
+              outlined
+              filled
+              type="number"
+              v-model="filters.sum"
+              label="Сумма"
+          />
+
           <q-input
               class="col-2 q-px-sm q-mt-sm"
               dense
