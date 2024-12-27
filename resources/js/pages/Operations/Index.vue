@@ -116,6 +116,7 @@ const refresh = async (p) => {
     pagination.value.page = response.data?.meta?.current_page
     pagination.value.totalPages = response.data?.meta?.last_page
   } catch (e) {
+    console.log(e)
     Notify.create({
       message: 'Ошибка получения данных',
       color: 'red',
