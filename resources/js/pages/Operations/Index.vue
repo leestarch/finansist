@@ -42,6 +42,7 @@ const end_at_formatted = ref('')
 const categories = ref([])
 const categoryIds = ref([])
 const categoriesOptions = ref([])
+const isContractorLoading = ref(false)
 
 const totalAmount = ref(0)
 const totalItems = ref(0)
@@ -176,8 +177,28 @@ const fetchCategories = async (val = '') => {
     })
   }
 }
-const onContractorChange = async (val, update, abort) => {
-  if (val.length > 3) {
+const fetchContractors = async (val, id='') => {
+  try {
+    const response = await axios.get('/api/contractors', {
+      params: {
+        q: val || '',
+        id: id
+      },
+    });
+    contractorsOptions.value = response.data.data;
+  } catch (error) {
+    Notify.create({
+      message: 'Ошибка получения контрагентов',
+      color: 'red',
+      timeout: 2000
+    });
+  } finally {
+    isLoading.value = false;
+  }
+};
+
+const onContractorChange  = async (val, update) => {
+  if (val.length > 4) {
     isLoading.value = true;
     await fetchContractors(val);
     update(() => contractorsOptions.value);
@@ -185,28 +206,6 @@ const onContractorChange = async (val, update, abort) => {
   } else {
     contractorsOptions.value = [];
     update(() => contractorsOptions.value);
-  }
-};
-
-const fetchContractors = async (val) => {
-  isLoading.value = true;
-  try {
-    const response = await axios.get('/api/contractors', {
-      params: {
-        q: val || '',
-        ids: contractorIds.value,
-      },
-    });
-    contractorsOptions.value = response.data.data;
-    contractors.value = contractorsOptions.value.map((contractor) => ({
-      ...contractor,
-      value: contractor.id,
-      label: contractor.name,
-    }));
-    contractorIds.value = contractorsOptions.value.map((contractor) => contractor.id);
-  } catch (error) {
-  } finally {
-    isLoading.value = false;
   }
 };
 
@@ -458,21 +457,22 @@ const clearFilters = async () => {
               ]"
         />
 
-        <q-select
-            class="col-6 q-mt-sm"
-            dense
-            outlined
-            filled
-            label="Контрагенты (получатели)"
-            v-model="contractors"
-            :options="contractorsOptions"
-            use-input
-            multiple
-            clearable
-            option-label="name"
-            @filter="onContractorChange"
-            :loading="isLoading"
-        />
+
+          <q-select
+              class="col-6 q-px-sm q-mt-sm"
+              dense
+              outlined
+              filled
+              label="Контрагент"
+              v-model="contractors"
+              :options="contractorsOptions"
+              use-input
+              clearable
+              option-label="name"
+              @filter="onContractorChange"
+              :loading="isLoading"
+          />
+
         <q-select
             class="col-3 q-px-sm q-mt-sm"
             clearable
