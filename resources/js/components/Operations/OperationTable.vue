@@ -52,7 +52,8 @@ const columns = ref([
   {
     name: 'direction',
     label: 'Направление',
-    field: 'direction'
+    field: 'direction',
+    sortable: true
   },
   {
     name: 'actions',

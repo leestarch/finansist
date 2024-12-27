@@ -390,7 +390,7 @@ const clearFilters = async () => {
             </template>
             <q-menu v-model="menuDateTo" anchor="bottom left" self="top left">
               <q-date
-                  v-model="filters.dateFrom"
+                  v-model="filters.dateTo"
                   mask="YYYY-MM-DD"
                   @update:model-value="updateDateTo"
               />
