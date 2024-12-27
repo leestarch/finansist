@@ -248,8 +248,8 @@ const parseParams = async (filterParams) => {
     switch (groupBy) {
       case 'monthly': {
         const parsedDate = parse(date, 'MM-yyyy', new Date());
-        filters.value.dateFrom = format(startOfMonth(parsedDate), 'yyyy-MM-dd');
-        filters.value.dateTo = format(endOfMonth(parsedDate), 'yyyy-MM-dd');
+        updateDateFrom(format(startOfMonth(parsedDate), 'yyyy-MM-dd'));
+        updateDateTo(format(endOfMonth(parsedDate), 'yyyy-MM-dd'));
         break;
       }
       case 'weekly': {
@@ -257,20 +257,20 @@ const parseParams = async (filterParams) => {
         const firstDayOfYear = new Date(year, 0, 1);
         const weekStartDate = addWeeks(firstDayOfYear, week - 1);
 
-        filters.value.dateFrom = format(startOfWeek(weekStartDate, {weekStartsOn: 1}), 'yyyy-MM-dd'); // Monday
-        filters.value.dateTo = format(endOfWeek(weekStartDate, {weekStartsOn: 1}), 'yyyy-MM-dd'); // Sunday
+        updateDateFrom(format(startOfWeek(weekStartDate, {weekStartsOn: 1}), 'yyyy-MM-dd')); // Monday
+        updateDateTo(format(endOfWeek(weekStartDate, {weekStartsOn: 1}), 'yyyy-MM-dd')); // Sunday
         break;
       }
       case 'quarterly': {
         const parsedDate = parse(date, 'Q-yyyy', new Date());
-        filters.value.dateFrom = format(startOfQuarter(parsedDate), 'yyyy-MM-dd');
-        filters.value.dateTo = format(endOfQuarter(parsedDate), 'yyyy-MM-dd');
+       updateDateFrom(format(startOfQuarter(parsedDate), 'yyyy-MM-dd'));
+       updateDateTo(format(endOfQuarter(parsedDate), 'yyyy-MM-dd'));
         break;
       }
       default:
         const parsedDate = parse(date, 'd-MM-yyyy', new Date());
-        filters.value.dateFrom = format(parsedDate, 'yyyy-MM-dd');
-        filters.value.dateTo = format(parsedDate, 'yyyy-MM-dd');
+       updateDateFrom(format(parsedDate, 'yyyy-MM-dd'));
+       updateDateTo(format(parsedDate, 'yyyy-MM-dd'));
     }
   }
 }

@@ -16,10 +16,11 @@
             <template v-slot:append>
               <q-icon name="event" @click.stop="dateFromMenu = true"/>
             </template>
-            <q-menu v-model="dateFromMenu" anchor="bottom left" self="top left" auto-close>
+            <q-menu v-model="dateFromMenu" anchor="bottom left" self="top left">
               <q-date
                   v-model="filters.dateFrom"
                   mask="YYYY-MM-DD"
+                  @update:model-value="dateFromMenu = false"
               />
             </q-menu>
           </q-input>
@@ -36,10 +37,11 @@
             <template v-slot:append>
               <q-icon name="event" @click.stop="dateToMenu = true"/>
             </template>
-            <q-menu v-model="dateToMenu" anchor="bottom left" self="top left" auto-close>
+            <q-menu v-model="dateToMenu" anchor="bottom left" self="top left">
               <q-date
                   v-model="filters.dateTo"
                   mask="YYYY-MM-DD"
+                  @update:model-value="dateToMenu = false"
               />
             </q-menu>
           </q-input>
