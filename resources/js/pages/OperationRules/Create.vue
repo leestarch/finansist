@@ -137,7 +137,7 @@ const getOperationsByRule = async () => {
 </script>
 <template>
   <q-page class="row shadow-3 bg-grey-2">
-    <q-dialog v-model="operationsDialog">
+    <q-dialog v-model="operationsDialog" :maximized="true">
       <q-card>
         <q-table
             title="Найденные операции соответствующие правилу"
@@ -241,3 +241,10 @@ const getOperationsByRule = async () => {
     </div>
   </q-page>
 </template>
+
+
+<style>
+.table-card {
+  width: 90%;
+}
+</style>

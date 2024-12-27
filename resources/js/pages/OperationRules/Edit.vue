@@ -198,13 +198,17 @@ const onContractorSelectChange = async (val, update, abort) => {
 
 <template>
   <q-page class="row shadow-3 bg-grey-2">
-    <q-dialog v-model="operationsDialog">
+    <q-dialog v-model="operationsDialog" maximized>
       <q-card>
+       <div class="row justify-end">
+         <q-btn @click="operationsDialog = false" flat round icon="close"></q-btn>
+       </div>
         <q-table
             title="Найденные операции соответствующие правилу"
             :rows="operations"
             :columns="operationsHeaders"
             row-key="id"
+            :rows-per-page-options="[20, 50]"
         >
           <template v-slot:body-cell-payee_contractor="props">
             <q-td :props="props">
