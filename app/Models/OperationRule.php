@@ -128,7 +128,7 @@ class OperationRule extends Model
     public static function getOperationsByRule($rule)
     {
         $verifiedOperations = collect();
-        $operations = Operation::with('payeeContractor')->get();
+        $operations = Operation::with(['payeeContractor', 'categories'])->get();
         foreach ($operations as $operation) {
             $payeeContractorId = $operation->payee_contractor_id;
             if ($expression = $rule->purpose_expression) {

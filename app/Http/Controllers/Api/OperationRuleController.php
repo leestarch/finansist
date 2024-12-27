@@ -117,10 +117,14 @@ class OperationRuleController extends Controller
         if (!property_exists($rule, 'purpose_expression')) $rule->purpose_expression = null;
         if (!property_exists($rule, 'operation_type')) $rule->operation_type = null;
         $operations = OperationRule::getOperationsByRule($rule);
+        if(!$rule?->id) {
+            return abort(404, 'Не найдено правило!');
+        }
         foreach ($operations as $operation) {
             $res = $operation->categories()->sync([
-                $rule->category_id => ['rule_id' => $rule->id]
+                $rule->category_id => ['rule_id' => $rule->category_id]
             ]);
         }
+        return $operations;
     }
 }

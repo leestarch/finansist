@@ -34,6 +34,11 @@ const operationsHeaders = ref([
     field: 'payee_contractor',
   },
   {
+    name: 'categories',
+    label: 'Категория',
+    field: 'categories',
+  },
+  {
     name: 'purpose',
     label: 'Назначение платежа',
     field: 'sber_paymentPurpose'
@@ -148,6 +153,8 @@ const submitForm = async () => {
       color: 'red',
       timeout: 2000
     })
+  } finally {
+    refresh()
   }
 }
 
@@ -213,6 +220,13 @@ const onContractorSelectChange = async (val, update, abort) => {
             <q-td :props="props">
               <div>
                 {{ props.row.payee_contractor?.full_name || 'Нет данных' }}
+              </div>
+            </q-td>
+          </template>
+          <template v-slot:body-cell-categories="props">
+            <q-td :props="props">
+              <div v-for="category in props.row.categories">
+                {{category?.name}}
               </div>
             </q-td>
           </template>
