@@ -12,8 +12,16 @@ const props = defineProps({
 const emit = defineEmits(['update:pagination', 'refresh']);
 
 const columns = ref([
-  { name: 'category', label: 'Категория', field: row=>row?.category?.name, align: 'left' },
-  { name: 'contractor', label: 'Контрагент', field: row=>row?.contractor?.full_name, align: 'left' },
+  { name: 'category', label: 'Категория', field: row=>row?.category?.name, align: 'left', sortable: true, sort: (a,b, rowA, rowB) =>  {
+      const nameA = rowA.category?.name || '';
+      const nameB = rowB.category?.name || '';
+      return nameA.localeCompare(nameB);
+    }},
+  { name: 'contractor', label: 'Контрагент', field: row=>row?.contractor?.full_name, align: 'left',  sortable: true, sort: (a,b, rowA, rowB) =>  {
+      const nameA = rowA.contractor?.full_name || '';
+      const nameB = rowB.contractor?.full_name || '';
+      return nameA.localeCompare(nameB);
+    } },
   { name: 'purpose_expression', label: 'Регулярное выражение', field: 'purpose_expression', align: 'left' },
   { name: 'actions', label: 'Действия', align: 'left' },
 ]);

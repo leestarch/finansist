@@ -9,13 +9,65 @@ const props = defineProps({
 });
 
 const columns = ref([
-  {name: 'sber_amountRub', label: 'Сумма', field: 'sber_amountRub', align: 'left'},
-  {name: 'categories', label: 'Категория', field: 'categories', align: 'left'},
-  {name: 'contractor', label: 'Контрагент', field: 'payee_contractor', align: 'left'},
-  {name: 'is_manual', label: 'is manual', field: 'is_manual', align: 'left'},
-  {name: 'actions', label: 'Действия', align: 'left'},
-  {name: 'date_at', label: 'Дата', field: 'date_at', align: 'left'},
-  {name: 'sber_paymentPurpose', label: 'Назначение', field: 'sber_paymentPurpose', align: 'left'},
+  {
+    name: 'sber_amountRub',
+    label: 'Сумма',
+    field: 'sber_amountRub',
+    align: 'left',
+    sortable: true,
+    sort: (a, b) => parseInt(a, 10) - parseInt(b, 10),
+  },
+  {
+    name: 'categories',
+    label: 'Категория',
+    field: 'categories',
+    align: 'left',
+    sortable: true,
+    sort: (a, b, rowA, rowB) => {
+      const nameA = rowA.categories?.[0]?.name || '';
+      const nameB = rowB.categories?.[0]?.name || '';
+      return nameA.localeCompare(nameB);
+    },
+  },
+  {
+    name: 'contractor',
+    label: 'Контрагент',
+    field: 'payee_contractor',
+    align: 'left',
+    sortable: true,
+    sort: (a, b, rowA, rowB) => {
+      const nameA = rowA.payee_contractor?.full_name || '';
+      const nameB = rowB.payee_contractor?.full_name || '';
+      return nameA.localeCompare(nameB);
+    },
+  },
+  {
+    name: 'is_manual',
+    label: 'is manual',
+    field: 'is_manual',
+    align: 'left',
+    sortable: true,
+    sort: (a, b) => Number(a) - Number(b),
+  },
+  {
+    name: 'actions',
+    label: 'Действия',
+    align: 'left',
+  },
+  {
+    name: 'date_at',
+    label: 'Дата',
+    field: 'date_at',
+    align: 'left',
+    sortable: true,
+    sort: (a, b) => new Date(a) - new Date(b),
+  },
+  {
+    name: 'sber_paymentPurpose',
+    label: 'Назначение',
+    field: 'sber_paymentPurpose',
+    align: 'left',
+  },
 ]);
 
 const emit = defineEmits(['update:pagination', 'refresh']);
@@ -77,13 +129,15 @@ const handleIsManualChange = async (row) => {
               </span>
             </template>
             <template v-else>
-              <router-link v-if="item.row?.categories?.[0]?.id" :to="{name: 'CategoriesEdit', params: {id: item.row?.categories?.[0]?.id}}" target="_blank">
+              <router-link v-if="item.row?.categories?.[0]?.id"
+                           :to="{name: 'CategoriesEdit', params: {id: item.row?.categories?.[0]?.id}}" target="_blank">
                 {{ item.row?.categories?.map(category => category?.name).join(', ') }}
               </router-link>
             </template>
           </template>
           <template v-if="item.col.name === 'contractor'">
-            <router-link v-if="item.row?.payee_contractor?.id" :to="{name: 'ContractorShow', params: {id: item.row?.payee_contractor?.id}}" target="_blank">
+            <router-link v-if="item.row?.payee_contractor?.id"
+                         :to="{name: 'ContractorShow', params: {id: item.row?.payee_contractor?.id}}" target="_blank">
               <div>{{ item.row?.payee_contractor?.full_name }}</div>
             </router-link>
           </template>

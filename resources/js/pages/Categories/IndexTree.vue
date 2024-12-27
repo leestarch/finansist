@@ -3,8 +3,46 @@
     <div class="bg-white q-ma-sm q-pa-sm rounded-borders ">
       <q-form @submit.prevent="applyFilters" class="items-center q-pa-md bg-grey-2 rounded-borders">
         <div class="row">
-          <q-input class="col-2 q-px-sm" clearable dense outlined filled v-model="filters.dateFrom" label="Дата начала" type="date" />
-          <q-input class="col-2 q-px-sm" dense clearable outlined filled v-model="filters.dateTo" label="Дата окончания" type="date" />
+          <q-input
+              class="col-2 q-px-sm"
+              dense
+              outlined
+              filled
+              v-model="dateFromFormatted"
+              label="Дата начала"
+              readonly
+              @click.native.stop="dateFromMenu = true"
+          >
+            <template v-slot:append>
+              <q-icon name="event" @click.stop="dateFromMenu = true"/>
+            </template>
+            <q-menu v-model="dateFromMenu" anchor="bottom left" self="top left" auto-close>
+              <q-date
+                  v-model="filters.dateFrom"
+                  mask="YYYY-MM-DD"
+              />
+            </q-menu>
+          </q-input>
+          <q-input
+              class="col-2 q-px-sm"
+              dense
+              outlined
+              filled
+              v-model="dateToFormatted"
+              label="Дата начала"
+              readonly
+              @click.native.stop="dateToMenu = true"
+          >
+            <template v-slot:append>
+              <q-icon name="event" @click.stop="dateToMenu = true"/>
+            </template>
+            <q-menu v-model="dateToMenu" anchor="bottom left" self="top left" auto-close>
+              <q-date
+                  v-model="filters.dateTo"
+                  mask="YYYY-MM-DD"
+              />
+            </q-menu>
+          </q-input>
           <q-select
               class="col-3 q-px-sm"
               dense outlined filled
@@ -58,8 +96,8 @@
               option-label="name"
           />
         </div>
-        <div class="row q-mt-md">
-          <q-btn class="text-right" dense size="sm" type="submit" label="Применить фильтры" color="primary" />
+        <div class="row justify-end q-mt-md">
+          <q-btn class="text-right" dense size="sm" type="submit" label="Применить фильтры" color="green" />
         </div>
       </q-form>
       <TreeTable
@@ -134,7 +172,7 @@
 <script setup>
 import TreeTable from 'primevue/treetable'
 import Column from 'primevue/column'
-import {onMounted, ref, watch} from 'vue'
+import {computed, onMounted, ref, watch} from 'vue'
 import {Notify, Loading} from 'quasar'
 import axios from 'axios'
 import {
@@ -156,6 +194,9 @@ const contractors = ref([])
 
 const isContractorLoading = ref(false)
 const contractorIds = ref([])
+
+const dateFromMenu = ref(false)
+const dateToMenu = ref(false)
 
 const dateFormats = {
   daily: 'dd-MM-yyyy',
@@ -203,6 +244,24 @@ const formatNumber = (value) => {
     maximumFractionDigits: 2,
   }).format(value)
 }
+
+const dateFromFormatted = computed(() => {
+  console.log(filters.value.dateFrom)
+  if(filters?.value?.dateFrom) {
+    let [year, month, day] = filters.value.dateFrom?.split('-')
+    return `${day}.${month}.${year}`
+  }
+  return '';
+})
+
+const dateToFormatted = computed(() => {
+  console.log(filters.value.dateTo)
+  if(filters?.value?.dateTo) {
+    let [year, month, day] = filters.value.dateTo?.split('-')
+    return `${day}.${month}.${year}`
+  }
+  return '';
+})
 
 
 const filters = ref({

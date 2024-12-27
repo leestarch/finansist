@@ -1,7 +1,7 @@
 <script setup>
 import {onMounted, ref} from 'vue'
 import {useRoute} from "vue-router";
-import {Notify} from "quasar";
+import {Loading, Notify} from "quasar";
 
 const route = useRoute()
 const ruleId = route.params.id
@@ -59,7 +59,7 @@ const refresh = async () => {
     })
     rule.value = response.data.data
     selectedCategory.value = rule.value.category
-        selectedContractors.value = rule.value.contractor
+    selectedContractors.value = rule.value.contractor
   } catch (e) {
     Notify.create({
       message: 'Ошибка получения данных',
@@ -70,6 +70,9 @@ const refresh = async () => {
 }
 
 const getOperationsByRule = async () => {
+  Loading.show({
+    message: 'Загрузка...'
+  });
   try {
     const response = await axios.get('/api/rules/operations-by-rule', {
       params: {
@@ -84,10 +87,16 @@ const getOperationsByRule = async () => {
       color: 'red',
       timeout: 2000
     })
+  } finally {
+    Loading.hide()
   }
 }
 
 const validateOperations = async () => {
+  Notify.create({
+    message: 'Обработка началась',
+    timeout: 2000
+  })
   try {
     const response = await axios.get('/api/rules/validate-by-rule', {
       params: {
@@ -96,6 +105,11 @@ const validateOperations = async () => {
     })
     operations.value = response.data
     operationsDialog.value = true
+    Notify.create({
+      message: 'Обработка закончена',
+      color: 'green',
+      timeout: 2000
+    })
   } catch (e) {
     Notify.create({
       message: 'Ошибка при валидации',
