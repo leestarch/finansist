@@ -162,7 +162,7 @@ class OperationController extends Controller
     {
         $mappedCategories = [];
         foreach ($categories as $category) {
-            $mappedCategories[$category['id']] = (int)$category['sber_amountRub'];
+            $mappedCategories[$category['id']] = (float)$category['sber_amountRub'];
         }
         return $mappedCategories;
     }

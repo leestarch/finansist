@@ -170,7 +170,6 @@ const submitForm = async () => {
   try {
     const response = await axios.put(`/api/operations/${operationId}`, {
       pizzeria_id: form.value.pizzeria.id,
-      amount: form.value.amount,
       date_at: form.value.date,
       is_completed: form.value.is_completed,
       payee_contractor_id: form.value.contractor.id,
