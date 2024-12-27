@@ -159,6 +159,7 @@ const submitForm = async () => {
 }
 
 const onAmountInputChange = (val, item) => {
+  //todo баг - при одинаковых суммах срабатывает условия ошибки - где то не туда округляется
   const total = form.value.categories.reduce(
       (acc, cat) => acc + (parseFloat(cat.amount) || 0),
       0

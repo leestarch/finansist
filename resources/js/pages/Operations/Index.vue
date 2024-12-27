@@ -44,6 +44,7 @@ const categoryIds = ref([])
 const categoriesOptions = ref([])
 
 const totalAmount = ref(0)
+const totalItems = ref(0)
 
 
 const pagination = ref({
@@ -62,6 +63,7 @@ const filters = ref({
   pizzerias: [],
   purpose_expression: '',
   sberDirection: null,
+  without_category: 0
 });
 
 const dateFromFormatted = ref('')
@@ -111,6 +113,7 @@ const refresh = async (p) => {
 
     operations.value = response?.data?.data
     totalAmount.value = operations.value.reduce((acc, operation) => acc + operation?.sber_amountRub, 0)
+    totalItems.value = response.data.meta.total
 
     pagination.value.rowsNumber = response.data?.meta?.total
     pagination.value.page = response.data?.meta?.current_page
@@ -411,7 +414,11 @@ const clearFilters = async () => {
             use-chips
             @filter="onCategoriesChange"
             :loading="isLoading"
-        />
+        >
+          <template v-slot:after="">
+            <q-checkbox v-model="filters.without_category" class="checkbox-small-label" dense label="Без контрагента" :true-value="1" :false-value="0"/>
+          </template>
+        </q-select>
         <q-select
             class="col-3 q-px-sm q-mt-sm"
             dense
@@ -513,6 +520,7 @@ const clearFilters = async () => {
                color="red"/>
       </div>
     </q-form>
+    <div class="q-mt-md q-ml-md">Всего: {{totalItems}}</div>
     <OperationTable
         :operations="operations"
         :pagination="pagination"
@@ -522,5 +530,8 @@ const clearFilters = async () => {
   </q-page>
 </template>
 
-<style scoped>
+<style>
+.checkbox-small-label .q-checkbox__label {
+  font-size: 14px; /* Задайте нужный размер */
+}
 </style>

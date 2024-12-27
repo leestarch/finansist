@@ -97,6 +97,12 @@ class Operation extends Model
             });
         }
 
+        if($without_category = $filters['without_category'] ?? false) {
+            $query->when($without_category, function ($query) use($without_category) {
+                $query->whereDoesntHave('categories');
+            });
+        }
+
         if($sum = $filters['sum'] ?? null) {
             $query->where('sber_amountRub', 'like', '%'. $sum.'%');
         }

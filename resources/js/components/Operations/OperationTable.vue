@@ -50,6 +50,11 @@ const columns = ref([
     sort: (a, b) => Number(a) - Number(b),
   },
   {
+    name: 'direction',
+    label: 'Направление',
+    field: 'direction'
+  },
+  {
     name: 'actions',
     label: 'Действия',
     align: 'left',
@@ -156,6 +161,9 @@ const handleIsManualChange = async (row) => {
                 @update:modelValue="handleIsManualChange(item.row)"
                 :model-value="item.row.is_manual"
             />
+          </template>
+          <template v-if="item.col.name === 'direction'">
+            {{ item.row?.direction }}
           </template>
           <template v-if="item.col.name === 'actions'">
             <div>
