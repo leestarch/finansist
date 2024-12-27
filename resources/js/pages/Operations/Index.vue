@@ -105,7 +105,7 @@ const refresh = async (p) => {
         page: pagination.value.page,
         contractorIds: contractorIds.value,
         categoryIds: filters.value.categories?.map(category => category.id) ?? null,
-        pizzeriaIds: filters.value?.pizzerias?.map(pizzeria => pizzeria.id) || pizzeriaIds.value,
+        pizzeriaIds: filters.value?.pizzerias?.map(pizzeria => pizzeria.id) || [pizzeriaIds.value],
       }
     })
 
