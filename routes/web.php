@@ -14,6 +14,7 @@ Route::any('/operations/rules/edit/{id}', [\App\Http\Controllers\Controller2::cl
 
 Route::any('/categories', [\App\Http\Controllers\Controller2::class, 'vue']);
 Route::any('/categories/edit/{id}', [\App\Http\Controllers\Controller2::class, 'vue']);
+Route::any('/categories/{id}/operations', [\App\Http\Controllers\Controller2::class, 'vue']);
 Route::any('/categories/create', [\App\Http\Controllers\Controller2::class, 'vue']);
 Route::any('/categories-tree', [\App\Http\Controllers\Controller2::class, 'vue']);
 

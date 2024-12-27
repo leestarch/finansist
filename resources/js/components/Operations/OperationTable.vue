@@ -102,23 +102,27 @@ const handleIsManualChange = async (row) => {
   Loading.hide()
 }
 
+const formatSum = (val) => {
+  return new Intl.NumberFormat('ru-RU', {style: 'currency', currency: 'RUB'}).format(val)
+}
+
 </script>
+
 <template>
   <div v-if="operations.length" class="shadow-3">
     <q-table
         flat
-        class="q-mt-md q-px-sm"
+        class="q-mt-md q-px-sm fixed-table"
         :rows="operations"
         :pagination="{ rowsPerPage: pagination.rowsPerPage }"
         :columns="columns"
         row-key="id"
         hide-bottom
     >
-
       <template v-slot:body-cell="item">
-        <q-td :item="item">
+        <q-td :item="item" class="fixed-cell">
           <template v-if="item.col.name === 'sber_amountRub'">
-            {{ item.row?.sber_amountRub }}
+            {{ (formatSum(item.row?.sber_amountRub)) }}
           </template>
           <template v-if="item.col.name === 'categories'">
             <template v-if="item.row?.categories.length > 1">
@@ -127,7 +131,7 @@ const handleIsManualChange = async (row) => {
                   <span>
                     {{ category.name }}
                     <span class="text-primary">
-                      ({{ category.sber_amountRub }})
+                      ({{ formatSum(category.sber_amountRub)}})
                     </span>
                     <span v-if="index < item.row.categories.length - 1">, </span>
                   </span>
@@ -147,15 +151,6 @@ const handleIsManualChange = async (row) => {
               <div>{{ item.row?.payee_contractor?.full_name }}</div>
             </router-link>
           </template>
-          <!--          <template v-if="item.col.name === 'contractor'">-->
-          <!--                  <span>-->
-          <!--                    {{ category.name }}-->
-          <!--                    <span class="text-primary">-->
-          <!--                      ({{ category.sber_amountRub }})-->
-          <!--                    </span>-->
-          <!--                    <span v-if="index < item.row.categories.length - 1">, </span>-->
-          <!--                  </span>-->
-          <!--          </template>-->
           <template v-if="item.col.name === 'is_manual'">
             <q-checkbox
                 @update:model-value="(val) => item.row.is_manual = val"
@@ -179,7 +174,6 @@ const handleIsManualChange = async (row) => {
                     class="cursor-pointer"
                 />
               </router-link>
-
             </div>
           </template>
           <template v-if="item.col.name === 'date_at'">
@@ -210,3 +204,16 @@ const handleIsManualChange = async (row) => {
     </p>
   </div>
 </template>
+
+<style scoped>
+.fixed-table {
+  width: 100%;
+  table-layout: fixed; /* Фиксированная ширина столбцов */
+}
+
+.fixed-cell {
+  word-break: break-word; /* Перенос текста внутри ячейки */
+  white-space: normal;    /* Разрешение переноса */
+  overflow: hidden;       /* Обрезка избыточного текста */
+}
+</style>

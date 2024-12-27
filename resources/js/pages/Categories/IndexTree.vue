@@ -145,8 +145,8 @@
                         date: date,
                         groupBy: filters?.groupBy?.value || 'daily',
                         purposeQuery: filters.purposeQuery,
-                        pizzeriaIds: filters.pizzerias?.map(pizzeria => pizzeria.id),
-                        contractorIds: contractorIds.map(contractor => contractor.id),
+                        pizzeriaIds: filters.pizzerias?.map(pizzeria => pizzeria.id) ?? [],
+                        contractorIds: contractorIds?.map(contractor => contractor.id) ?? [],
                       }
                     }"
                     class="text-decoration-none"
@@ -287,7 +287,7 @@ watch(() => filters.value.groupBy, () => {
 });
 
 const onContractorChange  = async (val, update, abort) => {
-  if (val.length > 4) {
+  if (val.length >= 2) {
     isContractorLoading.value = true;
     try {
       const response = await axios.get('/api/contractors', {
@@ -344,14 +344,14 @@ const refresh = async () => {
         startDate: filters.value.dateFrom,
         endDate: filters.value.dateTo,
         groupBy: filters.value.groupBy?.value,
-        pizzeriaIds: filters.value.pizzerias.map(pizzeria => pizzeria.id),
-        contractorIds: contractorIds.value.map(contractor => contractor.id),
+        pizzeriaIds: filters.value?.pizzerias?.map(pizzeria => pizzeria.id) ?? [],
+        contractorIds: contractorIds?.value?.map(contractor => contractor.id) ?? [],
         purposeQuery: filters.value.purposeQuery,
       }
     });
     console.log(response.data);
     pizzerias.value = response.data.pizzerias;
-    treeCategories.value = response.data.categories.map(category =>
+    treeCategories.value = response.data.categories?.map(category =>
         transformCategory(category)
     );
   } catch (e) {

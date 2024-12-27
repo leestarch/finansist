@@ -60,6 +60,12 @@ export default [
         meta: { requiresAuth: true }
     },
     {
+        path:'/categories/:id/operations',
+        component:() => import('@/pages/Categories/CategoryOperations.vue'),
+        name:'CategoryOperations',
+        meta: { requiresAuth: true }
+    },
+    {
         path:'/categories/create',
         component:() => import('@/pages/Categories/Create.vue'),
         name:'CategoriesCreate',
@@ -83,6 +89,7 @@ export default [
         name:'ContractorRules',
         meta: { requiresAuth: true }
     },
+
     {
         path:'/contractors/:id/operations',
         component:() => import('@/pages/Contractors/Operations.vue'),

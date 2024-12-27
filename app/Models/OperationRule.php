@@ -63,9 +63,10 @@ class OperationRule extends Model
 
     public static function validateOperations(Collection $operations): int
     {
+        $rules = OperationRule::all();
         $updatedOperations = 0;
         foreach ($operations as $operation) {
-            self::validateOperation($operation) && $updatedOperations++;
+            self::validateOperation($operation, $rules) && $updatedOperations++;
         }
         return $updatedOperations;
     }
