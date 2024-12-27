@@ -60,7 +60,6 @@ const refresh = async () => {
     form.value.contractor = response.data.data.payee_contractor
     form.value.description = response.data.data.sber_paymentPurpose
     form.value.categories = response.data.data.categories.map(cat => {
-      console.log(cat)
       return {
         category: {
           id: cat.id,
@@ -97,7 +96,11 @@ const fetchPizzerias = async () => {
 
 const fetchCategories = async () => {
   try{
-    const response = await axios.get('/api/categories')
+    const response = await axios.get('/api/categories', {
+      params: {
+        full_list: true
+      }
+    })
     categories.value = response.data.data
     filteredCategories.value = response.data.data
   }catch (e) {

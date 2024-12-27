@@ -30,8 +30,8 @@ class CategoriesController extends Controller
         $pizzerias = Pizzeria::query()->select('id', 'name')->get();
 
         return response()->json([
-           'categories' => $categories,
-           'pizzerias' => $pizzerias,
+            'categories' => $categories,
+            'pizzerias' => $pizzerias,
         ]);
     }
 
@@ -40,11 +40,16 @@ class CategoriesController extends Controller
         $paginate = $request->get('paginate', 20);
 
         $categories = Category::query()->where('id', '!=', 0);
-        if($load = $request->get('load'))
+        if ($load = $request->get('load'))
             $categories->with(explode(',', $load));
 
-        if($q = $request->get('q'))
+        if ($q = $request->get('q'))
             $categories->where('name', 'like', "%$q%");
+
+        if($request->has('full_list')) {
+            $items = $categories->get();
+            return MinifiedCategoryResource::collection($items);
+        }
 
         return MinifiedCategoryResource::collection($categories->paginate($paginate));
     }
@@ -52,7 +57,7 @@ class CategoriesController extends Controller
     public function show(int $id): MinifiedCategoryResource
     {
         $category = Category::query();
-        if($load = request()->get('load'))
+        if ($load = request()->get('load'))
             $category->with(explode(',', $load));
 
         return MinifiedCategoryResource::make($category->findOrFail($id));
