@@ -104,7 +104,6 @@ const validateOperations = async () => {
       }
     })
     operations.value = response.data
-    operationsDialog.value = true
     Notify.create({
       message: 'Обработка закончена',
       color: 'green',
