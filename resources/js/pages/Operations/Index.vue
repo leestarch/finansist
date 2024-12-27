@@ -104,8 +104,8 @@ const refresh = async (p) => {
         isSplit: filters.value.splitFilter?.value,
         page: pagination.value.page,
         contractorIds: contractorIds.value,
-        categoryIds: filters.value.categories.map(category => category.id),
-        pizzeriaIds: filters.value.pizzerias.map(pizzeria => pizzeria.id) || pizzeriaIds.value,
+        categoryIds: filters.value.categories?.map(category => category.id) ?? null,
+        pizzeriaIds: filters.value?.pizzerias?.map(pizzeria => pizzeria.id) || pizzeriaIds.value,
       }
     })
 
