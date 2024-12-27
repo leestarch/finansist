@@ -312,7 +312,7 @@ const clearFilters = async () => {
             outlined
             filled
             v-model="end_at_formatted"
-            label="Дата начала"
+            label="Дата конца"
             readonly
             @click.native.stop="end_at_menu = true"
         >

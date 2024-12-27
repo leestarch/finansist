@@ -100,9 +100,8 @@ onMounted(() => {
           <div>
             <q-btn
                 @click="search"
-
                 size="md"
-                color="primary"
+                color="green"
                 label="поиск"
             />
           </div>

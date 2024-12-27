@@ -187,8 +187,8 @@ onMounted(() => {
             />
           </div>
         </div>
-        <div class="row q-mt-sm q-ml-sm">
-          <q-btn class="text-right" dense size="sm" @click="refresh" label="Применить фильтры" color="primary" />
+        <div class="row justify-end q-mt-sm q-ml-sm">
+          <q-btn class="text-right" dense size="sm" @click="refresh" label="Применить фильтры" color="green" />
           <q-btn class="text-right q-ml-sm" dense size="sm" :to="{name: 'CreateRule'}"
                  label="Создать правило" color="primary" />
         </div>

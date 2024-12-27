@@ -30,7 +30,7 @@
               outlined
               filled
               v-model="dateToFormatted"
-              label="Дата начала"
+              label="Дата конца"
               readonly
               @click.native.stop="dateToMenu = true"
           >
@@ -248,7 +248,6 @@ const formatNumber = (value) => {
 }
 
 const dateFromFormatted = computed(() => {
-  console.log(filters.value.dateFrom)
   if(filters?.value?.dateFrom) {
     let [year, month, day] = filters.value.dateFrom?.split('-')
     return `${day}.${month}.${year}`

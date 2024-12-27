@@ -63,8 +63,8 @@ onMounted(() => {
           <q-input class="col-3" clearable dense outlined filled v-model="filters.name" label="Имя"/>
           <q-input class="col-3 q-ml-lg" dense clearable outlined filled v-model="filters.inn" label="ИНН"/>
         </div>
-        <div class="row q-mt-md">
-          <q-btn class="text-right" dense size="sm" type="submit" label="Применить фильтры" color="primary" />
+        <div class="row justify-end q-mt-md">
+          <q-btn class="text-right" dense size="sm" type="submit" label="Применить фильтры" color="green" />
         </div>
       </q-form>
       <div class="rounded-borders bg-white shadow-3">

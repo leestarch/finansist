@@ -1,7 +1,7 @@
 <script setup>
 import {useRoute} from "vue-router";
 import {Loading, Notify} from "quasar";
-import {onMounted, ref, watch} from "vue";
+import {computed, onMounted, ref, watch} from "vue";
 import OperationTable from "../../components/Operations/OperationTable.vue";
 
 const route = useRoute()
@@ -15,6 +15,10 @@ const pagination = ref({
   rowsPerPage: 20,
   rowsNumber: 0,
 });
+
+const dateAtMenu = ref(false)
+const dateFromMenu = ref(false)
+const dateToMenu = ref(false)
 
 const filters = ref({
   purposeQuery: '',
@@ -99,6 +103,30 @@ const checkContractorsOperation = async () => {
   Loading.hide()
 }
 
+const dateAtFormatted = computed(() => {
+  if(filters?.value?.dateAt) {
+    let [year, month, day] = filters.value.dateAt?.split('-')
+    return `${day}.${month}.${year}`
+  }
+  return '';
+})
+
+const dateFromFormatted = computed(() => {
+  if(filters?.value?.dateFrom) {
+    let [year, month, day] = filters.value.dateFrom?.split('-')
+    return `${day}.${month}.${year}`
+  }
+  return '';
+})
+
+const dateToFormatted = computed(() => {
+  if(filters?.value?.dateTo) {
+    let [year, month, day] = filters.value.dateTo?.split('-')
+    return `${day}.${month}.${year}`
+  }
+  return '';
+})
+
 onMounted(() => {
   fetchContractors()
   refresh()
@@ -175,15 +203,26 @@ onMounted(() => {
             </p>
             <div class="row">
               <q-input
-                  class="col-3 q-px-sm"
-                  clearable
+                  class="col-2 q-px-sm"
                   dense
                   outlined
                   filled
-                  v-model="filters.dateAt"
+                  v-model="dateAtFormatted"
                   label="Дата"
-                  type="date"
-              />
+                  readonly
+                  @click.native.stop="dateAtMenu = true"
+              >
+                <template v-slot:append>
+                  <q-icon name="event" @click.stop="dateAtMenu = true"/>
+                </template>
+                <q-menu v-model="dateAtMenu" anchor="bottom left" self="top left">
+                  <q-date
+                      v-model="filters.dateAt"
+                      mask="YYYY-MM-DD"
+                      @update:model-value="dateAtMenu = false"
+                  />
+                </q-menu>
+              </q-input>
 
               <q-input
                   class="col-3 q-px-sm"
@@ -209,27 +248,50 @@ onMounted(() => {
             <div class="row q-mt-sm">
               <q-input
                   class="col-2 q-px-sm"
-                  clearable
                   dense
                   outlined
                   filled
-                  v-model="filters.dateFrom"
+                  v-model="dateFromFormatted"
                   label="Дата начала"
-                  type="date"
-              />
+                  readonly
+                  @click.native.stop="dateFromMenu = true"
+              >
+                <template v-slot:append>
+                  <q-icon name="event" @click.stop="dateFromMenu = true"/>
+                </template>
+                <q-menu v-model="dateFromMenu" anchor="bottom left" self="top left">
+                  <q-date
+                      v-model="filters.dateFrom"
+                      mask="YYYY-MM-DD"
+                      @update:model-value="dateFromMenu = false"
+                  />
+                </q-menu>
+              </q-input>
+
               <q-input
                   class="col-2 q-px-sm"
                   dense
-                  clearable
                   outlined
                   filled
-                  v-model="filters.dateTo"
-                  label="Дата окончания"
-                  type="date"
-              />
+                  v-model="dateToFormatted"
+                  label="Дата конца"
+                  readonly
+                  @click.native.stop="dateToMenu = true"
+              >
+                <template v-slot:append>
+                  <q-icon name="event" @click.stop="dateToMenu = true"/>
+                </template>
+                <q-menu v-model="dateToMenu" anchor="bottom left" self="top left">
+                  <q-date
+                      v-model="filters.dateTo"
+                      mask="YYYY-MM-DD"
+                      @update:model-value="dateToMenu = false"
+                  />
+                </q-menu>
+              </q-input>
             </div>
-            <div class="row q-mt-sm q-ml-sm">
-              <q-btn class="text-right" dense size="sm" @click="refresh" label="Применить фильтры" color="primary" />
+            <div class="row justify-end q-mt-sm q-ml-sm">
+              <q-btn class="text-right" dense size="sm" @click="refresh" label="Применить фильтры" color="green" />
             </div>
           </div>
           <OperationTable

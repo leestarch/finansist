@@ -13,6 +13,10 @@ const refresh = async () => {
   await fetchContractor()
 }
 
+const goBack = () => {
+  window.history.back();
+}
+
 const fetchContractor = async () => {
   try {
     const response = await axios.get(`/api/contractors/${contractorId}`)
@@ -33,6 +37,13 @@ onMounted(() => {
 </script>
 <template>
   <q-page class="bg-grey-2">
+    <q-btn
+        icon="arrow_back"
+        label="Назад"
+        @click="goBack"
+        color="primary"
+        flat
+    />
     <div class="row justify-center">
       <div class="col-10 text-center bg-white rounded-borders q-pa-sm justify-center q-mt-lg">
         <div class="row text-h6">
