@@ -24,6 +24,7 @@ class OperationResource extends JsonResource
             'payee_contractor_id' => $this->payee_contractor_id,
             'date_at' => $this->date_at,
 //            'date_at' => Carbon::parse($this->date_at)->format('d-m-Y'),
+            'is_completed' => (bool)$this->is_completed,
             'is_manual' => (bool)$this->is_manual,
             'types' => implode(', ', $this->types->pluck('name')->toArray()),
             'direction' => $this->sber_direction,

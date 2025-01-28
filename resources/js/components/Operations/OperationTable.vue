@@ -42,6 +42,13 @@ const columns = ref([
     },
   },
   {
+    name: 'is_completed',
+    label: 'is completed',
+    field: 'is_completed',
+    align: 'left',
+    sortable: false,
+  },
+  {
     name: 'is_manual',
     label: 'is manual',
     field: 'is_manual',
@@ -131,7 +138,7 @@ const formatSum = (val) => {
                   <span>
                     {{ category.name }}
                     <span class="text-primary">
-                      ({{ formatSum(category.sber_amountRub)}})
+                      ({{ formatSum(category.sber_amountRub) }})
                     </span>
                     <span v-if="index < item.row.categories.length - 1">, </span>
                   </span>
@@ -150,6 +157,11 @@ const formatSum = (val) => {
                          :to="{name: 'ContractorShow', params: {id: item.row?.payee_contractor?.id}}" target="_blank">
               <div>{{ item.row?.payee_contractor?.full_name }}</div>
             </router-link>
+          </template>
+          <template v-if="item.col.name === 'is_completed'">
+            <q-checkbox
+                :model-value="item.row.is_completed"
+            />
           </template>
           <template v-if="item.col.name === 'is_manual'">
             <q-checkbox
@@ -213,7 +225,7 @@ const formatSum = (val) => {
 
 .fixed-cell {
   word-break: break-word; /* Перенос текста внутри ячейки */
-  white-space: normal;    /* Разрешение переноса */
-  overflow: hidden;       /* Обрезка избыточного текста */
+  white-space: normal; /* Разрешение переноса */
+  overflow: hidden; /* Обрезка избыточного текста */
 }
 </style>

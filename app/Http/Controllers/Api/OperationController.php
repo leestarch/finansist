@@ -244,11 +244,17 @@ class OperationController extends Controller
                     'sber_operationId' => $transaction->sber_operationId,
                     'payer_contractor_id' => $transaction->payer_contractor_id,
                     'payee_contractor_id' => $transaction->payee_contractor_id,
+                    'is_completed' => 1,
                     'is_manual' => $transaction->is_manual,
                     'created_at' => $transaction->created_at,
                 ]);
                 $operationRule = OperationRule::validateOperation($operation, unserialize(serialize($rules)));
                 if($operationRule) {
+                    if($operationRule->category_id == 24) { // если инкассация - убираем подтверждение
+                        $operation->update([
+                            'is_completed' => 0,
+                        ]);
+                    }
                     $res = $operation->categories()->sync([
                         $operationRule->category_id => ['rule_id' => $operationRule->id]
                     ]);

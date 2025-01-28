@@ -161,6 +161,8 @@ final class CategoryService
 
             $q->where('sber_direction', Operation::DEBIT);
 
+            $q->where('is_completed', 1);
+
             if($pizzeriaIds) {
                 $q->whereIn('pizzeria_id', $pizzeriaIds);
             }
