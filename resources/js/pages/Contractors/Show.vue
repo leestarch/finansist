@@ -54,7 +54,7 @@ onMounted(() => {
           <p v-else>ИНН отсутствует</p>
         </div>
         <div class="row text-h6">
-          <p><router-link :to="{name: 'ContractorOperations', params: {id: contractor.id}}">Опеерации</router-link></p>
+          <p><router-link :to="{name: 'ContractorOperations', params: {id: contractor.id}}">Операции</router-link></p>
         </div>
         <div class="row text-h6">
           <p><router-link :to="{name: 'ContractorRules', params: {id: contractor.id}}">Правила</router-link></p>
