@@ -30,6 +30,18 @@ const columns = ref([
     },
   },
   {
+    name: 'u_contractor',
+    label: 'Юр. лицо',
+    field: 'payer_contractor',
+    align: 'left',
+    sortable: true,
+    sort: (a, b, rowA, rowB) => {
+      const nameA = rowA.payer_contractor?.full_name || '';
+      const nameB = rowB.payer_contractor?.full_name || '';
+      return nameA.localeCompare(nameB);
+    },
+  },
+  {
     name: 'contractor',
     label: 'Контрагент',
     field: 'payee_contractor',
@@ -151,6 +163,12 @@ const formatSum = (val) => {
                 {{ item.row?.categories?.map(category => category?.name).join(', ') }}
               </router-link>
             </template>
+          </template>
+          <template v-if="item.col.name === 'u_contractor'">
+            <router-link v-if="item.row?.payer_contractor?.id"
+                         :to="{name: 'ContractorShow', params: {id: item.row?.payer_contractor?.id}}" target="_blank">
+              <div>{{ item.row?.payer_contractor?.full_name }}</div>
+            </router-link>
           </template>
           <template v-if="item.col.name === 'contractor'">
             <router-link v-if="item.row?.payee_contractor?.id"
